@@ -1,0 +1,42 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": 
+    {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": 
+        {
+            "jsx": true
+        }
+    },
+    "plugins": 
+    [
+        "@typescript-eslint",
+        "react",
+        "jsx-a11y",
+        "import"
+    ],   
+    "rules": 
+    {
+        "sort-imports": ["off", { "ignoreCase": true }],
+        "quotes": ["error", "single"],
+        "indent": ["error", 2, { "SwitchCase": 1 }],
+        "brace-style":["error", "allman", { "allowSingleLine": true }],
+        "padded-blocks": ["error", { "blocks": "never" }],
+        "prefer-const": "error",
+        "comma-dangle": ["warn", "never"],
+        "consistent-return": ["error", { "treatUndefinedAsUnspecified": true }],
+        "no-inner-declarations": "error",
+        "no-unused-vars": "off",
+        "spaced-comment": ["error", "always", { "markers": ["/"] }],
+
+        // eslint-plugin-react
+        "react/jsx-pascal-case": ["error"],
+        "react/no-danger": ["error"],
+        "react/sort-comp": ["error"],
+        "react/boolean-prop-naming": ["error", { "propTypeNames": ["bool", "mutuallyExclusiveTrueProps"] }],
+
+        // eslint-plugin-import
+        "import/order": ["warn", { "groups": ["builtin", "external", "internal", "parent", "sibling", "index" ] }]
+    }
+}

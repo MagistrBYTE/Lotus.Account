@@ -1,0 +1,1 @@
+export { AvatorElement, type IAvatorElementProps } from './AvatorElement';

@@ -1,0 +1,33 @@
+{
+  "compilerOptions":
+  {
+      "allowJs": true,                      // Разрешает импорт файлов JavaScript в проект, а не только файлы .ts и .tsx
+      "allowSyntheticDefaultImports": true, // Позволяет импортировать более красиво: import React from "react";
+      "baseUrl": ".",
+      "esModuleInterop": true,                  // Организует правильный импорт  файлов JavaScript в проект
+      "forceConsistentCasingInFileNames": true, // Принудительно использовать согласованный регистр в именах файлов 
+      "isolatedModules": true,                  // Изолированные модули для улучшения компиляции
+      "jsx": "react",                           // Управляет созданием конструкций JSX в файлах JavaScript - react - Выдавать .js файлы с измененным JSX на эквивалентные React.createElementвызовы
+      "lib":
+      [
+          "ESNext",   // Дополнительные API, доступные в ESNext. Они меняются по мере развития спецификации JavaScrip
+          "dom"       // Определения DOM: window, document, и т.д.
+      ],
+      "module": "ESNext",                 // Устанавливает модульную систему для программы
+      "moduleResolution": "node",         // Стратегия разрешения модуля - node - для реализации Node.js CommonJS
+      "noEmit": true,                     // Не создавать выходные файлы компилятора, такие как исходный код JavaScript
+      "noFallthroughCasesInSwitch": true, // Сообщайте об ошибках для аварийных случаев в операторах switch
+      "resolveJsonModule": true,          // Позволяет импортировать модули с расширением .json
+      "skipLibCheck": false,              // Пропустить проверку типов файлов объявлений
+      "strict": true,                     // Строга проверка типов
+      "target": "ESNext"                  // Какой стандарт JavaScript будет применяться при компиляции
+  },
+  "include":
+  [
+      "src"
+  ],
+  "exclude":
+  [
+      "node_modules"
+  ]
+}

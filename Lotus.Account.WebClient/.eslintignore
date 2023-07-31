@@ -1,0 +1,21 @@
+/.git
+/.vscode
+assets/templates
+
+# Misc
+/flow
+/flow-typed
+node_modules
+
+# Cache
+/babel_cache
+/.cache
+
+# Lib
+/lib
+
+# Bundle
+/out
+/release
+bundle
+/build/

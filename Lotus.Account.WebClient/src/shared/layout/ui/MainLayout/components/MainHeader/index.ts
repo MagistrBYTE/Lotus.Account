@@ -1,0 +1,1 @@
+export {MainHeader, type IHeaderMainProps} from './MainHeader';
