@@ -1,46 +1,45 @@
-# Getting Started with Create React App
+# Модуль клиентского Web-приложения учетной записи пользователя
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) TS template.
+Описание директорий.
 
-## Available Scripts
+Блок директорий которые *не зависят от бизнес логики* и могут спокойно перемещаться в другие проекты:
 
-In the project directory, you can run:
+## core
 
-### `npm start`
+Директория, где располагается максимально общий код, с общей функциональностью не привязанный ни к какой предметной области.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Зависимости от других директорий: нет
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## shared
 
-### `npm test`
+Директория, где располагается также общий код, но сгруппированный по отдельным функциональным направлениям.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Зависимости от других директорий: `core`, также есть зависмости от `MUI`
 
-### `npm run build`
+## ui
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Директория, где располагаются компоненты интерфейса
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Зависимости от других директорий: `core`, `shared` также есть зависмости от `MUI`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+Блок директорий которые *зависят от бизнес логики*:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## modules
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Основная директория которая определяет функциональные возможности приложения(фичи). 
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Каждая фича(директория) может содержать:
+  - domain - предметную логику
+  - store - глобальное состояние
+  - ui - интерфейс и компоненты
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## app
 
-## Learn More
+Директория, которая содержит «глобальные данные» по отношению к бизнес логике приложения
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Содержит:
+  - routes - маршруты приложения
+  - store - реализацию глобальное состояние приложения
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Зависимости от других директорий: `core`, `shared`, `ui`, `modules` также есть зависмости от `MUI`
