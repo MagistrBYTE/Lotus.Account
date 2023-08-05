@@ -1,10 +1,12 @@
 import React, { ChangeEvent, useState } from 'react';
-import { IconButton, Popover, Stack, TextField, Typography } from '@mui/material';
+import { BaseTextFieldProps, IconButton, Popover, Stack, TextField, TextFieldProps, Typography } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { IPropertyDescriptor } from 'src/shared/reflection/PropertyDescriptor';
 import { FilterFunctionEnum, IFilterFunctionDesc } from 'src/shared/filtering/FilterFunction';
 import { SelectFilterFunction } from 'src/shared/filtering/ui/SelectFilterFunction';
 import { GroupFilterFunctionString } from 'src/shared/filtering/GroupFilterFunction';
+import { IFilterProperty } from 'src/shared/filtering/FilterProperty';
+import { capitalizeFirstLetter } from 'src/core/utils/base/string';
 
 export interface IFilterInputTextProps
 {
@@ -17,17 +19,21 @@ export interface IFilterInputTextProps
    * Дескриптор свойства по которому идет фильтрация
    */
   property: IPropertyDescriptor;
+
+  initialFilterProperty?:IFilterProperty;
+
+  setFilterProperty: (name: string, filterProperty: IFilterProperty) => void;
 }
 
 export const FilterInputText:React.FC<IFilterInputTextProps> = (props:IFilterInputTextProps) => 
 {
-  const { textInfo, property } = props;
+  const { textInfo, property, initialFilterProperty, setFilterProperty } = props;
 
   const [anchorElemInfo, setAnchorElemInfo] = React.useState<HTMLButtonElement | null>(null);
   const [openInfo, setOpenInfo] = useState<boolean>(false);
 
-  const [filterValue, setFilterValue] = useState<string|null>(); 
-  const [filterFunction, setFilterFunction] = useState<IFilterFunctionDesc>(FilterFunctionEnum.Equals); 
+  const [filterValue, setFilterValue] = useState<string|undefined>(initialFilterProperty === undefined ? undefined : initialFilterProperty.value); 
+  const [filterFunction, setFilterFunction] = useState<IFilterFunctionDesc>(initialFilterProperty === undefined ? FilterFunctionEnum.Contains : initialFilterProperty.function); 
 
   const handleOpenInfo = (event: React.MouseEvent<HTMLButtonElement>) => 
   {
@@ -43,7 +49,18 @@ export const FilterInputText:React.FC<IFilterInputTextProps> = (props:IFilterInp
 
   const handleFilterValue = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => 
   {
-    setFilterValue(event.target.value)
+    setFilterValue(event.target.value);
+
+    const filterProperty: IFilterProperty =
+    {
+      propertyName: capitalizeFirstLetter(property.fieldName),
+      function: filterFunction,
+      propertyType: property.propertyType,
+      isArray: property.isArray,
+      value: filterValue
+    };
+
+    setFilterProperty(property.fieldName, filterProperty);
   };
 
   return (
@@ -70,7 +87,8 @@ export const FilterInputText:React.FC<IFilterInputTextProps> = (props:IFilterInp
       </Stack>
       <Stack display={'flex'} flexDirection={'row'} justifyContent={'flex-start'}>
         <TextField value={filterValue} onChange={handleFilterValue} />
-        <SelectFilterFunction groupFilterFunctions={GroupFilterFunctionString}
+        <SelectFilterFunction
+          groupFilterFunctions={GroupFilterFunctionString}
           setFilterFunction={setFilterFunction}/>
       </Stack>
     </Stack>

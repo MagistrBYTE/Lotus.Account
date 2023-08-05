@@ -1,7 +1,7 @@
 import { Action, ThunkAction, configureStore } from '@reduxjs/toolkit'
-import { layoutSlice } from 'src/shared/layout';
 import { notificationSlice } from 'src/modules/notification';
 import { userSlice } from 'src/modules/user';
+import { layoutSlice } from 'src/shared/layout';
 
 export function makeStore() 
 {

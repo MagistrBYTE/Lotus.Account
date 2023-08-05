@@ -10,7 +10,6 @@ import { convertPropertiesInfoToColumns, convertColumnsFilterToFilterObjects } f
 import { IRequest } from 'src/shared/request/Request';
 import { localization } from 'src/shared/localization';
 import { toastError, ToastWrapper } from '../../Info/Toast';
-import './TableView.scss';
 
 type Updater<T> = T | ((old: T) => T);
 
@@ -111,6 +110,12 @@ export const TableView = <TItem extends Record<string, any>>(props: ITableViewPr
     const filter = getFilterQueryItems();
     refreshItems(filter);
   }, [paginationModel.pageIndex, paginationModel.pageSize, sortingColumn, columnFilters, columnFiltersFns, globalFilter]);
+
+  useEffect(() => 
+  {
+    const initialColumnFiltersFns:Record<string, MRT_FilterOption> = propertiesInfo.getFilterOptions();
+    setColumnFiltersFns(initialColumnFiltersFns);
+  }, []); 
 
   const localizationFull = {
     ...MRT_Localization_RU,

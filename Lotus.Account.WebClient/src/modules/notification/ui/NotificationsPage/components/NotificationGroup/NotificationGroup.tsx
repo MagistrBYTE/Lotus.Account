@@ -1,10 +1,9 @@
 import React from 'react';
-import { INotification } from 'src/modules/notification/domain/Notification';
+import { INotification, INotificationGroup } from 'src/modules/notification/domain/Notification';
 import { Typography } from '@mui/material';
-import { INotificationGroup } from 'src/modules/notification/domain/NotificationGroup';
 import { NotificationCard } from '../NotificationCard';
 
-export const NotificationGroup: React.FC<INotificationGroup> = ({groupKey, notifications}:INotificationGroup) => 
+export const NotificationGroup: React.FC<INotificationGroup> = ({groupKey, items }:INotificationGroup) => 
 {
   return <>
     <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
@@ -13,7 +12,7 @@ export const NotificationGroup: React.FC<INotificationGroup> = ({groupKey, notif
       </Typography>
     </div>
     {
-      notifications.map((x, index)=>
+      items.map((x, index)=>
       {
         return <NotificationCard key={index} {...x} />
       })

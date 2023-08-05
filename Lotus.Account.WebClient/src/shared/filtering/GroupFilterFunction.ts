@@ -19,9 +19,10 @@ export const GroupFilterFunctionNumber:IFilterFunctionDesc[] =
  */
 export const GroupFilterFunctionString:IFilterFunctionDesc[] = 
 [
-  FilterFunctionEnum.Between,
-  FilterFunctionEnum.NotEqual,
+  FilterFunctionEnum.Equals,
   FilterFunctionEnum.Contains,
+  FilterFunctionEnum.StartsWith,
   FilterFunctionEnum.EndsWith,
+  FilterFunctionEnum.NotEqual,
   FilterFunctionEnum.NotEmpty
 ];

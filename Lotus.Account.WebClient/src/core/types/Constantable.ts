@@ -16,7 +16,12 @@ export interface IConstantable
  */
 export const checkOfConstantable= (value: any): value is IConstantable =>
 {
-  return ('isConst' in value) && value.isConst === true;
+  if(value)
+  {
+    return ('isConst' in value) && value.isConst === true;
+  }
+
+  return false;
 }
 
 /**

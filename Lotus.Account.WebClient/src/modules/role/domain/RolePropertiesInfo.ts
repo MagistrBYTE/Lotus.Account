@@ -1,12 +1,12 @@
 import { FilterFunctionEnum } from 'src/shared/filtering/FilterFunction';
 import { localization } from 'src/shared/localization';
-import { IPropertiesInfo } from 'src/shared/reflection/PropertiesInfo';
+import { IPropertiesInfo, PropertiesInfoBase } from 'src/shared/reflection/PropertiesInfo';
 import { IPropertyDescriptor } from 'src/shared/reflection/PropertyDescriptor';
 import { PropertyTypeEnum } from 'src/shared/reflection/PropertyType';
 import { ValidationResultSuccess } from 'src/shared/validation/ValidationResult';
 import { IRole } from './Role';
 
-export class RolePropertiesInfo implements IPropertiesInfo<IRole>
+export class RolePropertiesInfo extends PropertiesInfoBase<IRole>
 {
   private static _rolePropertiesInfo: RolePropertiesInfo;
 
@@ -19,6 +19,7 @@ export class RolePropertiesInfo implements IPropertiesInfo<IRole>
 
   constructor() 
   {
+    super();
     this.Init();
     this.getProperties = this.getProperties.bind(this);
     this.getPropertyDescriptorByName = this.getPropertyDescriptorByName.bind(this);    
@@ -140,16 +141,6 @@ export class RolePropertiesInfo implements IPropertiesInfo<IRole>
     }
 
     this.descriptors.push(permissionIdsProp);       
-  }
-
-  public getProperties(): IPropertyDescriptor[] 
-  {
-    return this.descriptors;
-  }
-
-  public getPropertyDescriptorByName(name: string):IPropertyDescriptor
-  {
-    return this.descriptors.find(x => x.fieldName === name)!;
   }
 }
 

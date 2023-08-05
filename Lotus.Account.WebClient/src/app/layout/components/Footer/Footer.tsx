@@ -5,8 +5,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useAppDispatch } from 'src/app/store';
-import { collapseFooterLayoutAction } from 'src/shared/layout/store/LayoutActions';
-import { useLayoutState } from 'src/shared/layout/store/LayoutSelector';
+import { collapseFooterLayoutAction, useLayoutState } from 'src/shared/layout';
 
 export interface IFooterProps
 {

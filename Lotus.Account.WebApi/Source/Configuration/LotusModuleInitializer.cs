@@ -62,7 +62,8 @@ namespace Lotus
 
                         options
                             .SetTokenEndpointUris(XRoutesConstants.TokenEndpoint)
-                            .SetUserinfoEndpointUris(XRoutesConstants.UserInfoEndpoint);
+							.SetLogoutEndpointUris(XRoutesConstants.LogoutEndpoint)
+							.SetUserinfoEndpointUris(XRoutesConstants.UserInfoEndpoint);
 
                         options
                             .AcceptAnonymousClients();
@@ -78,7 +79,8 @@ namespace Lotus
                             .UseAspNetCore()
                             .DisableTransportSecurityRequirement()
                             .EnableTokenEndpointPassthrough()
-                            .EnableUserinfoEndpointPassthrough();
+							.EnableLogoutEndpointPassthrough()
+							.EnableUserinfoEndpointPassthrough();
                     })
 
                     // Register the OpenIddict validation components.

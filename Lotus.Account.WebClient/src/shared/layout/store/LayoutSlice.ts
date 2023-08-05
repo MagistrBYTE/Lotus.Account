@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { TScreenType } from '../domain/ScreenType';
 import { DesktopViewSettings, PortraitViewSettings } from '../domain/ViewSettings';
+import { loadLayoutFromStorage } from '../utils/loadLayoutFromStorage';
+import { saveLayoutToStorage } from '../utils/saveLayoutToStorage';
 import { ILayoutState } from './LayoutState';
 import { setScreenTypeAction, showHeaderLayoutAction, 
   showLeftPanelLayoutAction, 
@@ -9,38 +11,7 @@ import { setScreenTypeAction, showHeaderLayoutAction,
   setWidthLeftPanelLayoutAction, 
   showFooterLayoutAction, collapseFooterLayoutAction } from './LayoutActions';
 
-const initialState: ILayoutState = {
-
-  screenType: TScreenType.Desktop,
-
-  header:
-  {
-    height: DesktopViewSettings.headerHeight,
-    isVisible: true
-  },
-  leftPanel:
-  {
-    isVisible: true,
-    isOpen: false,
-    maxWidth: DesktopViewSettings.leftPanelWidthMax,
-    minWidth: DesktopViewSettings.leftPanelWidthMin,
-    width: DesktopViewSettings.leftPanelWidthMin
-  },
-  rightPanel:
-  {
-    isVisible: false,
-    isOpen: false,
-    maxWidth: DesktopViewSettings.rightPanelWidthMax,
-    minWidth: DesktopViewSettings.rightPanelWidthMin,
-    width: DesktopViewSettings.rightPanelWidthMin
-  },
-  footer:
-  {
-    height: DesktopViewSettings.footerHeight,
-    isVisible: true,
-    isCollapsed: true
-  }
-};
+const initialState: ILayoutState = loadLayoutFromStorage();
 
 export const layoutSlice = createSlice({
   name: 'layout',
@@ -49,6 +20,9 @@ export const layoutSlice = createSlice({
   },
   extraReducers: (builder) => 
   {
+    //
+    // В целом для сайта
+    //       
     builder.addCase(setScreenTypeAction, (state, action) => 
     {     
       state.screenType = action.payload;
@@ -81,6 +55,8 @@ export const layoutSlice = createSlice({
             state.footer.height = PortraitViewSettings.footerHeight;    
           }break;                    
       }
+
+      saveLayoutToStorage(state);
     });    
 
     //
@@ -89,11 +65,16 @@ export const layoutSlice = createSlice({
     builder.addCase(showHeaderLayoutAction, (state, action) => 
     {
       state.header.isVisible = action.payload;
+      saveLayoutToStorage(state);
     });    
 
+    //
+    // Левая панель
+    //      
     builder.addCase(showLeftPanelLayoutAction, (state, action) => 
     {
       state.leftPanel.isVisible = action.payload;
+      saveLayoutToStorage(state);
     });
 
     builder.addCase(openLeftPanelLayoutAction, (state, action) => 
@@ -107,16 +88,21 @@ export const layoutSlice = createSlice({
       {
         state.leftPanel.width = state.leftPanel.minWidth;
       }
-    });    
-
-    builder.addCase(showRightPanelLayoutAction, (state, action) => 
-    {
-      // state.isOpenRightPanel = action.payload;
+      saveLayoutToStorage(state);
     });
-
     builder.addCase(setWidthLeftPanelLayoutAction, (state, action) => 
     {
-      // state.widthLeftPanel = action.payload;
+      state.leftPanel.width = action.payload;
+      saveLayoutToStorage(state);
+    });
+
+    //
+    // Правая панель
+    //    
+    builder.addCase(showRightPanelLayoutAction, (state, action) => 
+    {
+      state.rightPanel.isVisible = action.payload;
+      saveLayoutToStorage(state);
     });
 
     //
@@ -125,10 +111,12 @@ export const layoutSlice = createSlice({
     builder.addCase(showFooterLayoutAction, (state, action) => 
     {
       state.footer.isVisible = action.payload;
+      saveLayoutToStorage(state);
     });
     builder.addCase(collapseFooterLayoutAction, (state, action) => 
     {
       state.footer.isCollapsed = action.payload;
+      saveLayoutToStorage(state);
     });
   }
 });

@@ -8,9 +8,9 @@ export const convertNotificationImportanceToColor = (importance: TNotificationIm
 
   switch(importance)
   {
-    case TNotificationImportance.Importance: return 'error';
-    case TNotificationImportance.Normal: return 'default';
-    case TNotificationImportance.Service: return 'primary';
+    case 'Importance': return 'error';
+    case 'Normal': return 'default';
+    case 'Service': return 'primary';
   }
 
   return 'default';
@@ -22,9 +22,9 @@ export const convertNotificationImportanceToText = (importance: TNotificationImp
 
   switch(importance)
   {
-    case TNotificationImportance.Importance: return localization.notification.importance;
-    case TNotificationImportance.Normal: return localization.notification.importanceNormal;
-    case TNotificationImportance.Service: return localization.notification.importanceService;
+    case 'Importance': return localization.notification.importanceChief;
+    case 'Normal': return localization.notification.importanceNormal;
+    case 'Service': return localization.notification.importanceService;
   }
 
   return '';

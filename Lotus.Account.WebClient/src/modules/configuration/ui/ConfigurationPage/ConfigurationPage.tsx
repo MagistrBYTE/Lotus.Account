@@ -1,9 +1,9 @@
 import { Button, Card, CardContent, Container, FormControlLabel, FormGroup, Stack, Switch, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
+import { showFooterLayoutAction, showHeaderLayoutAction, useLayoutState } from 'src/shared/layout';
 import { useAppDispatch } from 'src/app/store';
-import { ColorModeContext } from 'src/ui/styles/useThemeSelector';
-import { useLayoutState } from '../../store/LayoutSelector';
-import { showHeaderLayoutAction, showFooterLayoutAction } from '../../store/LayoutActions';
+import { localization } from 'src/shared/localization';
+import { ColorModeContext } from 'src/ui/hooks/useThemeSelector';
 
 export const ConfigurationPage: React.FC = () => 
 {
@@ -38,23 +38,23 @@ export const ConfigurationPage: React.FC = () =>
       <Card sx={{mt: '4em'}}>
         <CardContent>
           <Typography variant='h6' mb={2} >
-          Тема
+            {localization.configuration.theme}
           </Typography>
           <Stack spacing={2} direction={'column'} >
-            <Button variant='contained' color='primary' onClick={handleButtonDarkTheme} >Темная тема</Button>
-            <Button variant='contained' color='secondary'>Светлая тема</Button>
+            <Button variant='contained' color='primary' onClick={handleButtonDarkTheme}> {localization.configuration.themeDark}</Button>
+            <Button variant='contained' color='secondary' onClick={handleButtonDarkTheme}>{localization.configuration.themeLight}</Button>
           </Stack>
         </CardContent>
       </Card>
       <Card sx={{mt: '1em'}}>
         <CardContent>
           <Typography variant='h6' mb={2} >
-          Ввнешний вид
+            {localization.configuration.viewParams}
           </Typography>
           <Stack spacing={2} direction={'column'} >
             <FormGroup>
-              <FormControlLabel control={<Switch checked={checkedHeader} onChange={handleHideHeader} />} label="Показать заголовок" />
-              <FormControlLabel control={<Switch checked={checkedFooter} onChange={handleHideFooter} />} label="Показать подвал" />
+              <FormControlLabel control={<Switch checked={checkedHeader} onChange={handleHideHeader} />} label={localization.configuration.showHeader} />
+              <FormControlLabel control={<Switch checked={checkedFooter} onChange={handleHideFooter} />} label={localization.configuration.showFooter}  />
             </FormGroup>
           </Stack>
         </CardContent>

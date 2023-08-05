@@ -31,7 +31,12 @@ export interface IResult<TData = any>
  */
 export function checkOfResult(value: any): value is IResult 
 {
-  return ('succeeded' in value) && ('code' in value);
+  if(value)
+  {
+    return ('succeeded' in value) && ('code' in value);
+  }
+
+  return false;
 }
 
 /**

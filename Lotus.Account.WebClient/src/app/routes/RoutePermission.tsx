@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { ProfilePage } from 'src/modules/profile';
 import { TokenHelper } from 'src/shared/auth/TokenHelper';
 import { AuthApi } from 'src/shared/auth/AuthApiService';
-import { MainLayout } from 'src/shared/layout';
+import { MainLayout } from 'src/app/layout';
 import { paths } from './paths';
 
 interface IRoutePermissionProps {

@@ -18,5 +18,6 @@ export const actions = {
   deletingSucceed: 'Удаление прошло успешно',
   deletingFailed: 'При удаление произошла ошибка',
   cancel: 'Отменить',
+  clear: 'Отчистить',
   confirm: 'Подтверждаю'
 };

@@ -18,7 +18,12 @@ export interface IEditable
  */
 export const checkOfEditable= (value: any): value is IEditable =>
 {
-  return ('id' in value);
+  if(value)
+  {
+    return ('id' in value);
+  }
+
+  return false;
 }
 
 /**

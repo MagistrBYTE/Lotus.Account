@@ -13,13 +13,13 @@ import { convertSelectOptionToNumber, convertSelectOptionToString, getSelectOpti
 import { capitalizeFirstLetter } from 'src/core/utils/base/string';
 import { checkArrayIsNumbers } from 'src/core/utils/base/array';
 import { IPropertiesInfo } from 'src/shared/reflection/PropertiesInfo';
-import { convertColumnsFilterToFilterObjects } from 'src/shared/reflection/utilMaterialReactTable';
+import { convertColumnsFilterToFilterObjects, convertPropertyDescriptorToColumn } from 'src/shared/reflection/utilMaterialReactTable';
 import { IRequest } from 'src/shared/request/Request';
 import { localization } from 'src/shared/localization';
 import { MultiSelect } from '../../Editor/MultiSelect';
 import { ToastWrapper, toastError, toastPromise } from '../../Info/Toast';
-import './TableViewEdit.scss';
 import { EditTableFilterEnum, EditTableFilterString } from './TableViewEditFilterTypes';
+import './TableViewEdit.scss';
 
 
 
@@ -77,22 +77,7 @@ export const TableViewEdit = <TItem extends Record<string, any> & IEditable,>(pr
   // Модифицированные столбцы 
   const editColumns = properties.map((property) =>
   {
-    const column:MRT_ColumnDef<TItem> = 
-    {
-      // @ts-ignore 
-      accessorKey: property.fieldName,
-      header: property.name,
-
-      // Фильтрация
-      enableColumnFilter: property.filtering && property.filtering.enabled,
-      filterVariant: property.filtering && property.filtering.variant,
-
-      // Сортировка
-      enableSorting: property.sorting && property.sorting.enabled,
-
-      // Редактирование
-      enableEditing: property.editing && property.editing.enabled        
-    };
+    const column:MRT_ColumnDef<TItem> = convertPropertyDescriptorToColumn(property);
 
     if(property.editing?.editorType === 'text')
     {
@@ -424,6 +409,13 @@ export const TableViewEdit = <TItem extends Record<string, any> & IEditable,>(pr
     const filter = getFilterQueryItems();
     refreshItems(filter);
   }, [paginationModel.pageIndex, paginationModel.pageSize, sortingColumn, columnFilters, columnFiltersFns, globalFilter]);
+
+  useEffect(() => 
+  {
+    const initialColumnFiltersFns:Record<string, MRT_FilterOption> = propertiesInfo.getFilterOptions();
+    setColumnFiltersFns(initialColumnFiltersFns);
+  }, []);
+
 
   const localizationFull = {
     ...MRT_Localization_RU,

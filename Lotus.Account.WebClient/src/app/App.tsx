@@ -8,14 +8,17 @@ import { PermissionsPage } from 'src/modules/permission';
 import { PositionsPage } from 'src/modules/position';
 import { RolesPage } from 'src/modules/role';
 import { UsersPage } from 'src/modules/user';
-import { LoginPage, AutoLoginPage } from 'src/shared/auth';
-import { TScreenType, MainLayout, ConfigurationPage } from 'src/shared/layout';
+import { LoginPage, AutoLoginPage, RegisterPage, RestorePasswordPage } from 'src/shared/auth';
+import { ConfigurationPage } from 'src/modules/configuration';
+import { TScreenType } from 'src/shared/layout';
 import { setScreenTypeAction } from 'src/shared/layout/store/LayoutActions';
 import { DummyPage } from './DummyPage';
 import { HomePage } from './HomePage';
 import { RoutePermission } from './routes/RoutePermission';
 import { paths } from './routes/paths';
 import { useAppDispatch } from './store';
+import { MainLayout } from './layout';
+
 
 export const App: React.FC = () => 
 {
@@ -72,6 +75,12 @@ export const App: React.FC = () =>
         <Route
           path={paths.autoLogin()}
           element={<AutoLoginPage pathSuccess={paths.profile()} />}/> 
+        <Route
+          path={paths.register()}
+          element={<RegisterPage pathSuccess={paths.login()} />}/>
+        <Route
+          path={paths.restorePassword()}
+          element={<RestorePasswordPage pathSuccess={paths.login()} />}/>                 
 
         {/* Личные страницы */}
         <Route 

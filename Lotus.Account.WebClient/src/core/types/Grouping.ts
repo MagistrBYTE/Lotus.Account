@@ -24,7 +24,12 @@ export interface IGrouping<TItem = any>
  */
 export function checkOfGrouping(value: any): value is IGrouping 
 {
-  return ('groupKey' in value) && ('items' in value);
+  if(value)
+  {
+    return ('groupKey' in value) && ('items' in value);
+  }
+
+  return false;
 }
 
 /**

@@ -2,6 +2,7 @@ import { IResponse } from 'src/core/types/Response';
 import { TKey } from 'src/core/types/Key';
 import { AuthApiService } from 'src/shared/auth/AuthApiService';
 import { createURLSearchParamsFromRequest } from 'src/shared/request/utils';
+import { mockNotificationsGroupByDate } from '../mock/NotificationMock';
 import { INotificationCreateRequest } from './NotificationCreateRequest';
 import { INotificationUpdateRequest } from './NotificationUpdateRequest';
 import { INotificationsRequest } from './NotificationsRequest';
@@ -64,12 +65,35 @@ class NotificationApiService extends AuthApiService
 
   public async getNotificationsAsync(request: INotificationsRequest):Promise<INotificationsResponse>
   {
-    const search:URLSearchParams = createURLSearchParamsFromRequest(request);
+    // const search:URLSearchParams = createURLSearchParamsFromRequest(request);
 
-    const url = 'api/notification/getall';
+    // const url = 'api/notification/getall';
 
-    const response = await this.get<INotificationsResponse>(url, {params: search});
-    return response.data;   
+    // const response = await this.get<INotificationsResponse>(url, {params: search});
+    // return response.data;   
+
+    const notifications = mockNotificationsGroupByDate(8, 2, 8);
+
+    const start = request.pageInfo.pageNumber * request.pageInfo.pageSize;
+    const end = start + request.pageInfo.pageSize;
+
+    const notificationsAll = notifications.flatMap(x => x.items);
+    const notificationsPage = notificationsAll.slice(start, end);
+
+    const response: INotificationsResponse = 
+    {
+      pageInfo:
+      {
+        totalCount: notificationsAll.length,
+        pageNumber:request.pageInfo.pageNumber,
+        pageSize: request.pageInfo.pageSize,
+        currentPageSize: notificationsPage.length
+      },
+
+      payload: notificationsPage
+    }
+
+    return Promise.resolve<INotificationsResponse>((response))
   }
 }
 

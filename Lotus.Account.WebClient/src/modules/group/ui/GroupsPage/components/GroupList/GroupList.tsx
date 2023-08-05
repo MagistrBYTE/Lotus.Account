@@ -15,9 +15,9 @@ export const GroupList: React.FC = () =>
         const groups:IGroup[] = list as IGroup[];
         return (<>
           {
-            groups.map((group)=>
+            groups.map((group, index)=>
             {
-              return <GroupCard key={group.id} {...group}/>
+              return <GroupCard key={index} {...group}/>
             })
           }
         </>)

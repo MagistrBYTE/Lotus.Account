@@ -8,7 +8,7 @@ import { Divider, IconButton, Menu, MenuItem } from '@mui/material';
 import { paths } from 'src/app/routes/paths';
 import { useLayoutState, TScreenType } from 'src/shared/layout';
 import { NotificationInfoButton } from 'src/modules/notification';
-import { TokenHelper } from 'src/shared/auth/TokenHelper';
+import { AuthApi } from 'src/shared/auth/AuthApiService';
 import { MessageItem } from '../MessageItem';
 
 export interface IAccountMenuProps
@@ -60,11 +60,10 @@ export const AccountMenu: React.FC<IAccountMenuProps> = ({isVisibleCaption}:IAcc
     navigate(paths.configuration());
   }
 
-  const handleMenuLogout = () =>
+  const handleMenuLogout = async () =>
   {
     handleMenuClose();
-    TokenHelper.clearAccessToken();
-    navigate(paths.home());
+    await AuthApi.Logout();
   }
 
 

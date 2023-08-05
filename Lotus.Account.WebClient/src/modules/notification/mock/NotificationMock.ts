@@ -2,22 +2,23 @@ import { getRandomMinMax } from 'src/core/utils/random';
 import { fakerRU as faker } from '@faker-js/faker';
 import moment from 'moment';
 import { formatDateTimeFriendly } from 'src/core/utils/dateTime';
+import { IGrouping } from 'src/core/types/Grouping';
 import { INotification } from '../domain/Notification';
-import { INotificationGroup } from '../domain/NotificationGroup';
-import { TNotificationImportance } from '../domain/NotificationImportance';
+import { NotificationImportanceEnum, NotificationImportanceHelper } from '../domain/NotificationImportance';
+
 
 export const mockNotificationTopics: string[] = ['Силы восстановлены', 'Расследование завершено', 'Операция выполнена', 'Марс'];
 
-export const mockNotificationsGroupByDate = (countGroup: number, minNotification: number, maxNotification: number):INotificationGroup[] =>
+export const mockNotificationsGroupByDate = (countGroup: number, minNotification: number, maxNotification: number):IGrouping<INotification>[] =>
 {
-  const groups:INotificationGroup[] = [];
+  const groups:IGrouping<INotification>[] = [];
   
   for (let index = 0; index < countGroup; index++) 
   {
     const currentNotification = getRandomMinMax(minNotification, maxNotification);
     const currentDate:Date = moment().add(index, 'days').toDate();
 
-    const group:INotificationGroup = {groupKey: formatDateTimeFriendly(currentDate), notifications: []}
+    const group:IGrouping<INotification> = {groupKey: formatDateTimeFriendly(currentDate), items: []}
 
     for (let n = 0; n < currentNotification; n++) 
     {
@@ -26,14 +27,14 @@ export const mockNotificationsGroupByDate = (countGroup: number, minNotification
         id: faker.string.uuid(),
         topic: faker.helpers.arrayElement(mockNotificationTopics),
         sender: 'Система',
-        importance: faker.helpers.enumValue(TNotificationImportance),
+        importance: NotificationImportanceHelper.getType(faker.helpers.objectValue(NotificationImportanceEnum)),
         content: faker.lorem.paragraph({min: 1, max: 8}),
-        created: currentDate,
+        created: moment(currentDate).format('DD.MM.YYYY'),
         isRead: faker.datatype.boolean(),
         isArchive:faker.datatype.boolean()
       }
 
-      group.notifications.push(element);
+      group.items.push(element);
     }
 
     groups.push(group);

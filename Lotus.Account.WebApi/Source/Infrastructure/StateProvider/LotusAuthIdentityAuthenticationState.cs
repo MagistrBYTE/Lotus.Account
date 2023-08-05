@@ -116,7 +116,7 @@ namespace Lotus
             {
                 try
                 {
-                    var response = await mHttpClient.PostAsJsonAsync(XRoutesConstants.RegisterEndpoint, registerParameters);
+                    var response = await mHttpClient.PostAsJsonAsync(XRoutesConstants.RegistrEndpoint, registerParameters);
 
                     response.EnsureSuccessStatusCode();
 

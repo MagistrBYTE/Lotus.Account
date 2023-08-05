@@ -2,7 +2,6 @@ import { Card, CardContent, Container, Stack, TextField, Typography } from '@mui
 import React, { useState } from 'react';
 import { TokenHelper } from 'src/shared/auth/TokenHelper';
 
-
 export const ProfilePage: React.FC = () => 
 {
   const [isEdit, setEdit] = useState(false);

@@ -1,18 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { IResponsePage } from 'src/core/types/Response';
 import { IPageInfoResponse, IPageInfoRequest } from 'src/core/types/PageInfo';
-import { Stack, Pagination, CircularProgress, Box, List, IconButton, Button, Dialog, DialogActions, DialogContent, AppBar, Toolbar, Typography } from '@mui/material';
+import { Stack, Pagination, CircularProgress, Box, List, IconButton } from '@mui/material';
 import { IGrouping } from 'src/core/types/Grouping';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import CloseIcon from '@mui/icons-material/Close';
 import SortIcon from '@mui/icons-material/Sort';
 import DensitySmallIcon from '@mui/icons-material/DensitySmall';
 import { IPropertiesInfo } from 'src/shared/reflection/PropertiesInfo';
 import { IRequest } from 'src/shared/request/Request';
 import { localization } from 'src/shared/localization';
-import { useLayoutClientHeight } from 'src/shared/layout';
+import { getLayoutClientHeight } from 'src/shared/layout';
+import { IFilterProperty } from 'src/shared/filtering/FilterProperty';
 import { ToastWrapper, toastError } from '../../Info/Toast';
-import { FilterPanel } from './components/FilterPanel';
+import { DialogFilterPanel } from './components/DialogFilterPanel';
 
 
 export interface IListViewProps<TItem extends Record<string, any>> 
@@ -34,20 +34,29 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
   const [pageInfo, setPageInfo] = useState<IPageInfoResponse>({ pageNumber: 0, pageSize: pageSize, currentPageSize: 10, totalCount: 10 });
   const [paginationModel, setPaginationModel] = useState({ pageSize: pageSize, pageIndex: 1 });
 
+  // Фильтрация
+  const [filterProperties, setFilterProperties] = useState<IFilterProperty[]>([]);
+  const [openFilterDialog, setOpenFilterDialog] = useState<boolean>(false);
+  
   const [autoCloseToastify, setAutoCloseToastify] = useState<number | false>(2000);
 
   // Ссылки на элементы
-  const [openFilterDialog, setOpenFilterDialog] = useState<boolean>(false);
-
-  // Ссылки на элементы
   const refTabFilter = useRef(null);
+  const refPangiantion = useRef(null);
 
+  // Размеры и отступы
   const marginBottom = 10;
   const marginTop = 10;
-  const heightBox = useLayoutClientHeight(40 + marginTop + marginBottom); 
+ 
+  const [heightTabFilter, setHeightTabFilter] = useState<number>(0);
+  const [heightPangiantion, setHeightPangiantion] = useState<number>(0);
 
-  const properties = propertiesInfo.getProperties();
-  console.log(properties);
+  const calcHeightViewList = ():number =>
+  {
+    return getLayoutClientHeight() - (marginTop + marginBottom + heightTabFilter + heightPangiantion);
+  }
+
+  const [heightViewList, setHeightViewList] = useState<number>(calcHeightViewList());
 
   //
   // Получение данных
@@ -56,10 +65,12 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
   {
     const pageInfo: IPageInfoRequest = { pageNumber: paginationModel.pageIndex - 1, pageSize: paginationModel.pageSize };
 
-    return { pageInfo: pageInfo };
+    const filtering = filterProperties;
+
+    return { pageInfo: pageInfo, filtering:filtering };
   }
 
-  const refreshItems = (async (filter: any) => 
+  const refreshItems = (async (filter: IRequest) => 
   {
     try 
     {
@@ -80,17 +91,13 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
   });
 
   //
-  // Методы жизненного цикла
+  // Обработчики событий
   //
 
-  useEffect(() => 
+  const handleScreenChange = ()=>
   {
-    const filter = getFilterQueryItems();
-    refreshItems(filter);
-
-    const elemTabFilter: HTMLElement = refTabFilter.current! as HTMLElement;
-    console.log(`elemTabFilter.clientHeight = ${elemTabFilter.clientHeight }`);
-  }, [paginationModel.pageIndex, paginationModel.pageSize]);
+    setHeightViewList(calcHeightViewList());
+  }
 
   const handleCloseFilterDialog = () => 
   {
@@ -101,7 +108,6 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
   {
     setOpenFilterDialog(true);
   }  
-
 
   const pageChangeHandle = (event: React.ChangeEvent<unknown>, page: number) =>
   {
@@ -118,6 +124,39 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
     return Math.ceil(pageInfo.totalCount / pageSize);
   }
 
+  //
+  // Методы жизненного цикла
+  //
+
+  useLayoutEffect(() => 
+  {
+    window.addEventListener('resize', handleScreenChange);
+    window.addEventListener('orientationchange', handleScreenChange);
+
+    return () => 
+    {
+      window.removeEventListener('resize', handleScreenChange);
+      window.removeEventListener('orientationchange', handleScreenChange);
+    };
+  }, []);
+
+  useEffect(() => 
+  {
+    const filter = getFilterQueryItems();
+    refreshItems(filter);
+  }, [paginationModel.pageIndex, paginationModel.pageSize, filterProperties]);
+
+  useEffect(() => 
+  {
+    const elemTabFilter: HTMLElement = refTabFilter.current! as HTMLElement;
+    setHeightTabFilter(elemTabFilter.clientHeight);
+
+    const elemPangiantion: HTMLElement = refPangiantion.current! as HTMLElement;
+    setHeightPangiantion(elemPangiantion.clientHeight);
+
+    setHeightViewList(calcHeightViewList());
+  }, [refTabFilter.current, refPangiantion.current]); 
+
   return (
     <>
       <Stack ref={refTabFilter} display={'flex'} flexDirection={'row'} justifyContent={'space-around'}>
@@ -131,7 +170,7 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
           <FilterListIcon/>
         </IconButton>
       </Stack>
-      <Box sx={{height: heightBox, overflow: 'auto'}}>
+      <Box sx={{height: heightViewList, overflow: 'scroll'}}>
         <List>
           <Stack display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'} >
             {isLoading && <CircularProgress color="secondary" />}
@@ -139,48 +178,20 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
           </Stack>
         </List>
       </Box>
-      <Stack display={'flex'} flexDirection={'row'} justifyContent={'center'} >
-        <Pagination size='large' sx={{marginBottom: `${marginBottom}px`, marginTop: `${marginTop}px`} } count={getCountPage()} 
+      <Stack ref={refPangiantion} sx={{marginTop: '10px'}} display={'flex'} flexDirection={'row'} justifyContent={'center'} >
+        <Pagination size='large' count={getCountPage()} 
           onChange={pageChangeHandle}
           page={paginationModel.pageIndex} shape="rounded" />
       </Stack>    
       <ToastWrapper
         autoClose={autoCloseToastify}
       />
-      <Dialog
-        fullScreen
+      <DialogFilterPanel  
         open={openFilterDialog}
-        onClose={handleCloseFilterDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <AppBar sx={{ position: 'relative' }}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleCloseFilterDialog}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              Sound
-            </Typography>
-            <Button autoFocus color="inherit" onClick={handleCloseFilterDialog}>
-              save
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <DialogContent>
-          <FilterPanel propertiesInfo={propertiesInfo}/>
-        </DialogContent>
-        <DialogActions>
-          <Button variant='outlined' color='warning' >Очистить</Button>
-          <Button variant='outlined' >{localization.actions.cancel}</Button>
-          <Button variant='outlined' color='primary' autoFocus>{localization.actions.confirm}</Button>
-        </DialogActions>
-      </Dialog>
+        close={handleCloseFilterDialog}
+        propertiesInfo={propertiesInfo} 
+        initialFilterProperties={filterProperties}
+        applyFilterProperties={setFilterProperties} />
     </>
   );
 }

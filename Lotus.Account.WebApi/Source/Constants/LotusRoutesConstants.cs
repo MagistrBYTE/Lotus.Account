@@ -45,15 +45,16 @@ namespace Lotus
             /// </summary>
             public const String UserInfoEndpoint = "/connect/userinfo";
 
-            /// <summary>
-            /// Конечная точка для регистрации пользователя
-            /// </summary>
-            public const String RegisterEndpoint = "api/Authorize/Register";
+			/// <summary>
+			/// Конечная точка для выхода пользователя
+			/// </summary>
+			public const String LogoutEndpoint = "/connect/logout";
 
-            /// <summary>
-            /// Конечная точка для выхода пользователя
-            /// </summary>
-            public const String LogoutEndpoint = "api/Authorize/Logout";
+			/// <summary>
+			/// Конечная точка для регистрации пользователя
+			/// </summary>
+			public const String RegistrEndpoint = "api/Authorize/Registr";
+
         }
         //-------------------------------------------------------------------------------------------------------------
         /**@}*/

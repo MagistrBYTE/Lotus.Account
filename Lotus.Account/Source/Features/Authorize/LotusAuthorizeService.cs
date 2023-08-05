@@ -123,7 +123,7 @@ namespace Lotus
                 if (claimSessionId != null)
                 {
                     CSession? session =
-                        await _context.Sessions.FirstOrDefaultAsync(x => x.Id.ToString("D") == claimSessionId.Value);
+                        await _context.Sessions.FirstOrDefaultAsync(x => x.Id.ToString() == claimSessionId.Value);
 
                     if (session is not null)
                     {
@@ -133,8 +133,49 @@ namespace Lotus
                     }
                 }
             }
-            #endregion
-        }
+
+			//---------------------------------------------------------------------------------------------------------
+			/// <summary>
+			/// Регистрация нового пользователя
+			/// </summary>
+			/// <param name="registrParameters">Параметры для регистрации нового пользователя</param>
+			/// <param name="token">Токен отмены</param>
+			/// <returns>Пользователь</returns>
+			//---------------------------------------------------------------------------------------------------------
+			public async Task<Response> RegistrAsync(CRegistrParametersDto registrParameters, CancellationToken token)
+			{
+				var user = _context.Users.FirstOrDefault(x => x.Login == registrParameters.Login);
+
+				if (user is not null)
+				{
+					return XResponse.Failed(XUserErrors.LoginAlreadyUse);
+				}
+
+				if (registrParameters.Password.Length < 5)
+				{
+					return XResponse.Failed(XUserErrors.InsecurePassword);
+				}
+
+				// Создаем нового пользователя
+				user = new CUser
+				{
+					Login = registrParameters.Login,
+					Email = registrParameters.Email,
+					PasswordHash = XHashHelper.GetHash(registrParameters.Password),
+					Name = registrParameters.Name,
+					Surname = registrParameters.Surname,
+					Patronymic = registrParameters.Patronymic,
+					RoleId = XRoleConstants.User.Id,
+					PostId = XPositionConstants.Inspector.Id
+				};
+
+				_context.Users.Add(user);
+				await _context.SaveChangesAsync(token);
+
+				return XResponse.Succeed();
+			}
+			#endregion
+		}
         //-------------------------------------------------------------------------------------------------------------
         /**@}*/
         //-------------------------------------------------------------------------------------------------------------

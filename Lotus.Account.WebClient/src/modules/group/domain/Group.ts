@@ -1,8 +1,8 @@
 import { IConstantable } from 'src/core/types/Constantable';
 import { IEditable } from 'src/core/types/Editable';
-import { FilterFunctionEnum } from 'src/shared/filtering/FilterFunction';
+import { FilterFunctionEnum, IFilterFunctionDesc } from 'src/shared/filtering/FilterFunction';
 import { localization } from 'src/shared/localization';
-import { IPropertiesInfo } from 'src/shared/reflection/PropertiesInfo';
+import { IPropertiesInfo, PropertiesInfoBase } from 'src/shared/reflection/PropertiesInfo';
 import { IPropertyDescriptor } from 'src/shared/reflection/PropertyDescriptor';
 import { PropertyTypeEnum } from 'src/shared/reflection/PropertyType';
 import { ValidationResultSuccess } from 'src/shared/validation/ValidationResult';
@@ -28,7 +28,7 @@ export interface IGroup extends IEditable, IConstantable
     shortName?: string;
 }
 
-export class GroupPropertiesInfo implements IPropertiesInfo<IGroup>
+export class GroupPropertiesInfo extends PropertiesInfoBase<IGroup>
 {
   private static _groupPropertiesInfo: GroupPropertiesInfo;
 
@@ -37,13 +37,14 @@ export class GroupPropertiesInfo implements IPropertiesInfo<IGroup>
     return (this._groupPropertiesInfo || (this._groupPropertiesInfo = new this()));
   }
 
-  public descriptors: IPropertyDescriptor[] = [];
-
   constructor() 
   {
+    super();
     this.Init();
     this.getProperties = this.getProperties.bind(this);
-    this.getPropertyDescriptorByName = this.getPropertyDescriptorByName.bind(this);    
+    this.getPropertyDescriptorByName = this.getPropertyDescriptorByName.bind(this); 
+    this.getFilterFunctionsDesc = this.getFilterFunctionsDesc.bind(this); 
+    this.getFilterOptions = this.getFilterOptions.bind(this);         
   }
 
   private Init()
@@ -113,16 +114,6 @@ export class GroupPropertiesInfo implements IPropertiesInfo<IGroup>
     }
 
     this.descriptors.push(shortNameProp);    
-  }
-
-  public getProperties(): IPropertyDescriptor[] 
-  {
-    return this.descriptors;
-  }
-
-  public getPropertyDescriptorByName(name: string):IPropertyDescriptor
-  {
-    return this.descriptors.find(x => x.fieldName === name)!;
   }
 }
 

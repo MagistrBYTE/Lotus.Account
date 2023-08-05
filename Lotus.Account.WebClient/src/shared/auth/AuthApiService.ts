@@ -4,6 +4,7 @@ import { deleteAllCookies, getCookie, setCookie } from 'src/core/utils/cookies';
 import moment from 'moment';
 import { TokenHelper } from './TokenHelper';
 import { instanceOfSuccessAuthResponse } from './SuccessAuthResponse';
+import { IRegistrParameters } from './RegistrParameters';
 
 /**
  * Класс для сервисов Api с поддрежкой авторизации 
@@ -156,16 +157,33 @@ export class AuthApiService extends ApiService
    */
   public async Logout()
   {
-    const url = 'api/Authorize/Logout';
+    const url = 'connect/logout';
+
+    const config:AxiosRequestConfig = {
+      headers:
+      {
+        'Accept': 'application/json'
+      }
+    }    
+
+    await this.api.post(url, null, config);
 
     // Удаляем все куки
     deleteAllCookies();
 
     // Очищаем
-    TokenHelper.clearAccessToken();
-
-    await this.api.post(url);
+    TokenHelper.clearAccessToken();   
   }
+
+  /**
+   * Регистрация нового пользователя
+   * @param registrParameters Параметры для регистрации нового пользователя
+   */
+  public async Registr(registrParameters: IRegistrParameters)
+  {
+    const url = 'api/Authorize/Registr';  
+    await this.api.post(url, registrParameters);
+  }  
 
   /**
    * Установить куки для автоматического входа на сайт

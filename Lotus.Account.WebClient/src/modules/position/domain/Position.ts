@@ -2,7 +2,7 @@ import { IConstantable } from 'src/core/types/Constantable';
 import { IEditable } from 'src/core/types/Editable';
 import { FilterFunctionEnum } from 'src/shared/filtering/FilterFunction';
 import { localization } from 'src/shared/localization';
-import { IPropertiesInfo } from 'src/shared/reflection/PropertiesInfo';
+import { IPropertiesInfo, PropertiesInfoBase } from 'src/shared/reflection/PropertiesInfo';
 import { IPropertyDescriptor } from 'src/shared/reflection/PropertyDescriptor';
 import { PropertyTypeEnum } from 'src/shared/reflection/PropertyType';
 
@@ -13,7 +13,7 @@ export interface IPosition extends IEditable, IConstantable
     shortName?: string;
 }
 
-export class PositionPropertiesInfo implements IPropertiesInfo<IPosition>
+export class PositionPropertiesInfo extends PropertiesInfoBase<IPosition>
 {
   private static _positionPropertiesInfo: PositionPropertiesInfo;
 
@@ -26,6 +26,7 @@ export class PositionPropertiesInfo implements IPropertiesInfo<IPosition>
 
   constructor() 
   {
+    super();
     this.Init();
     this.getProperties = this.getProperties.bind(this);
     this.getPropertyDescriptorByName = this.getPropertyDescriptorByName.bind(this);    
@@ -116,16 +117,6 @@ export class PositionPropertiesInfo implements IPropertiesInfo<IPosition>
     }
 
     this.descriptors.push(shortNameProp);    
-  }
-
-  public getProperties(): IPropertyDescriptor[] 
-  {
-    return this.descriptors;
-  }
-
-  public getPropertyDescriptorByName(name: string):IPropertyDescriptor
-  {
-    return this.descriptors.find(x => x.fieldName === name)!;
   }
 }
 

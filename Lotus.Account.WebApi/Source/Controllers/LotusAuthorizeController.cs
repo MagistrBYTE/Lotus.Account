@@ -11,6 +11,7 @@
 // Последнее изменение от 30.04.2023
 //=====================================================================================================================
 using System.Security.Claims;
+using System.Net;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -20,6 +21,8 @@ using OpenIddict.Server.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 //---------------------------------------------------------------------------------------------------------------------
 using Lotus.Web;
+using Lotus.Core;
+using Lotus.Repository;
 //=====================================================================================================================
 namespace Lotus
 {
@@ -77,7 +80,7 @@ namespace Lotus
             /// <returns>Общий результат работы</returns>
             //---------------------------------------------------------------------------------------------------------
             [HttpPost($"~{XRoutesConstants.TokenEndpoint}")]
-            public async Task<IActionResult> Login()
+			public async Task<IActionResult> Login()
             {
                 var request = HttpContext.GetOpenIddictServerRequest() ??
                     throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
@@ -147,27 +150,43 @@ namespace Lotus
                 }
             }
 
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Выход из статуса аутентификации пользователя
-            /// </summary>
-            /// <returns>Общий результат работы</returns>
-            //---------------------------------------------------------------------------------------------------------
-            [HttpPost(nameof(Logout))]
-            [Authorize(AuthenticationSchemes = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)]
-            public async Task<IActionResult> Logout()
+			//---------------------------------------------------------------------------------------------------------
+			/// <summary>
+			/// Выход из статуса аутентификации пользователя
+			/// </summary>
+			/// <returns>Общий результат работы</returns>
+			//---------------------------------------------------------------------------------------------------------
+			[HttpPost($"~{XRoutesConstants.LogoutEndpoint}")]
+			public async Task<IActionResult> Logout()
             {
-                await _authorizeService.LogoutAsync(this.HttpContext.GetAccessToken());
-                return Ok();
-            }
+				await _authorizeService.LogoutAsync(this.HttpContext.GetAccessToken());
+				
+				return SignOut(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+			}
 
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Получение информации о статусе аутентификации текущего пользователя
-            /// </summary>
-            /// <returns>Информация о статусе аутентификации текущего пользователя</returns>
-            //---------------------------------------------------------------------------------------------------------
-            [HttpGet(XRoutesConstants.UserInfoEndpoint)]
+			//---------------------------------------------------------------------------------------------------------
+			/// <summary>
+			/// Регистрация нового пользователя
+			/// </summary>
+			/// <param name="registrParameters">Параметры для регистрации нового пользователя</param>
+			/// <param name="token">Токен отмены</param>
+			/// <returns>Общий результат работы</returns>
+			//---------------------------------------------------------------------------------------------------------
+			[HttpPost(nameof(Registr))]
+			public async Task<IActionResult> Registr([FromBody] CRegistrParametersDto registrParameters, 
+				CancellationToken token)
+			{
+				var result = await _authorizeService.RegistrAsync(registrParameters, token);
+				return SendResponse(result);
+			}
+
+			//---------------------------------------------------------------------------------------------------------
+			/// <summary>
+			/// Получение информации о статусе аутентификации текущего пользователя
+			/// </summary>
+			/// <returns>Информация о статусе аутентификации текущего пользователя</returns>
+			//---------------------------------------------------------------------------------------------------------
+			[HttpGet(XRoutesConstants.UserInfoEndpoint)]
             [Authorize(AuthenticationSchemes = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)]
             public async Task<IActionResult> UserAuthorizeInfoAsync()
             {
@@ -259,9 +278,62 @@ namespace Lotus
 
                 return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
-            #endregion
 
-        }
+			//---------------------------------------------------------------------------------------------------------
+			/// <summary>
+			/// Отправка ответа с указанными данными.
+			/// </summary>
+			/// <param name="response">Базовый интерфейс получения данных</param>
+			/// <returns>Ответ</returns>
+			//---------------------------------------------------------------------------------------------------------
+			protected IActionResult SendResponse(ILotusResponse response)
+			{
+				if (response == null)
+				{
+					return BadRequest();
+				}
+
+				if (response.Result == null)
+				{
+					return Ok(response);
+				}
+
+				if (response.Result!.Succeeded)
+				{
+					if (response.Result is ILotusResultHttp resultHttp)
+					{
+						switch (resultHttp.HttpCode)
+						{
+							case HttpStatusCode.Created: return Created("", response);
+							case HttpStatusCode.NoContent: return NoContent();
+							default: return Ok(response);
+						}
+					}
+					else
+					{
+						return Ok(response);
+					}
+				}
+				else
+				{
+					if (response.Result is ILotusResultHttp resultHttp)
+					{
+						switch (resultHttp.HttpCode)
+						{
+							case HttpStatusCode.NotFound: return NotFound(response);
+							case HttpStatusCode.Forbidden: return Forbid();
+							default: return BadRequest(response);
+						}
+					}
+					else
+					{
+						return BadRequest(response.Result);
+					}
+				}
+			}
+			#endregion
+
+		}
         //-------------------------------------------------------------------------------------------------------------
         /**@}*/
         //-------------------------------------------------------------------------------------------------------------

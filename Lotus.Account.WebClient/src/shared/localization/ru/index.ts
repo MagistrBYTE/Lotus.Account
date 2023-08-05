@@ -5,6 +5,7 @@ import { filtres } from './data/filtres';
 import { validation } from './data/validation';
 import { group } from './data/group';
 import { notification } from './data/notification';
+import { configuration } from './data/configuration';
 
 import { user } from './data/user';
 import { position } from './data/position';
@@ -19,6 +20,7 @@ export const ruLocale = {
   filtres,
   group,
   notification,
+  configuration,
   user,
   position,
   permission,

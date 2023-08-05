@@ -1,13 +1,13 @@
-import { RootState, useAppSelector } from 'src/app/store';
+import { loadLayoutFromStorage } from './loadLayoutFromStorage';
 
 /**
  * Получение рабочей высоты сайта 
  * @param delta Уменьшение к расчету
  * @returns 
  */
-export const useLayoutClientHeight = (delta?: number):number =>
+export const getLayoutClientHeight = (delta?: number):number =>
 {
-  const layoutState = useAppSelector((state: RootState) => state.layout);
+  const layoutState = loadLayoutFromStorage();
   const isFooter = layoutState.footer.isVisible;
   const isHeader = layoutState.header.isVisible;
 

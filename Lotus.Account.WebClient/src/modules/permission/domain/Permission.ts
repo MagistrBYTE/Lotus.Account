@@ -2,7 +2,7 @@ import { IConstantable } from 'src/core/types/Constantable';
 import { IEditable } from 'src/core/types/Editable';
 import { FilterFunctionEnum } from 'src/shared/filtering/FilterFunction';
 import { localization } from 'src/shared/localization';
-import { IPropertiesInfo } from 'src/shared/reflection/PropertiesInfo';
+import { IPropertiesInfo, PropertiesInfoBase } from 'src/shared/reflection/PropertiesInfo';
 import { IPropertyDescriptor } from 'src/shared/reflection/PropertyDescriptor';
 import { PropertyTypeEnum } from 'src/shared/reflection/PropertyType';
 
@@ -27,7 +27,7 @@ export interface IPermission extends IEditable, IConstantable
     dispalyName?: string;
 }
 
-export class PermissionPropertiesInfo implements IPropertiesInfo<IPermission>
+export class PermissionPropertiesInfo extends PropertiesInfoBase<IPermission>
 {
   private static _permissionPropertiesInfo: PermissionPropertiesInfo;
 
@@ -40,6 +40,7 @@ export class PermissionPropertiesInfo implements IPropertiesInfo<IPermission>
 
   constructor() 
   {
+    super()
     this.Init();
     this.getProperties = this.getProperties.bind(this);
     this.getPropertyDescriptorByName = this.getPropertyDescriptorByName.bind(this);    
@@ -134,16 +135,6 @@ export class PermissionPropertiesInfo implements IPropertiesInfo<IPermission>
     }
 
     this.descriptors.push(displayNameProp);    
-  }
-
-  public getProperties(): IPropertyDescriptor[] 
-  {
-    return this.descriptors;
-  }
-
-  public getPropertyDescriptorByName(name: string):IPropertyDescriptor
-  {
-    return this.descriptors.find(x => x.fieldName === name)!;
   }
 }
 

@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { IResult } from '../types/Result';
+import { IResult, instanceOfResult } from '../types/Result';
 
 /**
  * Базовый класс для сервисов Api
@@ -45,7 +45,7 @@ export abstract class ApiService
     if (error.response) 
     {
       // Все ошибки приводим к типу IResult для унификации обработки и реагирования
-      const result:IResult = error.response.data as IResult;
+      const result:IResult|undefined = instanceOfResult(error.response.data);
       if(result)
       {
         console.log(error.response.data);
@@ -53,8 +53,8 @@ export abstract class ApiService
       }
       else
       {
-        console.log('Error is not result!!!');
-        return Promise.reject(error.response); 
+        const resultError:IResult = {succeeded: false, code: Number(error.response.status ?? 500), message: error.message };
+        return Promise.reject(resultError); 
       }
     }
     else

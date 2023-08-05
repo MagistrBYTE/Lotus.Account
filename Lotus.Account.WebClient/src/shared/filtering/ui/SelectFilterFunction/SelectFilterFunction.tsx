@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MenuItem, Select } from '@mui/material';
-import { FilterFunctionEnum, IFilterFunctionDesc, TFilterFunction } from '../../FilterFunction';
+import { FilterFunctionEnum, FilterFunctionHelper, IFilterFunctionDesc, TFilterFunction } from '../../FilterFunction';
 
 export interface ISelectFilterFunctionProps
 {
@@ -13,18 +13,17 @@ export const SelectFilterFunction: React.FC<ISelectFilterFunctionProps> = (props
 {
   const { initialFunctionFn, setFilterFunction, groupFilterFunctions } = props;
 
-  const [selectedValue, setSelectedValue] = useState<IFilterFunctionDesc>(initialFunctionFn ?? FilterFunctionEnum.Equals);
+  const [selectedValue, setSelectedValue] = useState<string>(initialFunctionFn?.name ?? FilterFunctionEnum.Contains.name);
 
   const handleSelectFilterFunction = (filterFn: IFilterFunctionDesc) =>
   {
-    setSelectedValue(filterFn);
+    setSelectedValue(filterFn.name);
     setFilterFunction(filterFn);
   }
 
   return <Select 
     value={selectedValue} 
-    {...props}
-    renderValue={(selected)=>{ return selected.name}}
+    renderValue={(selected)=>{ return FilterFunctionHelper.getDescByName(selected).desc}}
   >
     {groupFilterFunctions.map((option) => (
       <MenuItem key={option.id} value={option.name} onClick={()=>{handleSelectFilterFunction(option)}}>

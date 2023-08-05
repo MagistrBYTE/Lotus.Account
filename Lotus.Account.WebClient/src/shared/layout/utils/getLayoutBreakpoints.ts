@@ -5,7 +5,7 @@ import { RootState, useAppSelector } from 'src/app/store';
  * Получение оптимальной точки Breakpoint для текущей ширины
  * @returns 
  */
-export const useLayoutBreakpoints = ():Breakpoint =>
+export const getLayoutBreakpoints = ():Breakpoint =>
 {
   if(screen.width > 1800)
   {

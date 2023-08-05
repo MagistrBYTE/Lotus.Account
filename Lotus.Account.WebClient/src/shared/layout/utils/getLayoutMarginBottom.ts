@@ -1,13 +1,14 @@
-import { RootState, useAppSelector } from 'src/app/store';
+import { loadLayoutFromStorage } from './loadLayoutFromStorage';
 
 /**
  * Получение отступа от нижней части
  * @param delta Увеличение к расчету
  * @returns 
  */
-export const useLayoutMarginBottom = (delta?: number):number =>
+export const getLayoutMarginBottom = (delta?: number):number =>
 {
-  const footer = useAppSelector((state: RootState) => state.layout.footer);
+  const layoutState = loadLayoutFromStorage();
+  const footer = layoutState.footer;
   const isFooter = footer.isVisible;
   let marginBottom = isFooter ? footer.height : 0;
 
