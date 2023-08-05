@@ -15,7 +15,12 @@ export interface IErrorAuthResponse
  */
 export const checkOfErrorAuthResponse = (value: any): value is IErrorAuthResponse =>
 {
-  return ('error' in value) && ('error_description' in value);
+  if(value)
+  {
+    return ('error' in value) && ('error_description' in value);
+  }
+
+  return false;
 }
 
 /**

@@ -16,11 +16,16 @@ export interface ISuccessAuthResponse
  */
 export const checkOfSuccessAuthResponse = (value: any): value is ISuccessAuthResponse =>
 {
-  const access_token = ('access_token' in value);
-  const expires_in = ('expires_in' in value);
-  const refresh_token = ('refresh_token' in value);
+  if(value)
+  {
+    const access_token = ('access_token' in value);
+    const expires_in = ('expires_in' in value);
+    const refresh_token = ('refresh_token' in value);
 
-  return  access_token && expires_in && refresh_token;
+    return  access_token && expires_in && refresh_token;
+  }
+
+  return false;
 }
 
 /**
