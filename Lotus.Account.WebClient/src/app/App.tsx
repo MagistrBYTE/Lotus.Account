@@ -76,7 +76,7 @@ export const App: React.FC = () =>
           path={paths.autoLogin()}
           element={<AutoLoginPage pathSuccess={paths.profile()} />}/> 
         <Route
-          path={paths.register()}
+          path={paths.registr()}
           element={<RegisterPage pathSuccess={paths.login()} />}/>
         <Route
           path={paths.restorePassword()}

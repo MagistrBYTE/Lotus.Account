@@ -6,7 +6,7 @@ export const paths = {
   // Авторизация и регистрация
   login: () => '/login',
   autoLogin: () => '/autoLogin',
-  register: () => '/register',
+  registr: () => '/registr',
   restorePassword: () => '/restorePassword',
 
   // Личные страницы
