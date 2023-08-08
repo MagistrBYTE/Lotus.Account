@@ -3,7 +3,6 @@ using Lotus.Account;
 using Lotus.Web;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-
 //---------------------------------------------------------------------------------------------------------------------
 
 var builder = WebApplication.CreateBuilder(args);

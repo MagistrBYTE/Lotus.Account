@@ -144,7 +144,7 @@ export const LoginPage: React.FC<ILoginPageProps> = ({pathSuccess}:ILoginPagePro
               {localization.auth.forgotPassword}
             </Typography>
           </Link>
-          <Link href={paths.register()}>
+          <Link href={paths.registr()}>
             <Typography>
               {localization.auth.register}
             </Typography>
