@@ -4,7 +4,7 @@
 // Автор: MagistrBYTE aka DanielDem <dementevds@gmail.com>
 //---------------------------------------------------------------------------------------------------------------------
 /** \file LotusModuleInitializer.cs
-*		Инициализация модуля пользователя платформы Web.
+*		Инициализация модуля WebApi учетной записи пользователя.
 */
 //---------------------------------------------------------------------------------------------------------------------
 // Версия: 1.0.0.0
@@ -39,7 +39,7 @@ namespace Lotus
             /// <param name="urlServer">Адрес сервера валидации</param>
             /// <returns>Коллекция сервисов</returns>
             //---------------------------------------------------------------------------------------------------------
-            public static IServiceCollection AddLotusUserOpenIddict(this IServiceCollection services, String? urlServer)
+            public static IServiceCollection AddLotusAccountOpenIddict(this IServiceCollection services, String? urlServer)
             {
                 // Register the OpenIddict core components.
                 services.AddOpenIddict()
@@ -133,7 +133,7 @@ namespace Lotus
             /// <param name="configuration">Конфигурация</param>
             /// <returns>Коллекция сервисов</returns>
             //---------------------------------------------------------------------------------------------------------
-            public static IServiceCollection AddLotusUserDatabase(this IServiceCollection services, IConfiguration configuration)
+            public static IServiceCollection AddLotusAccountDatabase(this IServiceCollection services, IConfiguration configuration)
             {
                 // Добавление CAccountDbContext для взаимодействия с базой данных учетных записей
                 // Используем для корректной работы OpenIddict

@@ -59,12 +59,6 @@ namespace Lotus
                 var model = modelBuilder.Entity<CUser>();
                 model.ToTable(TABLE_NAME, XDbConstants.SchemeName);
 
-                //modelBuilder.Entity<CUser>()
-                //	.ToTable("User", XDbConstants.SchemeName)
-                //	.HasMany(user => user.FieldActivities)
-                //	.WithMany(field => field.Users)
-                //	.UsingEntity(j => j.ToTable("UserFieldActivity", XDbConstants.SchemeName).HasKey("Id"));
-
                 model.HasMany(user => user.FieldActivities)
                     .WithMany(field => field.Users)
                     .UsingEntity<CUserFieldActivity>(
