@@ -39,7 +39,7 @@ namespace Lotus
             /// </remarks>
             /// <param name="modelBuilder">Интерфейс для построения моделей</param>
             //---------------------------------------------------------------------------------------------------------
-            public static void ConfigurationUserDatabase(ModelBuilder modelBuilder)
+            public static void ConfigurationAccountDatabase(ModelBuilder modelBuilder)
             {
                 CUser.ModelCreating(modelBuilder);
                 CPosition.ModelCreating(modelBuilder);

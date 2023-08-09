@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------------------------------------------------
+п»ї//---------------------------------------------------------------------------------------------------------------------
 using Lotus.Account;
 using Lotus.Web;
 using Microsoft.OpenApi.Models;
@@ -8,7 +8,7 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 //
-// Базовые сервисы для работы
+// Р‘Р°Р·РѕРІС‹Рµ СЃРµСЂРІРёСЃС‹ РґР»СЏ СЂР°Р±РѕС‚С‹
 //
 builder.Services.AddCors(x => x.AddDefaultPolicy(builder => builder
     .AllowAnyHeader()
@@ -18,23 +18,23 @@ builder.Services.AddOptions();
 builder.Services.AddHttpContextAccessor();
 
 //
-// Сервисы контролеров и сессии
+// РЎРµСЂРІРёСЃС‹ РєРѕРЅС‚СЂРѕР»РµСЂРѕРІ Рё СЃРµСЃСЃРёРё
 //
 builder.Services.AddControllers();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
 
 //
-// Сервисы базы данных
+// РЎРµСЂРІРёСЃС‹ Р±Р°Р·С‹ РґР°РЅРЅС‹С…
 //
 builder.Services.AddLotusCommonServices();
-builder.Services.AddLotusUserDatabase(builder.Configuration);
+builder.Services.AddLotusAccountDatabase(builder.Configuration);
 
 //
-// Сервисы аутентификации и авторизации
+// РЎРµСЂРІРёСЃС‹ Р°СѓС‚РµРЅС‚РёС„РёРєР°С†РёРё Рё Р°РІС‚РѕСЂРёР·Р°С†РёРё
 //
 builder.Services.AddLotusAccountServices();
-builder.Services.AddLotusUserOpenIddict(null);
+builder.Services.AddLotusAccountOpenIddict(null);
 builder.Services.AddLotusPermissionsExtension();
 builder.Services.AddAuthorizationCore();
 
@@ -50,7 +50,7 @@ var app = builder.Build();
 
 //---------------------------------------------------------------------------------------------------------------------
 //
-// Конфигурация конвейера обработки запроса
+// РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ РєРѕРЅРІРµР№РµСЂР° РѕР±СЂР°Р±РѕС‚РєРё Р·Р°РїСЂРѕСЃР°
 //
 //---------------------------------------------------------------------------------------------------------------------
 // Configure the HTTP request pipeline.

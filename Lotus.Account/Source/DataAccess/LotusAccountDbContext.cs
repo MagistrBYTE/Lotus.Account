@@ -11,7 +11,7 @@
 // Последнее изменение от 30.04.2023
 //=====================================================================================================================
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.EntityFrameworkCore.Diagnostics;
 //=====================================================================================================================
 namespace Lotus
 {
@@ -108,24 +108,55 @@ namespace Lotus
                 : base(options)
             {
             }
-            #endregion
+			#endregion
 
-            #region ======================================= ОБЩИЕ МЕТОДЫ ==============================================
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Конфигурирование моделей
-            /// </summary>
-            /// <param name="modelBuilder">Интерфейс для построения моделей</param>
-            //---------------------------------------------------------------------------------------------------------
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
+			#region ======================================= ОБЩИЕ МЕТОДЫ ==============================================
+			//---------------------------------------------------------------------------------------------------------
+			/// <summary>
+			/// Конфигурирование контекста
+			/// </summary>
+			/// <param name="optionsBuilder">Билдер для конфигурирования контекста</param>
+			//---------------------------------------------------------------------------------------------------------
+			protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+			{
+				optionsBuilder.ConfigureWarnings(delegate (WarningsConfigurationBuilder warnings)
+				{
+					// The following line will suppress the warning
+					// "'Foo.Bar' and 'Bar.Foo' were separated into two relationships as
+					// ForeignKeyAttribute was specified on properties 'BarId' and
+					// 'FooId' on both sides."
+					warnings.Ignore(CoreEventId.ForeignKeyAttributesOnBothNavigationsWarning);
+				});
+			}
+
+			//---------------------------------------------------------------------------------------------------------
+			/// <summary>
+			/// Конфигурирование моделей
+			/// </summary>
+			/// <param name="modelBuilder">Интерфейс для построения моделей</param>
+			//---------------------------------------------------------------------------------------------------------
+			protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
-                // You can globally assign schema here
-                modelBuilder.HasDefaultSchema(XDbConstants.SchemeName);
+                XDbConfiguration.ConfigurationAccountDatabase(modelBuilder);
 
-                XDbConfiguration.ConfigurationUserDatabase(modelBuilder);
+				base.OnModelCreating(modelBuilder);
 
-                base.OnModelCreating(modelBuilder);
-            }
+				// Customize the ASP.NET Identity model and override the defaults if needed.
+				// For example, you can rename the ASP.NET Identity table names and more.
+				// Add your customizations after calling base.OnModelCreating(builder);
+
+				foreach (var entity in modelBuilder.Model.GetEntityTypes())
+				{
+					for (var type = entity; type != null; type = type.BaseType)
+					{
+						if (type.ClrType.Name.Contains("OpenIddict"))
+						{
+							entity.SetSchema("security");
+							break;
+						}
+					}
+				}
+			}
             #endregion
 
             #region ======================================= РАБОТА С УСТРОЙСТВАМИ =====================================
