@@ -39,7 +39,7 @@ namespace Lotus
             /// <param name="urlServer">Адрес сервера валидации</param>
             /// <returns>Коллекция сервисов</returns>
             //---------------------------------------------------------------------------------------------------------
-            public static IServiceCollection AddLotusAccountOpenIddict(this IServiceCollection services, String? urlServer)
+            public static IServiceCollection AddLotusAccountOpenIddictServices(this IServiceCollection services, String? urlServer)
             {
                 // Register the OpenIddict core components.
                 services.AddOpenIddict()
@@ -125,27 +125,41 @@ namespace Lotus
                 return services;
             }
 
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Добавление в коллекцию сервисов базы данных
-            /// </summary>
-            /// <param name="services">Коллекция сервисов</param>
-            /// <param name="configuration">Конфигурация</param>
-            /// <returns>Коллекция сервисов</returns>
-            //---------------------------------------------------------------------------------------------------------
-            public static IServiceCollection AddLotusAccountDatabase(this IServiceCollection services, IConfiguration configuration)
+			//---------------------------------------------------------------------------------------------------------
+			/// <summary>
+			/// Добавление в коллекцию сервисов базы данных
+			/// </summary>
+			/// <param name="services">Коллекция сервисов</param>
+			/// <param name="configuration">Конфигурация</param>
+			/// <returns>Коллекция сервисов</returns>
+
+			//---------------------------------------------------------------------------------------------------------
+			/// <summary>
+			/// Добавление в коллекцию сервисов базы данных
+			/// </summary>
+			/// <typeparam name="TContext">Тип контекста БД</typeparam>
+			/// <param name="services">Коллекция сервисов</param>
+			/// <param name="configuration">Конфигурация</param>
+			/// <param name="useNpgsql">Использовать провайдер Npgsql и данные для соединения</param>
+			/// <returns>Коллекция сервисов</returns>
+			//---------------------------------------------------------------------------------------------------------
+			public static IServiceCollection AddLotusAccountDatabaseServices<TContext>(this IServiceCollection services, 
+				IConfiguration configuration, bool useNpgsql) where TContext : DbContext
             {
                 // Добавление CAccountDbContext для взаимодействия с базой данных учетных записей
                 // Используем для корректной работы OpenIddict
-                services.AddDbContext<CAccountDbContext>(options =>
-                {
-                    options.UseOpenIddict();
-                    options.UseNpgsql(configuration.GetConnectionString(XDbConstants.ConnectingUserDb),
-                        optionsBuilder =>
-                        {
-                            optionsBuilder.MigrationsHistoryTable(XDbConstants.MigrationHistoryTableName,
-                                XDbConstants.SchemeName);
-                        });
+                services.AddDbContext<TContext>(options =>
+				{
+					options.UseOpenIddict();
+					if (useNpgsql)
+					{
+						options.UseNpgsql(configuration.GetConnectionString(XDbConstants.ConnectingUserDb),
+							optionsBuilder =>
+							{
+								optionsBuilder.MigrationsHistoryTable(XDbConstants.MigrationHistoryTableName,
+									XDbConstants.SchemeName);
+							});
+					}
                 });
 
                 return services;
@@ -158,7 +172,7 @@ namespace Lotus
             /// <param name="application">Построитель web-приложения</param>
 			/// <returns>Задача</returns>
             //---------------------------------------------------------------------------------------------------------
-            public static async Task InitLotusUserDatabase(this IApplicationBuilder application)
+            public static async Task InitLotusAccountDatabase(this IApplicationBuilder application)
             {
                 if (application == null)
                 {

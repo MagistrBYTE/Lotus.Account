@@ -28,13 +28,13 @@ builder.Services.AddSession();
 // Сервисы базы данных
 //
 builder.Services.AddLotusCommonServices();
-builder.Services.AddLotusAccountDatabase(builder.Configuration);
+builder.Services.AddLotusAccountDatabaseServices<CAccountDbContext>(builder.Configuration, true);
 
 //
 // Сервисы аутентификации и авторизации
 //
 builder.Services.AddLotusAccountServices();
-builder.Services.AddLotusAccountOpenIddict(null);
+builder.Services.AddLotusAccountOpenIddictServices(null);
 builder.Services.AddLotusPermissionsExtension();
 builder.Services.AddAuthorizationCore();
 
@@ -84,7 +84,7 @@ app.UseAuthorization();
 
 app.UseWebSockets();
 
-await app.InitLotusUserDatabase();
+await app.InitLotusAccountDatabase();
 
 app.UseEndpoints(endpoints =>
 {
