@@ -28,7 +28,7 @@ builder.Services.AddSession();
 // Сервисы базы данных
 //
 builder.Services.AddLotusCommonServices();
-builder.Services.AddLotusAccountDatabaseServices<CAccountDbContext>(builder.Configuration, true);
+builder.Services.AddLotusAccountDatabaseServices(builder.Configuration);
 
 //
 // Сервисы аутентификации и авторизации

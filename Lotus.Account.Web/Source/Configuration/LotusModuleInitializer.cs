@@ -137,29 +137,30 @@ namespace Lotus
 			/// <summary>
 			/// Добавление в коллекцию сервисов базы данных
 			/// </summary>
-			/// <typeparam name="TContext">Тип контекста БД</typeparam>
 			/// <param name="services">Коллекция сервисов</param>
 			/// <param name="configuration">Конфигурация</param>
-			/// <param name="useNpgsql">Использовать провайдер Npgsql и данные для соединения</param>
+			/// <param name="connectString">Строка для подключения к базе данных. По умолчанию значение равно <see cref="XDbConstants.ConnectingUserDb"/></param>
+			/// <param name="replaceMigrationHistoryTableName">Переместить таблицу миграции в схему <see cref="XDbConstants.SchemeName"/></param>
 			/// <returns>Коллекция сервисов</returns>
 			//---------------------------------------------------------------------------------------------------------
-			public static IServiceCollection AddLotusAccountDatabaseServices<TContext>(this IServiceCollection services, 
-				IConfiguration configuration, bool useNpgsql) where TContext : DbContext
+			public static IServiceCollection AddLotusAccountDatabaseServices(this IServiceCollection services, 
+				IConfiguration configuration, String connectString = XDbConstants.ConnectingUserDb, 
+				bool replaceMigrationHistoryTableName = true)
             {
                 // Добавление CAccountDbContext для взаимодействия с базой данных учетных записей
                 // Используем для корректной работы OpenIddict
-                services.AddDbContext<TContext>(options =>
+                services.AddDbContext<CAccountDbContext>(options =>
 				{
 					options.UseOpenIddict();
-					if (useNpgsql)
-					{
-						options.UseNpgsql(configuration.GetConnectionString(XDbConstants.ConnectingUserDb),
-							optionsBuilder =>
+					options.UseNpgsql(configuration.GetConnectionString(connectString),
+						optionsBuilder =>
+						{
+							if (replaceMigrationHistoryTableName)
 							{
 								optionsBuilder.MigrationsHistoryTable(XDbConstants.MigrationHistoryTableName,
 									XDbConstants.SchemeName);
-							});
-					}
+							}
+						});
                 });
 
                 return services;
