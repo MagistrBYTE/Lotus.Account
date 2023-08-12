@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastWrapper, toastError } from 'src/ui/components/Info/Toast';
 import { localization } from 'src/shared/localization';
-import { AuthApi } from '../../AuthApiService';
-import { instanceOfSuccessAuthResponse } from '../../SuccessAuthResponse';
-import { TokenHelper } from '../../TokenHelper';
+import { AuthApi } from '../../api/AuthApiService';
+import { instanceOfSuccessAuthResponse } from '../../domain/SuccessAuthResponse';
+import { TokenHelper } from '../../utils/TokenHelper';
+
 
 export interface IAutoLoginPageProps
 {

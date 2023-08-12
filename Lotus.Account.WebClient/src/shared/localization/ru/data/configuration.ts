@@ -1,4 +1,5 @@
 export const configuration = {
+  configuration: 'Конфигурация',
   theme: 'Тема',   
   themeLight: 'Светлая тема',  
   themeDark: 'Темная тема',

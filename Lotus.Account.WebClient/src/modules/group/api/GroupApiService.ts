@@ -1,8 +1,8 @@
 import { IResponse } from 'src/core/types/Response';
 import { TKey } from 'src/core/types/Key';
 import { ISelectOption } from 'src/core/types/SelectOption';
-import { AuthApiService } from 'src/shared/auth/AuthApiService';
 import { createURLSearchParamsFromRequest } from 'src/shared/request/utils';
+import { AuthApiService } from 'src/shared/auth/api/AuthApiService';
 import { IGroup } from '../domain/Group';
 import { IGroupCreateRequest } from './GroupCreateRequest';
 import { IGroupUpdateRequest } from './GroupUpdateRequest';

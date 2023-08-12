@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import { PageContainer } from 'src/ui/components/Layout';
 
 export const UsersPage: React.FC = () => 
 {
   return (
-    <div>
+    <PageContainer>
       {'страница пользователей'}
-    </div>
+    </PageContainer>
   );
 };

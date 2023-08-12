@@ -1,4 +1,5 @@
 export const auth = {
+  account: 'Аккаунт', 
   entrance: 'Вход',   
   password: 'Пароль',  
   remember: 'Запомнить меня',
@@ -10,5 +11,6 @@ export const auth = {
   registration: 'Регистрация',
   registrationFailed: 'При регистрации произошла ошибка',
   restorePassword: 'Укажите почту для восстановления пароля',
-  send: 'Отправить'
+  send: 'Отправить',
+  logout: 'Выйти'
 };

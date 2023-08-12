@@ -89,7 +89,7 @@ export const FilterInputText:React.FC<IFilterInputTextProps> = (props:IFilterInp
         <TextField value={filterValue} onChange={handleFilterValue} />
         <SelectFilterFunction
           groupFilterFunctions={GroupFilterFunctionString}
-          setFilterFunction={setFilterFunction}/>
+          onSelectFilterFunction={setFilterFunction}/>
       </Stack>
     </Stack>
   )

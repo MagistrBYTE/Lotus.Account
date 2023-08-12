@@ -1,1 +1,0 @@
-export {MessageItem, type IMessageItemProps} from './MessageItem';

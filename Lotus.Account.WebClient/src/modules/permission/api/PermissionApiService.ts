@@ -1,9 +1,9 @@
-import { ApiService } from 'src/core/api/ApiService';
 import { IResponse } from 'src/core/types/Response';
 import { TKey } from 'src/core/types/Key';
 import { ISelectOption } from 'src/core/types/SelectOption';
 import { IResult } from 'src/core/types/Result';
 import { createURLSearchParamsFromRequest } from 'src/shared/request/utils';
+import { AuthApiService } from 'src/shared/auth/api/AuthApiService';
 import { IPermission } from '../domain/Permission';
 import { mockPermissions } from '../mock/PermissionMock';
 import { IPermissionCreateRequest } from './PermissionCreateRequest';
@@ -12,7 +12,7 @@ import { IPermissionsRequest } from './PermissionsRequest';
 import { IPermissionsResponse } from './PermissionsResponse';
 import { IPermissionResponse } from './PermissionResponse';
 
-class PermissionApiService extends ApiService 
+class PermissionApiService extends AuthApiService 
 {
   private static _PermissionApi: PermissionApiService;
 

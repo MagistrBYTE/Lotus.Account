@@ -1,4 +1,5 @@
-export const user: { [key: string]: string } = {
+export const user = {
+  users: 'Пользователи',
   fio: 'ФИО',
   name: 'Имя',
   surname: 'Фамилия',

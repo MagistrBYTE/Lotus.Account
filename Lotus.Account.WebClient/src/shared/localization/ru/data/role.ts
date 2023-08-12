@@ -1,4 +1,5 @@
 export const role = {
+  roles: 'Роли',
   id: 'ИД',
   idDesc: 'Идентификатор роли',
   systemName: 'Служебное наименование',

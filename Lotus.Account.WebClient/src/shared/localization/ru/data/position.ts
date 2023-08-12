@@ -1,4 +1,5 @@
 export const position = {
+  positions: 'Должности',
   id: 'ИД',
   idDesc: 'Идентификатор должности',
   name: 'Наименование',

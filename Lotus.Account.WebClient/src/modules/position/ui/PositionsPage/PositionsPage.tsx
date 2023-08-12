@@ -1,12 +1,12 @@
 import React from 'react';
-import { Container } from '@mui/material';
+import { PageContainer } from 'src/ui/components/Layout';
 import { PositionTable } from './components/PositionTable/PositionTable';
 
 export const PositionsPage: React.FC = () => 
 {
   return (
-    <Container>
+    <PageContainer>
       <PositionTable/>
-    </Container>
+    </PageContainer>
   );
 };

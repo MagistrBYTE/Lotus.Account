@@ -1,14 +1,12 @@
 import * as React from 'react';
-import { ChangeEvent, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { ChangeEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ToastWrapper, toastError } from 'src/ui/components/Info/Toast';
 import { localization } from 'src/shared/localization';
 import { LoadingButton } from '@mui/lab';
-import { Container, Stack, Box, Avatar, Typography, TextField, FormControlLabel, Checkbox } from '@mui/material';
-import { AuthApi } from '../../AuthApiService';
-import { instanceOfSuccessAuthResponse } from '../../SuccessAuthResponse';
-import { TokenHelper } from '../../TokenHelper';
-import { IRegistrParameters } from '../../RegistrParameters';
+import { Container, Stack, Box, Typography, TextField } from '@mui/material';
+import { AuthApi } from '../../api/AuthApiService';
+import { IRegistrParameters } from '../../domain/RegistrParameters';
 
 export interface IRegisterPageProps
 {

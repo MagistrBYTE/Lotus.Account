@@ -1,4 +1,5 @@
 export const group = {
+  groups: 'Группы',
   id: 'ИД',
   idDesc: 'Идентификатор группы',
   name: 'Наименование',

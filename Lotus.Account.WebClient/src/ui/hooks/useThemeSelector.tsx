@@ -4,29 +4,18 @@ import { TThemeType } from '../types/ThemeType';
 import { loadThemeFromStorage } from '../utils/loadThemeFromStorage';
 import { saveThemeToStorage } from '../utils/saveThemeToStorage';
 
-export const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
+export const ColorModeContext = React.createContext({ setTheme: (theme: TThemeType) => {}});
 
 const useThemeSelector = () => 
 {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [mode, setMode] = React.useState<TThemeType>(loadThemeFromStorage());
-
-  React.useEffect(() => 
-  {
-    setMode(prefersDarkMode ? 'dark' : 'light');
-  }, 
-  [prefersDarkMode]);
 
   const colorMode = React.useMemo(
     () => ({
-      toggleColorMode: () => 
+      setTheme: (theme: TThemeType) => 
       {
-        setMode((prevMode) => 
-        {
-          const result = (prevMode === 'light' ? 'dark' : 'light');
-          saveThemeToStorage(result);
-          return result;
-        });
+        setMode(theme);
+        saveThemeToStorage(theme);
       }
     }),
     []

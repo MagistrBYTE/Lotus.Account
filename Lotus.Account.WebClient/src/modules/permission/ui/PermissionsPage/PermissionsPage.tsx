@@ -1,12 +1,12 @@
-import { Container } from '@mui/material';
 import React from 'react';
+import { PageContainer } from 'src/ui/components/Layout';
 import { PermissionTable } from './components/PermissionTable';
 
 export const PermissionsPage: React.FC = () => 
 {
   return (
-    <Container>
+    <PageContainer>
       <PermissionTable/>
-    </Container>
+    </PageContainer>
   );
 };

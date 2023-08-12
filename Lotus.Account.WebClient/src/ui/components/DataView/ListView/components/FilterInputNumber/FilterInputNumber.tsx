@@ -71,7 +71,7 @@ export const FilterInputNumber:React.FC<IFilterInputNumberProps> = (props:IFilte
       <Stack display={'flex'} flexDirection={'row'} justifyContent={'flex-start'}>
         <TextField value={filterValue} onChange={handleFilterValue} type='number' />
         <SelectFilterFunction groupFilterFunctions={GroupFilterFunctionNumber}
-          setFilterFunction={setFilterFunction}/>
+          onSelectFilterFunction={setFilterFunction}/>
       </Stack>
     </Stack>
   )

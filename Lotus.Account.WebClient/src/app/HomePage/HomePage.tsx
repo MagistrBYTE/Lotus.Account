@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { paths } from '../routes/paths';
+import { accountNavigation } from 'src/shared/account/accountNavigation';
+import { authNavigation } from 'src/shared/auth';
+import { mainNavigations } from '../mainNavigations';
 
 export const HomePage: React.FC = () => 
 {
@@ -8,19 +10,16 @@ export const HomePage: React.FC = () =>
     <div>
         Модуль управления пользователями
       <div>
-        <Link to={paths.login()} >Страница входа</Link>
+        <Link to={authNavigation.login.path} >Страница входа</Link>
       </div>
       <div>
-        <Link to={paths.profile()} >Страница профиля</Link>
+        <Link to={accountNavigation.profile.path} >Страница профиля</Link>
       </div>
       <div>
-        <Link to={paths.dummy()} >Страница проверок</Link>
+        <Link to={mainNavigations.dummy.path} >Страница проверок</Link>
       </div>
       <div>
-        <Link to={paths.positions()} >Страница постов</Link>
-      </div>
-      <div>
-        <Link to={paths.viewer3D()} >Страница 3D</Link>
+        <Link to={mainNavigations.positions.path} >Страница постов</Link>
       </div>
     </div>
   );

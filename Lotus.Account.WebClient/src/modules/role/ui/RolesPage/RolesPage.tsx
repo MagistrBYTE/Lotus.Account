@@ -1,12 +1,12 @@
-import { Container } from '@mui/material';
 import React from 'react';
+import { PageContainer } from 'src/ui/components/Layout';
 import { RoleTable } from './components/RoleTable';
 
 export const RolesPage: React.FC = () => 
 {
   return (
-    <Container>
+    <PageContainer>
       <RoleTable/>
-    </Container>
+    </PageContainer>
   );
 };

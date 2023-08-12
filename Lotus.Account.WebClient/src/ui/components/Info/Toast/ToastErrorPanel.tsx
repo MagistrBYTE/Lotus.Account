@@ -1,6 +1,6 @@
 import React from 'react';
 import { instanceOfResult } from 'src/core/types/Result';
-import { instanceOfErrorAuthResponse } from 'src/shared/auth/ErrorAuthResponse';
+import { instanceOfErrorAuthResponse } from 'src/shared/auth';
 import { IToastErrorProps } from './toastError';
 
 export const ToastErrorPanel:React.FC<IToastErrorProps> = ({title, error}:IToastErrorProps) =>

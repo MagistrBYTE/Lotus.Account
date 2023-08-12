@@ -5,20 +5,20 @@ import { FilterFunctionEnum, FilterFunctionHelper, IFilterFunctionDesc, TFilterF
 export interface ISelectFilterFunctionProps
 {
   initialFunctionFn?:IFilterFunctionDesc;
-  setFilterFunction: (filterFunction: IFilterFunctionDesc)=>void;
+  onSelectFilterFunction: (filterFunction: IFilterFunctionDesc)=>void;
   groupFilterFunctions: IFilterFunctionDesc[];
 }
 
 export const SelectFilterFunction: React.FC<ISelectFilterFunctionProps> = (props: ISelectFilterFunctionProps) => 
 {
-  const { initialFunctionFn, setFilterFunction, groupFilterFunctions } = props;
+  const { initialFunctionFn, onSelectFilterFunction, groupFilterFunctions } = props;
 
   const [selectedValue, setSelectedValue] = useState<string>(initialFunctionFn?.name ?? FilterFunctionEnum.Contains.name);
 
   const handleSelectFilterFunction = (filterFn: IFilterFunctionDesc) =>
   {
     setSelectedValue(filterFn.name);
-    setFilterFunction(filterFn);
+    onSelectFilterFunction(filterFn);
   }
 
   return <Select 

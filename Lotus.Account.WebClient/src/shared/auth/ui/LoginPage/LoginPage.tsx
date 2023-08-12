@@ -6,10 +6,11 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { LoadingButton } from '@mui/lab';
 import { ToastWrapper, toastError } from 'src/ui/components/Info/Toast';
 import { localization } from 'src/shared/localization';
-import { paths } from 'src/app/routes/paths';
-import { AuthApi } from '../../AuthApiService';
-import { instanceOfSuccessAuthResponse } from '../../SuccessAuthResponse';
-import { TokenHelper } from '../../TokenHelper';
+import { AuthApi } from '../../api/AuthApiService';
+import { instanceOfSuccessAuthResponse } from '../../domain/SuccessAuthResponse';
+import { TokenHelper } from '../../utils/TokenHelper';
+import { authNavigation } from '../../authNavigation';
+
 
 export interface ILoginPageProps
 {
@@ -139,12 +140,12 @@ export const LoginPage: React.FC<ILoginPageProps> = ({pathSuccess}:ILoginPagePro
           {localization.auth.comeIn}
         </LoadingButton>
         <Stack flexDirection={'row'} justifyContent={'space-between'}>
-          <Link href={paths.restorePassword()}>
+          <Link href={authNavigation.restorePassword.path}>
             <Typography>
               {localization.auth.forgotPassword}
             </Typography>
           </Link>
-          <Link href={paths.registr()}>
+          <Link href={authNavigation.registr.path}>
             <Typography>
               {localization.auth.register}
             </Typography>

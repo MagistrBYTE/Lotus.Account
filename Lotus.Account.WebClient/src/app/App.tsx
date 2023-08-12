@@ -1,122 +1,80 @@
 import * as React from 'react';
 import { Route, Routes  } from 'react-router-dom';
-import { useLayoutEffect } from 'react';
-import { ProfilePage } from 'src/modules/profile';
 import { GroupsPage } from 'src/modules/group';
-import { NotificationsPage } from 'src/modules/notification';
 import { PermissionsPage } from 'src/modules/permission';
 import { PositionsPage } from 'src/modules/position';
 import { RolesPage } from 'src/modules/role';
 import { UsersPage } from 'src/modules/user';
-import { LoginPage, AutoLoginPage, RegisterPage, RestorePasswordPage } from 'src/shared/auth';
-import { ConfigurationPage } from 'src/modules/configuration';
-import { TScreenType } from 'src/shared/layout';
-import { setScreenTypeAction } from 'src/shared/layout/store/LayoutActions';
+import { LoginPage, AutoLoginPage, RegisterPage, RestorePasswordPage, authNavigation } from 'src/shared/auth';
+import { useScreenTypeChanged } from 'src/shared/layout';
+import { accountNavigation } from 'src/shared/account/accountNavigation';
+import { MainLayoutPermission } from 'src/shared/layout/ui/MainLayoutPermission';
+import { ProfilePage, NotificationsPage, ConfigurationPage } from 'src/shared/account';
+import { MainLayout } from 'src/shared/layout/ui';
 import { DummyPage } from './DummyPage';
 import { HomePage } from './HomePage';
-import { RoutePermission } from './routes/RoutePermission';
-import { paths } from './routes/paths';
-import { useAppDispatch } from './store';
-import { MainLayout } from './layout';
-
+import { mainNavigations } from './mainNavigations';
 
 export const App: React.FC = () => 
 {
-  const isDesktopQuery = '(min-width: 1280px)';
-  const isPortraitQuery = '(orientation: portrait)';
-
-  const dispacth = useAppDispatch();
-  
-  const handleScreenTypeChange = () =>
-  {
-    const isDesktop = window.matchMedia(isDesktopQuery).matches;
-    const isPortrait = window.matchMedia(isPortraitQuery).matches;
-
-    if(isPortrait)
-    {
-      dispacth(setScreenTypeAction(TScreenType.Portrait)); 
-    }
-    else
-    {
-      if(isDesktop)
-      {
-        dispacth(setScreenTypeAction(TScreenType.Desktop));
-      }
-      else
-      {
-        dispacth(setScreenTypeAction(TScreenType.Landscape));
-      }
-    }
-  }
-
-  useLayoutEffect(() => 
-  {
-    window.addEventListener('resize', handleScreenTypeChange);
-    window.addEventListener('orientationchange', handleScreenTypeChange);
-
-    return () => 
-    {
-      window.removeEventListener('resize', handleScreenTypeChange);
-      window.removeEventListener('orientationchange', handleScreenTypeChange);
-    };
-  }, []);
+  useScreenTypeChanged();
 
   return (
     <React.Suspense fallback={<div>Loading...</div>}>
       <Routes>
         <Route 
-          path={paths.home()} 
-          element={<RoutePermission isShouldBeAuthorized children={<MainLayout page={<HomePage/>}/>}/>}/>
+          path={mainNavigations.home.path} 
+          element={<MainLayout page={<HomePage/>}/>}/>
 
         {/* Авторизация и регистрация */}
         <Route
-          path={paths.login()}
-          element={<LoginPage pathSuccess={paths.profile()} />}/>
+          path={authNavigation.login.path}
+          element={<LoginPage pathSuccess={accountNavigation.profile.path} />}/>
         <Route
-          path={paths.autoLogin()}
-          element={<AutoLoginPage pathSuccess={paths.profile()} />}/> 
+          path={authNavigation.autoLogin.path}
+          element={<AutoLoginPage pathSuccess={accountNavigation.profile.path} />}/> 
         <Route
-          path={paths.registr()}
-          element={<RegisterPage pathSuccess={paths.login()} />}/>
+          path={authNavigation.registr.path}
+          element={<RegisterPage pathSuccess={authNavigation.login.path} />}/>
         <Route
-          path={paths.restorePassword()}
-          element={<RestorePasswordPage pathSuccess={paths.login()} />}/>                 
+          path={authNavigation.restorePassword.path}
+          element={<RestorePasswordPage pathSuccess={authNavigation.login.path} />}/>                 
 
         {/* Личные страницы */}
         <Route 
-          path={paths.profile()} 
-          element={<RoutePermission isShouldBeAuthorized children={<MainLayout page={<ProfilePage/>}/>}/>}/>
+          path={accountNavigation.profile.path} 
+          element={<MainLayoutPermission {...accountNavigation.profile}  page={<ProfilePage />} />}/>
         <Route 
-          path={paths.notifications()} 
-          element={<RoutePermission isShouldBeAuthorized children={<MainLayout page={<NotificationsPage/>}/>}/>}/>
+          path={accountNavigation.notification.path} 
+          element={<MainLayoutPermission {...accountNavigation.notification} page={<NotificationsPage/>}/>}/>
         <Route 
-          path={paths.configuration()} 
-          element={<RoutePermission isShouldBeAuthorized children={<MainLayout page={<ConfigurationPage/>}/>}/>}/>
+          path={accountNavigation.configuration.path} 
+          element={<MainLayoutPermission {...accountNavigation.configuration} page={<ConfigurationPage/>}/>}/>
 
         {/* Управление */}
         <Route 
-          path={paths.users()} 
-          element={<RoutePermission isShouldBeAuthorized children={<MainLayout page={<UsersPage/>}/>}/>}/>
+          path={mainNavigations.users.path} 
+          element={<MainLayoutPermission {...mainNavigations.users} page={<UsersPage/>}/>}/>
 
         <Route 
-          path={paths.roles()} 
-          element={<RoutePermission isShouldBeAuthorized children={<MainLayout page={<RolesPage/>}/>}/>}/>
+          path={mainNavigations.roles.path} 
+          element={<MainLayoutPermission {...mainNavigations.roles} page={<RolesPage/>}/>}/>
 
         <Route 
-          path={paths.permissions()} 
-          element={<RoutePermission isShouldBeAuthorized children={<MainLayout page={<PermissionsPage/>}/>}/>}/> 
+          path={mainNavigations.permissions.path} 
+          element={<MainLayoutPermission {...mainNavigations.permissions} page={<PermissionsPage/>}/>}/> 
 
         <Route 
-          path={paths.groups()} 
-          element={<RoutePermission isShouldBeAuthorized children={<MainLayout page={<GroupsPage/>}/>}/>}/> 
+          path={mainNavigations.groups.path} 
+          element={<MainLayoutPermission {...mainNavigations.groups} page={<GroupsPage/>}/>}/> 
 
         <Route 
-          path={paths.positions()} 
-          element={<RoutePermission isShouldBeAuthorized children={<MainLayout page={<PositionsPage/>}/>}/>}/> 
+          path={mainNavigations.positions.path} 
+          element={<MainLayoutPermission {...mainNavigations.positions} page={<PositionsPage/>}/>}/> 
 
         {/* Разное */}
         <Route 
-          path={paths.dummy()} 
+          path={mainNavigations.dummy.path} 
           element={<DummyPage/>}/>
       </Routes>
     </React.Suspense>

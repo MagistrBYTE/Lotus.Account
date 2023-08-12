@@ -1,1 +1,0 @@
-export {LeftSidebar, type ILeftSidePanelProps} from './LeftSidebar';

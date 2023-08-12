@@ -30,29 +30,38 @@ export const layoutSlice = createSlice({
       {
         case TScreenType.Desktop:
           {
+            state.header.isVisible = true;
             state.header.height = DesktopViewSettings.headerHeight;
+
             state.leftPanel.maxWidth = DesktopViewSettings.leftPanelWidthMax;
             state.leftPanel.minWidth = DesktopViewSettings.leftPanelWidthMin;
             state.leftPanel.width = DesktopViewSettings.leftPanelWidthMin;
             state.rightPanel.maxWidth = DesktopViewSettings.rightPanelWidthMax;
             state.rightPanel.minWidth = DesktopViewSettings.rightPanelWidthMin;
             state.rightPanel.width = DesktopViewSettings.rightPanelWidthMin;
+
             state.footer.height = DesktopViewSettings.footerHeight;
+            state.footer.isVisible = true;
           }break;
         case TScreenType.Landscape:
           {
-  
+            state.header.isVisible = false;
+            state.footer.isVisible = false;
           }break;    
         case TScreenType.Portrait:
           {
+            state.header.isVisible = true;
             state.header.height = PortraitViewSettings.headerHeight;
+
             state.leftPanel.maxWidth = PortraitViewSettings.leftPanelWidthMax;
             state.leftPanel.minWidth = PortraitViewSettings.leftPanelWidthMin;
             state.leftPanel.width = PortraitViewSettings.leftPanelWidthMin;
             state.rightPanel.maxWidth = PortraitViewSettings.rightPanelWidthMax;
             state.rightPanel.minWidth = PortraitViewSettings.rightPanelWidthMin;
             state.rightPanel.width = PortraitViewSettings.rightPanelWidthMin;
-            state.footer.height = PortraitViewSettings.footerHeight;    
+
+            state.footer.height = PortraitViewSettings.footerHeight;
+            state.footer.isVisible = true;  
           }break;                    
       }
 

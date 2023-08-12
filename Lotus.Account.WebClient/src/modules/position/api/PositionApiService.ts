@@ -1,7 +1,7 @@
 import { IResponse } from 'src/core/types/Response';
 import { TKey } from 'src/core/types/Key';
-import { AuthApiService } from 'src/shared/auth/AuthApiService';
 import { createURLSearchParamsFromRequest } from 'src/shared/request/utils';
+import { AuthApiService } from 'src/shared/auth/api/AuthApiService';
 import { IPosition } from '../domain/Position';
 import { mockPositions } from '../mock/PositionMock';
 import { IPositionCreateRequest } from './PositionCreateRequest';
