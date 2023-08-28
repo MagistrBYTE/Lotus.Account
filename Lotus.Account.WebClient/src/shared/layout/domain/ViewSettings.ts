@@ -54,3 +54,13 @@ export const PortraitViewSettings:IViewSettings =
   footerHeight: 56
 }
 
+export const LandscapeViewSettings:IViewSettings = 
+{
+  headerHeight: 56,
+  leftPanelWidthMax: 240,
+  leftPanelWidthMin: 80,
+  rightPanelWidthMax: 240,
+  rightPanelWidthMin: 80,
+  footerHeight: 56
+}
+

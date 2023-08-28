@@ -5,6 +5,7 @@ import { useAppDispatch } from 'src/app/store';
 import { localization } from 'src/shared/localization';
 import { ColorModeContext } from 'src/ui/hooks/useThemeSelector';
 import { PageContainer } from 'src/ui/components/Layout';
+import { showFooterUserLayoutAction, showHeaderUserLayoutAction } from 'src/shared/layout/store/LayoutActions';
 
 export const ConfigurationPage: React.FC = () => 
 {
@@ -12,8 +13,8 @@ export const ConfigurationPage: React.FC = () =>
   const layoutState = useLayoutState();
   const dispatch = useAppDispatch();
 
-  const [checkedHeader, setCheckedHeader] = useState(layoutState.header.isVisible);
-  const [checkedFooter, setCheckedFooter] = useState(layoutState.footer.isVisible);
+  const [checkedHeader, setCheckedHeader] = useState(layoutState.header.isVisibleUser);
+  const [checkedFooter, setCheckedFooter] = useState(layoutState.footer.isVisibleUser);
 
   const colorMode = React.useContext(ColorModeContext);
 
@@ -30,18 +31,18 @@ export const ConfigurationPage: React.FC = () =>
   const handleHideHeader =(event: React.ChangeEvent<HTMLInputElement>, checked: boolean) =>
   {
     setCheckedHeader(checked);
-    dispatch(showHeaderLayoutAction(checked));
+    dispatch(showHeaderUserLayoutAction(checked));
   }    
 
   const handleHideFooter =(event: React.ChangeEvent<HTMLInputElement>, checked: boolean) =>
   {
     setCheckedFooter(checked);
-    dispatch(showFooterLayoutAction(checked));
+    dispatch(showFooterUserLayoutAction(checked));
   }  
 
   return (
     <PageContainer>
-      <Card sx={{mt: '4em'}}>
+      <Card>
         <CardContent>
           <Typography variant='h6' mb={2} >
             {localization.configuration.theme}

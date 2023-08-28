@@ -1,3 +1,4 @@
+import { TScreenType } from '../domain/ScreenType';
 import { loadLayoutFromStorage } from './loadLayoutFromStorage';
 
 /**
@@ -11,7 +12,7 @@ export const getLayoutClientHeight = (delta?: number):number =>
   const isFooter = layoutState.footer.isVisible;
   const isHeader = layoutState.header.isVisible;
 
-  let screenClient = screen.height;
+  let screenClient = window.innerHeight;
 
   if(isHeader)
   {

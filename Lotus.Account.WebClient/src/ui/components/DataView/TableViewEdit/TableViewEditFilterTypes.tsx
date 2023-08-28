@@ -43,6 +43,21 @@ export const EditTableFilterEnum = (column: any, onSelectFilterMode: (filterMode
 {
   return [        
     <MenuItem
+      key={'equals'}
+      onClick={() => {onSelectFilterMode('equals');}}>
+      {localization.filtres.equals}
+    </MenuItem>,
+    <MenuItem
+      key={'notEquals'}
+      onClick={() => {onSelectFilterMode('notEquals');}}>
+      {localization.filtres.notEqual}
+    </MenuItem>]
+}
+
+export const EditTableFilterArray = (column: any, onSelectFilterMode: (filterMode: MRT_FilterOption) => void):React.ReactNode[] =>
+{
+  return [        
+    <MenuItem
       key={'includeAny'}
       onClick={() => {onSelectFilterMode('includeAny');}}>
       {localization.filtres.includeAny}

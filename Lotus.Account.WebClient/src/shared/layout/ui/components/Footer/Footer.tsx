@@ -42,7 +42,7 @@ export const Footer: React.FC<IFooterProps> = (props:IFooterProps) =>
     dispatch(collapseFooterLayoutAction(status));
   }
 
-  return <>{layoutState.footer.isVisible &&
+  return <>{layoutState.footer.isVisibleUser && layoutState.footer.isVisible &&
     <AppBar position="fixed" color="inherit" sx={layoutState.footer.isCollapsed ? sxCollapsed : sxNoraml}>
       <Toolbar>
         <IconButton color="inherit" aria-label="open drawer" onClick={handleFooterCollapsed } >

@@ -30,6 +30,7 @@ export const convertPropertyDescriptorToColumn = <TItem extends Record<string, a
     enableColumnFilter: (property.filtering && property.filtering.enabled) ?? false,
     filterVariant: property.filtering && property.filtering.variant,
     filterFn: getDefaultFilterFunction(property),
+    filterSelectOptions: property.options,
 
     // Сортировка
     enableSorting: (property.sorting && property.sorting.enabled) ?? false,

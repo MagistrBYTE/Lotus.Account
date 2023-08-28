@@ -1,20 +1,26 @@
+import { ReactNode } from 'react';
 import { checkArrayIsNumbers } from '../utils/base/array';
 import { TKey } from './Key';
 
 /**
  * Интерфейс для выбора данных(опция) в выпадающем списке
  */
-export interface ISelectOption<TValue extends TKey = string>
+export interface ISelectOption
 {
   /**
    * Значение
    */
-  value:TValue;
+  value:TKey;
 
   /**
    * Текст
    */
   text: string;
+
+  /**
+   * Путь к изображению
+   */
+  icon?: ReactNode;
 }
 
 /**
@@ -22,11 +28,11 @@ export interface ISelectOption<TValue extends TKey = string>
  * @param options Список опций
  * @returns 
  */
-export const convertSelectOptionToNumber = <TValue extends TKey = string>(options:ISelectOption<TValue>[]):ISelectOption<number>[] =>
+export const convertSelectOptionToNumber = (options:ISelectOption[]):ISelectOption[] =>
 {
   const result = options.map((x) =>
   {
-    const value:ISelectOption<number> = {text: x.text, value: Number(x.value)};
+    const value:ISelectOption = {text: x.text, value: Number(x.value)};
     return value;
   });
 
@@ -38,17 +44,80 @@ export const convertSelectOptionToNumber = <TValue extends TKey = string>(option
  * @param options Список опций
  * @returns 
  */
-export const convertSelectOptionToString = <TValue extends TKey = string>(options:ISelectOption<TValue>[]):ISelectOption<string>[] =>
+export const convertSelectOptionToString = (options:ISelectOption[]):ISelectOption[] =>
 {
   const result = options.map((x) =>
   {
-    const value:ISelectOption<string> = {text: x.text, value: String(x.value)};
+    const value:ISelectOption = {text: x.text, value: String(x.value)};
     return value;
   });
 
   return result;
 }
 
+/**
+ * Получение корректного значения по умолчанию или начального значения
+ * @param options Список опций
+ * @param initialSelectedValue Начальное значение
+ * @returns 
+ */
+export const getDefaulValueSelectOption = <TValueOption extends TKey = TKey>(options:ISelectOption[], initialSelectedValue?: TValueOption):TValueOption =>
+{
+  if(initialSelectedValue)
+  {
+    return initialSelectedValue;
+  }
+
+  return options[0].value as TValueOption;
+}
+
+/**
+ * Получение текста из значения опций
+ * @param options Массив всех опций
+ * @param selectedValue Выбранное значение
+ * @returns Текст выбранного значения
+ */
+export const getSelectOptionText = (options:ISelectOption[], selectedValue?:TKey):string =>
+{
+  let text = '';
+  if(selectedValue)
+  {
+    options.forEach(element => 
+    {
+      if(element.value === selectedValue)
+      {
+        text = element.text;
+      }
+    });
+  }
+
+  return text;
+}
+
+/**
+ * Получение иконки из значения опций
+ * @param options Массив всех опций
+ * @param selectedValue Выбранное значение
+ * @returns Иконка выбранного значения
+ */
+export const getSelectOptionIcon = (options:ISelectOption[], selectedValue?:TKey):ReactNode|undefined =>
+{
+  let icon: ReactNode|undefined = undefined;
+  if(selectedValue)
+  {
+    const texts:string[] = [];
+
+    options.forEach(element => 
+    {
+      if(element.value === selectedValue)
+      {
+        icon = element.icon;
+      }
+    });
+  }
+
+  return icon;
+}
 
 /**
  * Получение массива текста из выбранных значений опций
@@ -56,8 +125,7 @@ export const convertSelectOptionToString = <TValue extends TKey = string>(option
  * @param selectedValues Выбранные значения
  * @returns Массив текста выбранных значений
  */
-export const getSelectOptionTexts = <TValue extends TKey = string>(options:ISelectOption<TValue>[], 
-  selectedValues?:TValue[]):string[] =>
+export const getSelectOptionTexts = (options:ISelectOption[], selectedValues?:TKey[]):string[] =>
 {
   if(selectedValues && selectedValues.length > 0)
   {
@@ -85,7 +153,7 @@ export const getSelectOptionTexts = <TValue extends TKey = string>(options:ISele
  * @param item Неопределённое значение
  * @returns Массив текста выбранных значений
  */
-export const getSelectOptionTextsFromValue = <TValue extends TKey = string>(options:ISelectOption<TValue>[], item: unknown):string[] =>
+export const getSelectOptionTextsFromValue = (options:ISelectOption[], item: unknown):string[] =>
 {
   if(Array.isArray(item))
   {
@@ -94,22 +162,22 @@ export const getSelectOptionTextsFromValue = <TValue extends TKey = string>(opti
     {
       const numbers = massive.map((x) => 
       {
-        const value:TValue = Number(x) as TValue;
+        const value:number = Number(x);
         return value;
       });
 
-      const result = getSelectOptionTexts<TValue>(options, numbers);
+      const result = getSelectOptionTexts(options, numbers);
       return result;
     }
     else
     {
       const texts = massive.map((x) => 
       {
-        const value:TValue = String(x) as TValue;
+        const value:string = String(x)
         return value;
       });
 
-      const result = getSelectOptionTexts<TValue>(options, texts);
+      const result = getSelectOptionTexts(options, texts);
       return result; 
     }
   }

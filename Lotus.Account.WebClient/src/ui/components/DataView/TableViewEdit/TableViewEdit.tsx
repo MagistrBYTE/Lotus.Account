@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { TKey } from 'src/core/types/Key';
 import MaterialReactTable, { MRT_Cell, MRT_ColumnDef, MRT_ColumnFiltersState, MRT_FilterOption, MRT_Row, MRT_SortingState, MRT_TableInstance, MaterialReactTableProps } from 'material-react-table';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Tooltip } from '@mui/material';
@@ -9,35 +9,41 @@ import { MRT_Localization_RU } from 'material-react-table/locales/ru';
 import { IEditable } from 'src/core/types/Editable';
 import { IPageInfoResponse, IPageInfoRequest } from 'src/core/types/PageInfo';
 import { ISortObjects, ISortProperty } from 'src/core/types/Sorting';
-import { convertSelectOptionToNumber, convertSelectOptionToString, getSelectOptionTextsFromValue } from 'src/core/types/SelectOption';
+import { getSelectOptionText, getSelectOptionTexts } from 'src/core/types/SelectOption';
 import { capitalizeFirstLetter } from 'src/core/utils/base/string';
-import { checkArrayIsNumbers } from 'src/core/utils/base/array';
 import { IPropertiesInfo } from 'src/shared/reflection/PropertiesInfo';
 import { convertColumnsFilterToFilterObjects, convertPropertyDescriptorToColumn } from 'src/shared/reflection/utilMaterialReactTable';
 import { IRequest } from 'src/shared/request/Request';
 import { localization } from 'src/shared/localization';
-import { MultiSelect } from '../../Editor/MultiSelect';
+import { MultiSelect, OneSelect } from '../../Editor';
 import { ToastWrapper, toastError, toastPromise } from '../../Info/Toast';
-import { EditTableFilterEnum, EditTableFilterString } from './TableViewEditFilterTypes';
+import { EditTableFilterArray, EditTableFilterEnum, EditTableFilterString } from './TableViewEditFilterTypes';
 import './TableViewEdit.scss';
 
-
+export interface IFormCreatedItem<TItem extends Record<string, any> | null>
+{
+  open: boolean;
+  onClose: ()=>void;
+  onCreate: ()=>void;
+  onCreatedItem: (createdItem: TItem|null)=>void;
+}
 
 export interface ITableViewEditProps<TItem extends Record<string, any>> extends MaterialReactTableProps<TItem> 
 {
   propertiesInfo: IPropertiesInfo;
-  onGetItems: (filter: IRequest) => Promise<IResponsePage<TItem>>
-  onAddItemAsync?: () => Promise<IResponse<TItem>>
-  onUpdateItemAsync?: (item: TItem) => Promise<IResponse<TItem>>
-  onDuplicateItem?: (id: TKey) => Promise<IResponse<TItem>>
-  onDeleteItemAsync?: (id: TKey) => Promise<IResponse>
+  onGetItems: (filter: IRequest) => Promise<IResponsePage<TItem>>;
+  onAddItemAsync?: () => Promise<IResponse<TItem>>;
+  onUpdateItemAsync?: (item: TItem) => Promise<IResponse<TItem>>;
+  onDuplicateItem?: (id: TKey) => Promise<IResponse<TItem>>;
+  onDeleteItemAsync?: (id: TKey) => Promise<IResponse>;
+  formCreated?: (args: IFormCreatedItem<TItem|null>) => ReactElement;
 }
 
 type Updater<T> = T | ((old: T) => T);
 
 export const TableViewEdit = <TItem extends Record<string, any> & IEditable,>(props: ITableViewEditProps<TItem>) => 
 {
-  const { propertiesInfo, onGetItems, onAddItemAsync, onUpdateItemAsync, onDuplicateItem, onDeleteItemAsync } = props;
+  const { propertiesInfo, onGetItems, onAddItemAsync, onUpdateItemAsync, onDuplicateItem, onDeleteItemAsync, formCreated } = props;
 
   const properties = propertiesInfo.getProperties();
 
@@ -63,6 +69,10 @@ export const TableViewEdit = <TItem extends Record<string, any> & IEditable,>(pr
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [deleteItem, setDeleteItem] = useState<TItem | null>(null);
 
+  // Создание новой записи через окно
+  const [openCreatedDialog, setOpenCreatedDialog] = useState<boolean>(false);
+  const [createdItem, setCreatedItem] = useState<TItem | null>(null);
+
   const [autoCloseToastify, setAutoCloseToastify] = useState<number | false>(2000);
 
   // Служебные методы для получения данных текущего редактируемого объекта
@@ -73,6 +83,14 @@ export const TableViewEdit = <TItem extends Record<string, any> & IEditable,>(pr
     newItem[accessorKey] = newSelectedValues as any;
     setCurrentItem(newItem);
   }
+
+  const setSelectedValue = (accessorKey:string, newSelectedValue: TKey) =>
+  {
+    const newItem: TItem = { ...currentItem! };
+    // @ts-ignore
+    newItem[accessorKey] = newSelectedValue;
+    setCurrentItem(newItem);
+  }  
 
   // Модифицированные столбцы 
   const editColumns = properties.map((property) =>
@@ -114,40 +132,25 @@ export const TableViewEdit = <TItem extends Record<string, any> & IEditable,>(pr
       column.renderColumnFilterModeMenuItems = ({ column, onSelectFilterMode }) => EditTableFilterString(column, onSelectFilterMode);
     }
 
-    if(property.editing?.editorType === 'multi-select')
+    if(property.editing?.editorType === 'select')
     {
       column.Cell = ({ cell }) => 
       {
-        const massive = cell.getValue() as any[];
+        const id = cell.getValue() as TKey;
         const options = property.options!;
-        if(checkArrayIsNumbers(massive))
-        {    
-          return (<>{getSelectOptionTextsFromValue<number>(convertSelectOptionToNumber(options), massive).join(', ')}</>)
-        }
-        else
-        {
-          return (<>{getSelectOptionTextsFromValue<string>(convertSelectOptionToString(options), massive).join(', ')}</>)
-        }
+        const text = getSelectOptionText(options, id);
+        return (<>{text}</>)
       }
       
       column.Edit = ({ cell, column, table }) => 
       {
-        const massive = cell.getValue() as any[];
+        const id = cell.getValue() as TKey;
         const options = property.options!;
-        if(checkArrayIsNumbers(massive))
-        {
-          return <MultiSelect<number> size='small' sx={{width: '100%'}}
-            initialSelectedValues={massive}
-            selectedValuesChange={(selectedValues)=>{setSelectedValues(property.fieldName, selectedValues)}}
-            options={convertSelectOptionToNumber(options)} />
-        }
-        else
-        {
-          return <MultiSelect<string> size='small' sx={{width: '100%'}}
-            initialSelectedValues={massive}
-            selectedValuesChange={(selectedValues)=>{setSelectedValues(property.fieldName, selectedValues)}}
-            options={convertSelectOptionToString(options)} />   
-        }
+
+        return <OneSelect size='small' sx={{width: '100%'}}
+          initialSelectedValue={id}
+          onSetSelectedValue={(selectedValue)=>{setSelectedValue(property.fieldName, selectedValue)}}
+          options={options} />        
       }  
 
       column.muiTableBodyCellEditTextFieldProps = {
@@ -160,8 +163,57 @@ export const TableViewEdit = <TItem extends Record<string, any> & IEditable,>(pr
       };
 
       column.renderColumnFilterModeMenuItems = ({ column, onSelectFilterMode }) => EditTableFilterEnum(column, onSelectFilterMode);
-    }    
+    }      
 
+    if(property.editing?.editorType === 'multi-select')
+    {
+      column.Cell = ({ cell }) => 
+      {
+        const massive = cell.getValue() as any[];
+        const options = property.options!;
+        const text = getSelectOptionTexts(options, massive);
+        return (<>{text}</>)
+      }
+      
+      column.Edit = ({ cell, column, table }) => 
+      {
+        const massive = cell.getValue() as any[];
+        const options = property.options!;
+        return <MultiSelect size='small' sx={{width: '100%'}}
+          initialSelectedValues={massive}
+          onSetSelectedValues={(selectedValues)=>{setSelectedValues(property.fieldName, selectedValues)}}
+          options={options} />
+      }  
+
+      column.muiTableBodyCellEditTextFieldProps = {
+        error: property.editing?.onValidation(currentItem).error,
+        helperText: property.editing?.onValidation(currentItem).text,
+        required: property.editing?.required,
+        size: 'small',
+        variant: 'outlined',
+        select: true 
+      };
+
+      column.renderColumnFilterModeMenuItems = ({ column, onSelectFilterMode }) => EditTableFilterArray(column, onSelectFilterMode);
+    }  
+
+    if(property.viewImage)
+    {
+      column.Cell = ({ renderedCellValue, row }) => 
+      {
+        return <Box sx={{display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <img
+            alt="avatar"
+            height={30}
+            src={row.original.avatar}
+            loading="lazy"
+            style={{ borderRadius: '50%' }}
+          />
+          {/* using renderedCellValue instead of cell.getValue() preserves filter match highlighting */}
+          <span>{renderedCellValue}</span>
+        </Box>
+      }      
+    }
     return column;
   })
 
@@ -235,7 +287,23 @@ export const TableViewEdit = <TItem extends Record<string, any> & IEditable,>(pr
         refreshItems(getFilterQueryItems());
       })
     }
+    else
+    {
+      setCreatedItem(null);
+      setOpenCreatedDialog(true);
+    }
   };
+
+  const handleCloseCreatedDialog = () => 
+  {
+    setOpenCreatedDialog(false);
+  }
+
+  const handleOkCreatedDialog = async () => 
+  {
+    setOpenCreatedDialog(false);
+    await refreshItems(getFilterQueryItems());
+  }  
 
 
   //
@@ -490,16 +558,14 @@ export const TableViewEdit = <TItem extends Record<string, any> & IEditable,>(pr
         autoClose={autoCloseToastify}
       />
       <Dialog
+        key='dialog-delete'
         open={openDeleteDialog}
-        onClose={handleCloseDeleteDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
+        onClose={handleCloseDeleteDialog}>
+        <DialogTitle>
           {'Удалить'}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText>
             Удалить объект:<br></br>
             {JSON.stringify(deleteItem)}
           </DialogContentText>
@@ -509,6 +575,13 @@ export const TableViewEdit = <TItem extends Record<string, any> & IEditable,>(pr
           <Button variant='outlined' color='primary' onClick={handleOkDeleteDialog} autoFocus>{localization.actions.confirm}</Button>
         </DialogActions>
       </Dialog>
+      {formCreated && formCreated(
+        {
+          open: openCreatedDialog,
+          onClose: handleCloseCreatedDialog, 
+          onCreate: handleOkCreatedDialog,
+          onCreatedItem: setCreatedItem
+        })}
     </>
   );
 }

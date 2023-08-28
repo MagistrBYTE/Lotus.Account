@@ -91,7 +91,7 @@ class GroupApiService extends AuthApiService
     return response.data;   
   }
 
-  public async getGroupsAsOptionsAsync():Promise<ISelectOption<string>[]>
+  public async getGroupsAsOptionsAsync():Promise<ISelectOption[]>
   {
     const search:URLSearchParams = createURLSearchParamsFromRequest();
 
@@ -101,13 +101,13 @@ class GroupApiService extends AuthApiService
 
     const payload:IGroup[] = response.data.payload!;
 
-    const options:ISelectOption<string>[] = payload.map((x)=>
+    const options:ISelectOption[] = payload.map((x)=>
     {
-      const option: ISelectOption<string> = {text: x.name!, value: String(x.id)};
+      const option: ISelectOption = {text: x.name!, value: String(x.id)};
       return option;
     });
 
-    return Promise.resolve<ISelectOption<string>[]>(options); 
+    return Promise.resolve<ISelectOption[]>(options); 
   }  
 }
 

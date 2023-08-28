@@ -29,7 +29,7 @@ export const Header: React.FC<IHeaderProps> = ({}:IHeaderProps) =>
     dispatch(showHeaderLayoutAction(hide));
   }
 
-  return  <>{layoutState.header.isVisible &&
+  return  <>{layoutState.header.isVisibleUser && layoutState.header.isVisible &&
     <Box sx={{ flexGrow: 1 }}>
       <AppBar>
         <Toolbar>

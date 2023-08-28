@@ -19,8 +19,14 @@ export const showRightPanelLayoutAction = createAction<boolean>(SHOW_RIGHT_PANEL
 export const SHOW_HEADER_LAYOUT = 'layout/SHOW_HEADER_LAYOUT' as const;
 export const showHeaderLayoutAction = createAction<boolean>(SHOW_HEADER_LAYOUT);
 
+export const SHOW_HEADER_USER_LAYOUT = 'layout/SHOW_HEADER_USER_LAYOUT' as const;
+export const showHeaderUserLayoutAction = createAction<boolean>(SHOW_HEADER_USER_LAYOUT);
+
 export const SHOW_FOOTER_LAYOUT = 'layout/SHOW_FOOTER_LAYOUT' as const;
 export const showFooterLayoutAction = createAction<boolean>(SHOW_FOOTER_LAYOUT);
+
+export const SHOW_FOOTER_USER_LAYOUT = 'layout/SHOW_FOOTER_USER_LAYOUT' as const;
+export const showFooterUserLayoutAction = createAction<boolean>(SHOW_FOOTER_USER_LAYOUT);
 
 export const COLLAPSE_FOOTER_LAYOUT = 'layout/COLLAPSE_FOOTER_LAYOUT' as const;
 export const collapseFooterLayoutAction = createAction<boolean>(COLLAPSE_FOOTER_LAYOUT);

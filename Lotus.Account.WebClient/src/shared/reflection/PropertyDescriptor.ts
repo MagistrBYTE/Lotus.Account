@@ -1,4 +1,5 @@
 import { ISelectOption } from 'src/core/types/SelectOption';
+import { TKey } from 'src/core/types/Key';
 import { IPropertyEditable } from './PropertyEditable';
 import { IPropertyFiltering } from './PropertyFiltering';
 import { IPropertyGrouping } from './PropertyGrouping';
@@ -58,5 +59,10 @@ export interface IPropertyDescriptor
   /**
    * Статус поддержки редактирования свойства
    */
-  editing?: IPropertyEditable;    
+  editing?: IPropertyEditable;
+
+  /**
+   * Отображение указанного свойства как изображения
+   */
+  viewImage?: boolean;  
 }

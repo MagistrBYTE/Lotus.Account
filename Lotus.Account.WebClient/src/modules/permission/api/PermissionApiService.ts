@@ -120,7 +120,7 @@ class PermissionApiService extends AuthApiService
     }
   }
 
-  public async getPermissionsAsOptionsAsync():Promise<ISelectOption<string>[]>
+  public async getPermissionsAsOptionsAsync():Promise<ISelectOption[]>
   {
     const search:URLSearchParams = createURLSearchParamsFromRequest();
 
@@ -130,13 +130,13 @@ class PermissionApiService extends AuthApiService
 
     const payload:IPermission[] = response.data.payload!;
 
-    const options:ISelectOption<string>[] = payload.map((x)=>
+    const options:ISelectOption[] = payload.map((x)=>
     {
-      const option: ISelectOption<string> = {text: x.dispalyName!, value: String(x.id)};
+      const option: ISelectOption = {text: x.dispalyName!, value: String(x.id)};
       return option;
     });
 
-    return Promise.resolve<ISelectOption<string>[]>(options); 
+    return Promise.resolve<ISelectOption[]>(options); 
   }
 }
 

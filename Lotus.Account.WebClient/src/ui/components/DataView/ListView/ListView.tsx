@@ -11,6 +11,7 @@ import { IRequest } from 'src/shared/request/Request';
 import { localization } from 'src/shared/localization';
 import { getLayoutClientHeight } from 'src/shared/layout';
 import { IFilterProperty } from 'src/shared/filtering/FilterProperty';
+import { useScreenResizeOrOrientation } from 'src/core/hooks/useScreenTypeChanged';
 import { ToastWrapper, toastError } from '../../Info/Toast';
 import { DialogFilterPanel } from './components/DialogFilterPanel';
 
@@ -127,18 +128,7 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
   //
   // Методы жизненного цикла
   //
-
-  useLayoutEffect(() => 
-  {
-    window.addEventListener('resize', handleScreenChange);
-    window.addEventListener('orientationchange', handleScreenChange);
-
-    return () => 
-    {
-      window.removeEventListener('resize', handleScreenChange);
-      window.removeEventListener('orientationchange', handleScreenChange);
-    };
-  }, []);
+  useScreenResizeOrOrientation(handleScreenChange);
 
   useEffect(() => 
   {

@@ -1,29 +1,40 @@
-import { auth } from './data/auth';
-import { common } from './data/common';
-import { actions } from './data/actions';
-import { filtres } from './data/filtres';
-import { validation } from './data/validation';
-import { group } from './data/group';
-import { notification } from './data/notification';
-import { configuration } from './data/configuration';
-import { user } from './data/user';
-import { position } from './data/position';
-import { permission } from './data/permission';
-import { role } from './data/role';
-import { profile } from './data/profile';
+import { actions } from './Common/actions';
+import { common } from './Common/common';
+import { filtres } from './Common/filtres';
+import { validation } from './Common/validation';
+
+import { auth } from './Account/auth';
+import { configuration } from './Account/configuration';
+import { group } from './Account/group';
+import { notification } from './Account/notification';
+import { permission } from './Account/permission';
+import { position } from './Account/position';
+import { profile } from './Account/profile';
+import { role } from './Account/role';
+import { user } from './Account/user';
+
+import { person } from './Game/person';
+import { map } from './Game/map';
 
 export const ruLocale = {
-  auth, 
-  common,
+  // Common
   actions,
-  validation,
+  common,
   filtres,
+  validation,
+
+  // Account
+  auth, 
+  configuration,
   group,
   notification,
-  configuration,
-  user,
-  position,
   permission,
+  position,
+  profile,
   role,
-  profile
+  user,
+  
+  // Game
+  person,
+  map
 };

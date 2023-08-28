@@ -45,7 +45,8 @@ export const defaultStateDesktop: ILayoutState = {
   header:
   {
     height: DesktopViewSettings.headerHeight,
-    isVisible: true
+    isVisible: true,
+    isVisibleUser: true
   },
   leftPanel:
   {
@@ -67,6 +68,7 @@ export const defaultStateDesktop: ILayoutState = {
   {
     height: DesktopViewSettings.footerHeight,
     isVisible: true,
+    isVisibleUser: true,
     isCollapsed: true
   }
 };

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { TScreenType } from '../domain/ScreenType';
-import { DesktopViewSettings, PortraitViewSettings } from '../domain/ViewSettings';
+import { DesktopViewSettings, LandscapeViewSettings, PortraitViewSettings } from '../domain/ViewSettings';
 import { loadLayoutFromStorage } from '../utils/loadLayoutFromStorage';
 import { saveLayoutToStorage } from '../utils/saveLayoutToStorage';
 import { ILayoutState } from './LayoutState';
@@ -9,7 +9,7 @@ import { setScreenTypeAction, showHeaderLayoutAction,
   openLeftPanelLayoutAction, 
   showRightPanelLayoutAction, 
   setWidthLeftPanelLayoutAction, 
-  showFooterLayoutAction, collapseFooterLayoutAction } from './LayoutActions';
+  showFooterLayoutAction, collapseFooterLayoutAction, showHeaderUserLayoutAction, showFooterUserLayoutAction } from './LayoutActions';
 
 const initialState: ILayoutState = loadLayoutFromStorage();
 
@@ -46,6 +46,14 @@ export const layoutSlice = createSlice({
         case TScreenType.Landscape:
           {
             state.header.isVisible = false;
+
+            state.leftPanel.maxWidth = LandscapeViewSettings.leftPanelWidthMax;
+            state.leftPanel.minWidth = LandscapeViewSettings.leftPanelWidthMin;
+            state.leftPanel.width = LandscapeViewSettings.leftPanelWidthMin;
+            state.rightPanel.maxWidth = LandscapeViewSettings.rightPanelWidthMax;
+            state.rightPanel.minWidth = LandscapeViewSettings.rightPanelWidthMin;
+            state.rightPanel.width = LandscapeViewSettings.rightPanelWidthMin;
+
             state.footer.isVisible = false;
           }break;    
         case TScreenType.Portrait:
@@ -75,7 +83,12 @@ export const layoutSlice = createSlice({
     {
       state.header.isVisible = action.payload;
       saveLayoutToStorage(state);
-    });    
+    });
+    builder.addCase(showHeaderUserLayoutAction, (state, action) => 
+    {
+      state.header.isVisibleUser = action.payload;
+      saveLayoutToStorage(state);
+    });     
 
     //
     // Левая панель
@@ -120,6 +133,11 @@ export const layoutSlice = createSlice({
     builder.addCase(showFooterLayoutAction, (state, action) => 
     {
       state.footer.isVisible = action.payload;
+      saveLayoutToStorage(state);
+    });
+    builder.addCase(showFooterUserLayoutAction, (state, action) => 
+    {
+      state.footer.isVisibleUser = action.payload;
       saveLayoutToStorage(state);
     });
     builder.addCase(collapseFooterLayoutAction, (state, action) => 

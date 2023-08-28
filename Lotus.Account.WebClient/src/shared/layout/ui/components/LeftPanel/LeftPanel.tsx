@@ -73,7 +73,12 @@ export const LeftPanel: React.FC<ILeftPanelProps> = (props:ILeftPanelProps) =>
   }
   else
   {
-    return <VerticalStack sx={{marginLeft: 1}} alignItems={'center'}>
+    const marginLeft = 1;
+    const marginRight = 1;
+  
+    const actualWidthPanel = layoutState.leftPanel.minWidth - (marginLeft * 8 + marginRight * 8);
+
+    return <VerticalStack sx={{marginLeft: marginLeft, marginRight: marginRight, width: actualWidthPanel}} alignItems={'center'}>
       <IconButton
         sx={{margin: 1}}
         onClick={toggleDrawer}>
