@@ -45,14 +45,14 @@ namespace Lotus
 
 			//---------------------------------------------------------------------------------------------------------
 			/// <summary>
-			/// Создание пользователя (сущностей типа <see cref="CUser"/>) - Администратора системы
+			/// Создание пользователя (сущностей типа <see cref="User"/>) - Администратора системы
 			/// </summary>
 			/// <param name="modelBuilder">Интерфейс для построения моделей</param>
 			//---------------------------------------------------------------------------------------------------------
 			public static void CreateUser(ModelBuilder modelBuilder)
             {
                 // Определение для таблицы
-                var model = modelBuilder.Entity<CUser>();
+                var model = modelBuilder.Entity<User>();
 
                 // Данные
                 model.HasData(XUserConstants.Admin);
@@ -60,107 +60,107 @@ namespace Lotus
 
             //---------------------------------------------------------------------------------------------------------
             /// <summary>
-            /// Создание ролей (сущностей типа <see cref="CRole"/>) по умолчанию
+            /// Создание ролей (сущностей типа <see cref="UserRole"/>) по умолчанию
             /// </summary>
             /// <param name="modelBuilder">Интерфейс для построения моделей</param>
             //---------------------------------------------------------------------------------------------------------
             public static void CreateRoles(ModelBuilder modelBuilder)
             {
                 // Определение для таблицы
-                var model = modelBuilder.Entity<CRole>();
+                var model = modelBuilder.Entity<UserRole>();
 
                 // Данные
-                model.HasData(XRoleConstants.Admin,
-                    XRoleConstants.Editor,
-                    XRoleConstants.User);
+                model.HasData(XUserRoleConstants.Admin,
+                    XUserRoleConstants.Editor,
+                    XUserRoleConstants.User);
             }
 
             //---------------------------------------------------------------------------------------------------------
             /// <summary>
-            /// Создание должностей (сущностей типа <see cref="CPosition"/>) по умолчанию
+            /// Создание должностей (сущностей типа <see cref="UserPosition"/>) по умолчанию
             /// </summary>
             /// <param name="modelBuilder">Интерфейс для построения моделей</param>
             //---------------------------------------------------------------------------------------------------------
             public static void CreatePost(ModelBuilder modelBuilder)
             {
                 // Определение для таблицы
-                var model = modelBuilder.Entity<CPosition>();
+                var model = modelBuilder.Entity<UserPosition>();
 
                 // Данные
                 model.HasData(
-                    XPositionConstants.Inspector,
-                    XPositionConstants.ChiefInspector,
-                    XPositionConstants.LeadingSpecialist,
-                    XPositionConstants.DepartmentHead);
+                    XUserPositionConstants.Inspector,
+                    XUserPositionConstants.ChiefInspector,
+                    XUserPositionConstants.LeadingSpecialist,
+                    XUserPositionConstants.DepartmentHead);
             }
 
             //---------------------------------------------------------------------------------------------------------
             /// <summary>
-            /// Создание разрешений (сущностей типа <see cref="CPermission"/>) по умолчанию
+            /// Создание разрешений (сущностей типа <see cref="UserPermission"/>) по умолчанию
             /// </summary>
             /// <param name="modelBuilder">Интерфейс для построения моделей</param>
             //---------------------------------------------------------------------------------------------------------
             public static void CreatePermission(ModelBuilder modelBuilder)
             {
                 // Определение для таблицы
-                var model = modelBuilder.Entity<CPermission>();
+                var model = modelBuilder.Entity<UserPermission>();
 
                 // Данные
-                model.HasData(XPermissionConstants.Admin,
-                    XPermissionConstants.Editor,
-                    XPermissionConstants.User);
+                model.HasData(XUserPermissionConstants.Admin,
+                    XUserPermissionConstants.Editor,
+                    XUserPermissionConstants.User);
             }
 
             //---------------------------------------------------------------------------------------------------------
             /// <summary>
-            /// Создание взаимосвязи между ролью и разрешением (сущностей типа <see cref="CRolePermission"/>) по умолчанию
+            /// Создание взаимосвязи между ролью и разрешением (сущностей типа <see cref="UserRolePermissionRelation"/>) по умолчанию
             /// </summary>
             /// <param name="modelBuilder">Интерфейс для построения моделей</param>
             //---------------------------------------------------------------------------------------------------------
             public static void CreateRolePermission(ModelBuilder modelBuilder)
             {
                 // Определение для таблицы
-                var model = modelBuilder.Entity<CRolePermission>();
+                var model = modelBuilder.Entity<UserRolePermissionRelation>();
 
                 // Данные
                 model.HasData(
-                    new CRolePermission()
+                    new UserRolePermissionRelation()
                     {
                         Id = 1,
-                        RoleId = XRoleConstants.Admin.Id,
-                        PermissionId = XPermissionConstants.Admin.Id
+                        RoleId = XUserRoleConstants.Admin.Id,
+                        PermissionId = XUserPermissionConstants.Admin.Id
                     },
-                    new CRolePermission()
+                    new UserRolePermissionRelation()
                     {
                         Id = 2,
-                        RoleId = XRoleConstants.Editor.Id,
-                        PermissionId = XPermissionConstants.Editor.Id
+                        RoleId = XUserRoleConstants.Editor.Id,
+                        PermissionId = XUserPermissionConstants.Editor.Id
                     },
-                    new CRolePermission()
+                    new UserRolePermissionRelation()
                     {
                         Id = 3,
-                        RoleId = XRoleConstants.User.Id,
-                        PermissionId = XPermissionConstants.User.Id
+                        RoleId = XUserRoleConstants.User.Id,
+                        PermissionId = XUserPermissionConstants.User.Id
                     });
             }
 
 			//---------------------------------------------------------------------------------------------------------
 			/// <summary>
-			/// Создание групп (сущностей типа <see cref="CGroup"/>) по умолчанию
+			/// Создание групп (сущностей типа <see cref="UserGroup"/>) по умолчанию
 			/// </summary>
 			/// <param name="modelBuilder">Интерфейс для построения моделей</param>
 			//---------------------------------------------------------------------------------------------------------
 			public static void CreateGroup(ModelBuilder modelBuilder)
 			{
 				// Определение для таблицы
-				var model = modelBuilder.Entity<CGroup>();
+				var model = modelBuilder.Entity<UserGroup>();
 
 				// Данные
-				model.HasData(XGroupConstants.Guardians,
-					XGroupConstants.North,
-					XGroupConstants.South,
-					XGroupConstants.East,
-					XGroupConstants.West);
+				model.HasData(XUserGroupConstants.Guardians,
+					XUserGroupConstants.North,
+					XUserGroupConstants.South,
+					XUserGroupConstants.East,
+					XUserGroupConstants.West);
 			}
 			#endregion
 		}

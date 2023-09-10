@@ -32,7 +32,7 @@ namespace Lotus
         {
             public static void Init()
             {
-                TypeAdapterConfig<CRole, CRoleDto>
+                TypeAdapterConfig<UserRole, UserRoleDto>
                     .NewConfig()
                     .Map(x => x.PermissionIds, x => x.Permissions.Select(o => o.Id).ToArray());
             }

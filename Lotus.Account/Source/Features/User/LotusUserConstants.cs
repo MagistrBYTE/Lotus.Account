@@ -30,7 +30,7 @@ namespace Lotus
             /// <summary>
             /// Администратор системы
             /// </summary>
-            public static readonly CUser Admin = new CUser
+            public static readonly User Admin = new User
             {
                 Id = Guid.Parse("e3182c8f-87bc-4e27-a27f-b32e3e2b8018"),
                 Login = "DanielDem",
@@ -39,7 +39,7 @@ namespace Lotus
                 Name = "Даниил",
                 Surname = "Дементьев",
                 Patronymic = "Сергеевич",
-                RoleId = XRoleConstants.Admin.Id
+                RoleId = XUserRoleConstants.Admin.Id
             };
             #endregion
         }

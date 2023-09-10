@@ -38,30 +38,27 @@ namespace Lotus
             /// Аутентификация пользователя
             /// </summary>
             /// <param name="loginParameters">Параметры для аутентификации пользователя</param>
-            /// <param name="browser">Браузер входа</param>
-            /// <param name="device">Устройство входа</param>
             /// <returns>Набор утверждений</returns>
             //---------------------------------------------------------------------------------------------------------
-            Task<Response<ClaimsPrincipal>> LoginAsync(CLoginParametersDto loginParameters, String browser, CDevice? device);
+            Task<Response<ClaimsPrincipal>> LoginAsync(LoginParametersDto loginParameters);
 
             //---------------------------------------------------------------------------------------------------------
             /// <summary>
             /// Выход из статуса аутентификации пользователя
             /// </summary>
-            /// <param name="accessToken">Токен доступа</param>
             /// <returns>Задача</returns>
             //---------------------------------------------------------------------------------------------------------
-            Task LogoutAsync(String? accessToken);
+            Task LogoutAsync();
 
 			//---------------------------------------------------------------------------------------------------------
 			/// <summary>
 			/// Регистрация нового пользователя
 			/// </summary>
-			/// <param name="registrParameters">Параметры для регистрации нового пользователя</param>
+			/// <param name="registerParameters">Параметры для регистрации нового пользователя</param>
 			/// <param name="token">Токен отмены</param>
 			/// <returns>Пользователь</returns>
 			//---------------------------------------------------------------------------------------------------------
-			Task<Response> RegistrAsync(CRegistrParametersDto registrParameters, CancellationToken token);
+			Task<Response> RegisterAsync(RegisterParametersDto registerParameters, CancellationToken token);
 		}
         //-------------------------------------------------------------------------------------------------------------
         /**@}*/

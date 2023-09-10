@@ -10,6 +10,7 @@
 // Версия: 1.0.0.0
 // Последнее изменение от 30.04.2023
 //=====================================================================================================================
+using Lotus.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 //=====================================================================================================================
@@ -29,63 +30,48 @@ namespace Lotus
         /// Контекст базы данных представляющий собой всех пользователей и учетных данных
         /// </summary>
         //-------------------------------------------------------------------------------------------------------------
-        public class CAccountDbContext : DbContext
+        public class AccountDbContext : DbContext
         {
             #region ======================================= СВОЙСТВА ==================================================
             /// <summary>
             /// Список пользователей
             /// </summary>
-            public DbSet<CUser> Users { get; set; } = null!;
+            public DbSet<User> Users { get; set; } = null!;
 
             /// <summary>
             /// Список ролей
             /// </summary>
-            public DbSet<CRole> Roles { get; set; } = null!;
+            public DbSet<UserRole> Roles { get; set; } = null!;
 
             /// <summary>
             /// Список разрешений
             /// </summary>
-            public DbSet<CPermission> Permissions { get; set; } = null!;
+            public DbSet<UserPermission> Permissions { get; set; } = null!;
 
             /// <summary>
             /// Список должностей
             /// </summary>
-            public DbSet<CPosition> Positions { get; set; } = null!;
+            public DbSet<UserPosition> Positions { get; set; } = null!;
 
             /// <summary>
             /// Список групп
             /// </summary>
-            public DbSet<CGroup> Groups { get; set; } = null!;
+            public DbSet<UserGroup> Groups { get; set; } = null!;
 
             /// <summary>
             /// Список сфер деятельности
             /// </summary>
-            public DbSet<CFieldActivity> FieldActivities { get; set; } = null!;
+            public DbSet<UserFieldActivity> FieldActivities { get; set; } = null!;
 
             /// <summary>
             /// Список сообщений
             /// </summary>
-            public DbSet<CMessage> Messages { get; set; } = null!;
+            public DbSet<UserMessage> Messages { get; set; } = null!;
 
 			/// <summary>
 			/// Список уведомления
 			/// </summary>
-			public DbSet<CNotification> Notifications { get; set; } = null!;
-
-			/// <summary>
-			/// Список аваторов
-			/// </summary>
-			public DbSet<CAvatar> Avatars { get; set; } = null!;
-
-            /// <summary>
-            /// Список устройств
-            /// </summary>
-            public DbSet<CDevice> Devices { get; set; } = null!;
-
-            /// <summary>
-            /// Список сессий
-            /// </summary>
-            public DbSet<CSession> Sessions { get; set; } = null!;
+			public DbSet<UserNotification> Notifications { get; set; } = null!;
             #endregion
 
             #region ======================================= КОНСТРУКТОРЫ ==============================================
@@ -94,7 +80,7 @@ namespace Lotus
             /// Конструктор по умолчанию инициализирует объект класса предустановленными значениями
             /// </summary>
             //---------------------------------------------------------------------------------------------------------
-            public CAccountDbContext()
+            public AccountDbContext()
             {
             }
 
@@ -104,7 +90,7 @@ namespace Lotus
 			/// </summary>
 			/// <param name="options">Параметры конфигурации</param>
 			//---------------------------------------------------------------------------------------------------------
-			public CAccountDbContext(DbContextOptions<CAccountDbContext> options)
+			public AccountDbContext(DbContextOptions<AccountDbContext> options)
                 : base(options)
             {
             }
@@ -115,7 +101,7 @@ namespace Lotus
 			/// </summary>
 			/// <param name="options">Параметры конфигурации</param>
 			//---------------------------------------------------------------------------------------------------------
-			protected CAccountDbContext(DbContextOptions options)
+			protected AccountDbContext(DbContextOptions options)
 				: base(options)
 			{
 			}
@@ -169,52 +155,29 @@ namespace Lotus
 				}
 			}
             #endregion
-
-            #region ======================================= РАБОТА С УСТРОЙСТВАМИ =====================================
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Получение актуального устройства
-            /// </summary>
-            /// <param name="device">Устройство</param>
-            /// <returns>Устройство</returns>
-			//---------------------------------------------------------------------------------------------------------
-            public CDevice GetDevice(CDevice? device)
-            {
-                if (device == null)
-                {
-                    if (Devices.Any())
-                    {
-                        return Devices.First();
-                    }
-                    else
-                    {
-                        CDevice newDevice = new CDevice();
-                        newDevice.SetCodeId();
-                        Devices.Add(newDevice);
-                        SaveChanges();
-
-                        return newDevice;
-                    }
-                }
-
-                CDevice? find_device = Devices.Where(x => x.CodeId == device.CodeId).FirstOrDefault();
-                if (find_device is not null)
-                {
-                    return find_device;
-                }
-
-                device.SetCodeId();
-                Devices.Add(device);
-                SaveChanges();
-
-                return device;
-
-            }
-            #endregion
         }
-        //-------------------------------------------------------------------------------------------------------------
-        /**@}*/
-        //-------------------------------------------------------------------------------------------------------------
-    }
+
+		//-------------------------------------------------------------------------------------------------------------
+		/// <summary>
+		/// 
+		/// </summary>
+		//-------------------------------------------------------------------------------------------------------------
+		public class DataStorageAccount : DataStorageContextDb<AccountDbContext>
+		{
+			//---------------------------------------------------------------------------------------------------------
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="context">Контекс базы данных</param>
+			//---------------------------------------------------------------------------------------------------------
+			public DataStorageAccount(AccountDbContext context) 
+				: base(context)
+			{
+			}
+		}
+		//-------------------------------------------------------------------------------------------------------------
+		/**@}*/
+		//-------------------------------------------------------------------------------------------------------------
+	}
 }
 //=====================================================================================================================

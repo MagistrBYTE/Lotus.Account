@@ -38,7 +38,7 @@ namespace Lotus
             /// <param name="token">Токен отмены</param>
             /// <returns>Пользователь</returns>
             //---------------------------------------------------------------------------------------------------------
-            Task<Response<CUserDto>> CreateAsync(CUserCreateDto userCreate, CancellationToken token);
+            Task<Response<UserDto>> CreateAsync(UserCreateRequest userCreate, CancellationToken token);
 
             //---------------------------------------------------------------------------------------------------------
             /// <summary>
@@ -48,17 +48,27 @@ namespace Lotus
             /// <param name="token">Токен отмены</param>
             /// <returns>Пользователь</returns>
             //---------------------------------------------------------------------------------------------------------
-            Task<Response<CUserDto>> UpdateAsync(CUserDto userUpdate, CancellationToken token);
+            Task<Response<UserDto>> UpdateAsync(UserDto userUpdate, CancellationToken token);
 
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Получение списка пользователей
-            /// </summary>
-            /// <param name="userRequest">Параметры получения списка</param>
-            /// <param name="token">Токен отмены</param>
-            /// <returns>Cписок пользователей</returns>
-            //---------------------------------------------------------------------------------------------------------
-            Task<ResponsePage<CUserDto>> GetAllAsync(CPositionsDto userRequest, CancellationToken token);
+			//---------------------------------------------------------------------------------------------------------
+			/// <summary>
+			/// Получение указанного пользователя
+			/// </summary>
+			/// <param name="id">Идентификатор пользователя</param>
+			/// <param name="token">Токен отмены</param>
+			/// <returns>Пользователь</returns>
+			//---------------------------------------------------------------------------------------------------------
+			Task<Response<UserDto>> GetAsync(Guid id, CancellationToken token);
+
+			//---------------------------------------------------------------------------------------------------------
+			/// <summary>
+			/// Получение списка пользователей
+			/// </summary>
+			/// <param name="userRequest">Параметры получения списка</param>
+			/// <param name="token">Токен отмены</param>
+			/// <returns>Cписок пользователей</returns>
+			//---------------------------------------------------------------------------------------------------------
+			Task<ResponsePage<UserDto>> GetAllAsync(UsersRequest userRequest, CancellationToken token);
 
             //---------------------------------------------------------------------------------------------------------
             /// <summary>

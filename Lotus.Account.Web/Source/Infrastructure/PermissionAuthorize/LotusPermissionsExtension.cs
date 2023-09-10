@@ -41,8 +41,8 @@ namespace Lotus
                 services
                     .AddSingleton<IAuthorizationPolicyProvider, PermissionsPolicyProvider>()
                     .AddScoped<IAuthorizationHandler, PermissionsHandler>()
-                    .AddScoped<Func<CUserAuthorizeInfo?>>(sp => sp.GetService<CUserAuthorizeInfo>)
-                    .AddScoped<CUserAuthorizeInfo>(
+                    .AddScoped<Func<UserAuthorizeInfo?>>(sp => sp.GetService<UserAuthorizeInfo>)
+                    .AddScoped<UserAuthorizeInfo>(
                         sp =>
                         {
                             var contextAccessor = sp.GetService<IHttpContextAccessor>();
@@ -50,12 +50,12 @@ namespace Lotus
 
                             if (claimsIdentity is not null)
                             {
-                                var info = new CUserAuthorizeInfo();
+                                var info = new UserAuthorizeInfo();
                                 info.SetThisFrom(claimsIdentity);
                                 return info;
                             }
 
-                            return new CUserAuthorizeInfo();
+                            return new UserAuthorizeInfo();
                         });
 
                 return services;

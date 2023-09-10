@@ -53,7 +53,7 @@ namespace Lotus
 			/// <summary>
 			/// Конечная точка для регистрации пользователя
 			/// </summary>
-			public const String RegistrEndpoint = "api/Authorize/Registr";
+			public const String RegisterEndpoint = "api/Authorize/Register";
 
         }
         //-------------------------------------------------------------------------------------------------------------

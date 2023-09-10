@@ -28,10 +28,10 @@ namespace Lotus
         /// Cервис для работы с пользователями
         /// </summary>
         //-------------------------------------------------------------------------------------------------------------
-        public class CUserService : ILotusUserService
+        public class UserService : ILotusUserService
         {
             #region ======================================= ДАННЫЕ ====================================================
-            private readonly CAccountDbContext _context;
+            private readonly ILotusDataStorage _dataStorage;
             #endregion
 
             #region ======================================= КОНСТРУКТОРЫ ==============================================
@@ -39,11 +39,11 @@ namespace Lotus
             /// <summary>
             /// Конструктор инициализирует объект класса указанными параметрами
             /// </summary>
-            /// <param name="context">Контекст БД пользователей</param>
+            /// <param name="dataStorage">Интерфейс для работы с сущностями</param>
             //---------------------------------------------------------------------------------------------------------
-            public CUserService(CAccountDbContext context)
+            public UserService(ILotusDataStorage dataStorage)
             {
-                _context = context;
+                _dataStorage = dataStorage;
             }
             #endregion
 
@@ -56,17 +56,19 @@ namespace Lotus
             /// <param name="token">Токен отмены</param>
             /// <returns>Пользователь</returns>
             //---------------------------------------------------------------------------------------------------------
-            public async Task<Response<CUserDto>> CreateAsync(CUserCreateDto userCreate, CancellationToken token)
+            public async Task<Response<UserDto>> CreateAsync(UserCreateRequest userCreate, CancellationToken token)
             {
-                var user = _context.Users.FirstOrDefault(x => x.Login == userCreate.Login);
+				var queryUser = _dataStorage.Query<User>();
+
+				var user = queryUser.FirstOrDefault(x => x.Login == userCreate.Login);
 
                 if (user is not null)
                 {
-                    return XResponse.Failed<CUserDto>(XUserErrors.LoginAlreadyUse);
+                    return XResponse.Failed<UserDto>(XUserErrors.LoginAlreadyUse);
                 }
 
                 // Создаем нового пользователя
-                user = new CUser
+                user = new User
                 {
                     Login = userCreate.Login,
                     Email = userCreate.Email,
@@ -74,14 +76,14 @@ namespace Lotus
                     Name = userCreate.Name,
                     Surname = userCreate.Surname,
                     Patronymic = userCreate.Patronymic,
-                    Role = XRoleConstants.User,
-                    Post = XPositionConstants.Inspector
+                    Role = XUserRoleConstants.User,
+                    Post = XUserPositionConstants.Inspector
                 };
 
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync(token);
+				await _dataStorage.AddAsync(user);
+                await _dataStorage.FlushAsync(token);
 
-                CUserDto result = user.Adapt<CUserDto>();
+                UserDto result = user.Adapt<UserDto>();
 
                 return XResponse.Succeed(result);
             }
@@ -94,35 +96,57 @@ namespace Lotus
             /// <param name="token">Токен отмены</param>
             /// <returns>Пользователь</returns>
             //---------------------------------------------------------------------------------------------------------
-            public async Task<Response<CUserDto>> UpdateAsync(CUserDto userUpdate, CancellationToken token)
+            public async Task<Response<UserDto>> UpdateAsync(UserDto userUpdate, CancellationToken token)
             {
-                CUser user = userUpdate.Adapt<CUser>();
+                User user = userUpdate.Adapt<User>();
 
-                _context.Users.Update(user);
-                await _context.SaveChangesAsync(token);
+                _dataStorage.Update(user);
+                await _dataStorage.FlushAsync(token);
 
-                CUserDto result = user.Adapt<CUserDto>();
+                UserDto result = user.Adapt<UserDto>();
 
                 return XResponse.Succeed(result);
             }
 
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Получение списка пользователей
-            /// </summary>
-            /// <param name="userRequest">Параметры получения списка</param>
-            /// <param name="token">Токен отмены</param>
-            /// <returns>Cписок пользователей</returns>
-            //---------------------------------------------------------------------------------------------------------
-            public async Task<ResponsePage<CUserDto>> GetAllAsync(CPositionsDto userRequest, CancellationToken token)
+			//---------------------------------------------------------------------------------------------------------
+			/// <summary>
+			/// Получение указанного пользователя
+			/// </summary>
+			/// <param name="id">Идентификатор пользователя</param>
+			/// <param name="token">Токен отмены</param>
+			/// <returns>Пользователь</returns>
+			//---------------------------------------------------------------------------------------------------------
+			public async Task<Response<UserDto>> GetAsync(Guid id, CancellationToken token)
+			{
+				User? entity = await _dataStorage.GetByIdAsync<User, Guid>(id, token);
+
+				if (entity == null)
+				{
+					return XResponse.Failed<UserDto>(XUserErrors.UserNotFound);
+				}
+
+				UserDto result = entity.Adapt<UserDto>();
+
+				return XResponse.Succeed(result);
+			}
+
+			//---------------------------------------------------------------------------------------------------------
+			/// <summary>
+			/// Получение списка пользователей
+			/// </summary>
+			/// <param name="userRequest">Параметры получения списка</param>
+			/// <param name="token">Токен отмены</param>
+			/// <returns>Cписок пользователей</returns>
+			//---------------------------------------------------------------------------------------------------------
+			public async Task<ResponsePage<UserDto>> GetAllAsync(UsersRequest userRequest, CancellationToken token)
             {
-                var query = _context.Users.AsQueryable();
+				var query = _dataStorage.Query<User>();
 
                 query = query.Filter(userRequest.Filtering);
 
 				var queryOrder = query.Sort(userRequest.Sorting, x => x.Id);
 
-				var result = await queryOrder.ToResponsePageAsync<CUser, CUserDto>(userRequest, token);
+				var result = await queryOrder.ToResponsePageAsync<User, UserDto>(userRequest, token);
 
                 return result;
             }
@@ -137,14 +161,20 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             public async Task<Response> DeleteAsync(Guid id, CancellationToken token)
             {
-                CUser? user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: token);
-                if (user == null)
-                {
-                    return XResponse.Failed(XUserErrors.UserNotFound);
-                }
+				User? entity = await _dataStorage.GetByIdAsync<User, Guid>(id, token);
 
-                _context.Users.Remove(user!);
-                await _context.SaveChangesAsync(token);
+				if (entity == null)
+				{
+					return XResponse.Failed<UserDto>(XUserErrors.UserNotFound);
+				}
+
+				if (entity.Id == XUserConstants.Admin.Id)
+				{
+					return XResponse.Failed<UserDto>(XUserErrors.NotDeleteConst);
+				}
+
+				_dataStorage.Remove(entity!);
+                await _dataStorage.FlushAsync(token);
 
                 return XResponse.Succeed();
             }

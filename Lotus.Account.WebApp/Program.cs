@@ -89,7 +89,7 @@ await app.InitLotusAccountDatabase();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
-    endpoints.MapFallbackToFile("index.html");
+	endpoints.MapFallbackToFile("index.html");
 });
 
 app.Run();

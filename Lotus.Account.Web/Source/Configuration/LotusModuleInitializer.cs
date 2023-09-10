@@ -11,6 +11,7 @@
 // Последнее изменение от 30.04.2023
 //=====================================================================================================================
 using System;
+using Lotus.Repository;
 using Microsoft.EntityFrameworkCore;
 //=====================================================================================================================
 namespace Lotus
@@ -47,7 +48,7 @@ namespace Lotus
                     {
                         // Configure OpenIddict to use the EF Core stores/models.
                         options.UseEntityFrameworkCore()
-                        .UseDbContext<CAccountDbContext>();
+                        .UseDbContext<AccountDbContext>();
                     })
 
                     // Register the OpenIddict server components.
@@ -111,27 +112,19 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			public static IServiceCollection AddLotusAccountServices(this IServiceCollection services)
             {
-                services.AddScoped<ILotusAuthorizeService, CAuthorizeService>();
-				services.AddScoped<ILotusGroupService, CGroupService>();
-				services.AddScoped<ILotusNotificationService, CNotificationService>();
-
-				services.AddScoped<ILotusUserService, CUserService>();
-                services.AddScoped<ILotusPositionService, CPositionService>();
-                services.AddScoped<ILotusPermissionService, CPermissionService>();
-                services.AddScoped<ILotusRoleService, CRoleService>();
+				services.AddScoped<ILotusDataStorage, DataStorageAccount>();
+				services.AddScoped<ILotusUserService, UserService>();
+				services.AddScoped<ILotusAuthorizeService, AuthorizeService>();
+				services.AddScoped<ILotusUserGroupService, UserGroupService>();
+				services.AddScoped<ILotusUserNotificationService, UserNotificationService>();
+                services.AddScoped<ILotusUserPositionService, UserPositionService>();
+                services.AddScoped<ILotusUserPermissionService, UserPermissionService>();
+                services.AddScoped<ILotusUserRoleService, UserRoleService>();
 
                 XMapping.Init();
 
                 return services;
             }
-
-			//---------------------------------------------------------------------------------------------------------
-			/// <summary>
-			/// Добавление в коллекцию сервисов базы данных
-			/// </summary>
-			/// <param name="services">Коллекция сервисов</param>
-			/// <param name="configuration">Конфигурация</param>
-			/// <returns>Коллекция сервисов</returns>
 
 			//---------------------------------------------------------------------------------------------------------
 			/// <summary>
@@ -149,7 +142,7 @@ namespace Lotus
             {
                 // Добавление CAccountDbContext для взаимодействия с базой данных учетных записей
                 // Используем для корректной работы OpenIddict
-                services.AddDbContext<CAccountDbContext>(options =>
+                services.AddDbContext<AccountDbContext>(options =>
 				{
 					options.UseOpenIddict();
 					options.UseNpgsql(configuration.GetConnectionString(connectString),
@@ -183,7 +176,7 @@ namespace Lotus
                 if (application is not null)
                 {
                     using var service_scope = application!.ApplicationServices!.GetService<IServiceScopeFactory>()!.CreateScope();
-                    using var context = service_scope.ServiceProvider.GetRequiredService<CAccountDbContext>();
+                    using var context = service_scope.ServiceProvider.GetRequiredService<AccountDbContext>();
 
                     try
                     {

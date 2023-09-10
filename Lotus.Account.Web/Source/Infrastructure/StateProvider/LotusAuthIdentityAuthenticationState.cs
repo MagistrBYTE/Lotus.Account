@@ -37,7 +37,7 @@ namespace Lotus
             #region ======================================= ДАННЫЕ ====================================================
             private readonly HttpClient mHttpClient;
             private readonly IHttpContextAccessor mHttpContextAccessor;
-            private CUserAuthorizeInfo? mUserInfo;
+            private UserAuthorizeInfo? mUserInfo;
             #endregion
 
             #region ======================================= КОНСТРУКТОРЫ ==============================================
@@ -65,7 +65,7 @@ namespace Lotus
             /// <param name="loginParameters">Параметры для аутентификации пользователя</param>
             /// <returns>Задача</returns>
             //---------------------------------------------------------------------------------------------------------
-            public async Task Login(CLoginParametersDto loginParameters)
+            public async Task Login(LoginParametersDto loginParameters)
             {
                 var httpContex = mHttpContextAccessor.HttpContext;
 
@@ -93,7 +93,7 @@ namespace Lotus
                         throw new Exception(tokenResponse.Error);
                     }
 
-                    mUserInfo = new CUserAuthorizeInfo();
+                    mUserInfo = new UserAuthorizeInfo();
                     mUserInfo.SetThisFrom(tokenResponse.AccessToken);
                     mUserInfo.IsAuthenticated = true;
 
@@ -112,11 +112,11 @@ namespace Lotus
             /// <param name="registerParameters">Параметры для регистрации нового пользователя</param>
             /// <returns>Задача</returns>
             //---------------------------------------------------------------------------------------------------------
-            public async Task Register(CUserCreateDto registerParameters)
+            public async Task Register(RegisterParametersDto registerParameters)
             {
                 try
                 {
-                    var response = await mHttpClient.PostAsJsonAsync(XRoutesConstants.RegistrEndpoint, registerParameters);
+                    var response = await mHttpClient.PostAsJsonAsync(XRoutesConstants.RegisterEndpoint, registerParameters);
 
                     response.EnsureSuccessStatusCode();
 
@@ -154,7 +154,7 @@ namespace Lotus
             /// </summary>
             /// <returns>Информация о статусе аутентификации текущего пользователя</returns>
             //---------------------------------------------------------------------------------------------------------
-            public async Task<CUserAuthorizeInfo> GetUserAuthorizeInfo()
+            public async Task<UserAuthorizeInfo> GetUserAuthorizeInfo()
             {
                 if (mUserInfo != null && mUserInfo.IsAuthenticated)
                 {
@@ -171,7 +171,7 @@ namespace Lotus
                     response.EnsureSuccessStatusCode();
 
                     var responseBody = await response.Content.ReadAsStringAsync();
-                    var authorizeInfo = JsonConvert.DeserializeObject<CUserAuthorizeInfo>(responseBody);
+                    var authorizeInfo = JsonConvert.DeserializeObject<UserAuthorizeInfo>(responseBody);
 
                     mUserInfo = authorizeInfo;
                 }

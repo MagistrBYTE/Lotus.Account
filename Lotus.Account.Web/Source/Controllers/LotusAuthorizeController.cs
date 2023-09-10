@@ -92,7 +92,7 @@ namespace Lotus
 
                 if (request.GrantType == GrantTypes.Password)
                 {
-                    CLoginParametersDto parameters = new()
+                    LoginParametersDto parameters = new()
                     {
                         Login = request.Username!,
                         Password = request.Password!,
@@ -101,7 +101,7 @@ namespace Lotus
                     var device = HttpContext.GetDeviceFromRequest();
                     var browser = HttpContext.GetBrowserFromRequest();
 
-                    var response = await _authorizeService.LoginAsync(parameters, browser, device);
+                    var response = await _authorizeService.LoginAsync(parameters);
 
                     if (response.Result != null && response.Result.Succeeded == false)
                     {
@@ -159,7 +159,7 @@ namespace Lotus
 			[HttpPost($"~{XRoutesConstants.LogoutEndpoint}")]
 			public async Task<IActionResult> Logout()
             {
-				await _authorizeService.LogoutAsync(this.HttpContext.GetAccessToken());
+				await _authorizeService.LogoutAsync();
 				
 				return SignOut(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 			}
@@ -168,15 +168,15 @@ namespace Lotus
 			/// <summary>
 			/// Регистрация нового пользователя
 			/// </summary>
-			/// <param name="registrParameters">Параметры для регистрации нового пользователя</param>
+			/// <param name="registerParameters">Параметры для регистрации нового пользователя</param>
 			/// <param name="token">Токен отмены</param>
 			/// <returns>Общий результат работы</returns>
 			//---------------------------------------------------------------------------------------------------------
-			[HttpPost(nameof(Registr))]
-			public async Task<IActionResult> Registr([FromBody] CRegistrParametersDto registrParameters, 
+			[HttpPost(nameof(Register))]
+			public async Task<IActionResult> Register([FromBody] RegisterParametersDto registerParameters, 
 				CancellationToken token)
 			{
-				var result = await _authorizeService.RegistrAsync(registrParameters, token);
+				var result = await _authorizeService.RegisterAsync(registerParameters, token);
 				return SendResponse(result);
 			}
 
@@ -194,7 +194,7 @@ namespace Lotus
 
                 if (claimsPrincipal is not null)
                 {
-                    var info = new CUserAuthorizeInfo();
+                    var info = new UserAuthorizeInfo();
                     info.SetThisFrom(claimsPrincipal.Identity as ClaimsIdentity);
                     return new JsonResult(info);
                 }

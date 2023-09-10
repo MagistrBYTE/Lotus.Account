@@ -86,6 +86,16 @@ namespace Lotus
 				Message = "Небезопасный пароль",
 				Succeeded = false,
 			};
+
+			/// <summary>
+			/// Нельзя удалить предустановленных пользователей
+			/// </summary>
+			public static readonly Result NotDeleteConst = new()
+			{
+				Code = 1010,
+				Message = "Нельзя удалить предустановленных пользователей",
+				Succeeded = false,
+			};
 			#endregion
 		}
         //-------------------------------------------------------------------------------------------------------------

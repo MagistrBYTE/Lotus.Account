@@ -27,7 +27,7 @@ namespace Lotus
         public class PermissionsHandler : AuthorizationHandler<PermissionsRequirement>
         {
             #region ======================================= ДАННЫЕ ====================================================
-            private readonly Func<CUserAuthorizeInfo?> mAuthorizeInfo;
+            private readonly Func<UserAuthorizeInfo?> mAuthorizeInfo;
             #endregion
 
             #region ======================================= КОНСТРУКТОРЫ ==============================================
@@ -37,7 +37,7 @@ namespace Lotus
             /// </summary>
             /// <param name="authorizeInfo">Делегат для получения информация об авторизации пользователя</param>
             //---------------------------------------------------------------------------------------------------------
-            public PermissionsHandler(Func<CUserAuthorizeInfo?> authorizeInfo)
+            public PermissionsHandler(Func<UserAuthorizeInfo?> authorizeInfo)
             {
                 mAuthorizeInfo = authorizeInfo;
             }
