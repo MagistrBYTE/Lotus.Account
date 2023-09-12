@@ -11,6 +11,8 @@
 // Последнее изменение от 30.04.2023
 //=====================================================================================================================
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using OpenIddict.Validation.AspNetCore;
 //---------------------------------------------------------------------------------------------------------------------
 using Lotus.Web;
 using Lotus.Repository;
@@ -60,7 +62,8 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             [HttpPost("create")]
             [ProducesResponseType(typeof(Response<UserGroupDto>), StatusCodes.Status201Created)]
-            public async Task<IActionResult> Create([FromBody] UserGroupCreateRequest groupCreate, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> Create([FromBody] UserGroupCreateRequest groupCreate, CancellationToken token)
             {
                 var result = await _groupService.CreateAsync(groupCreate, token);
                 return SendResponse(result);
@@ -76,7 +79,8 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             [HttpPut("update")]
             [ProducesResponseType(typeof(Response<UserGroupDto>), StatusCodes.Status200OK)]
-            public async Task<IActionResult> Update([FromBody] UserGroupDto groupUpdate, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> Update([FromBody] UserGroupDto groupUpdate, CancellationToken token)
             {
                 var result = await _groupService.UpdateAsync(groupUpdate, token);
                 return SendResponse(result);
@@ -92,6 +96,7 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			[HttpGet("get")]
 			[ProducesResponseType(typeof(Response<UserGroupDto>), StatusCodes.Status200OK)]
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 			public async Task<IActionResult> Get([FromQuery] Int32 id, CancellationToken token)
 			{
 				var result = await _groupService.GetAsync(id, token);
@@ -108,7 +113,8 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			[HttpGet("getall")]
             [ProducesResponseType(typeof(ResponsePage<UserGroupDto>), StatusCodes.Status200OK)]
-            public async Task<IActionResult> GetAll([FromQuery] UserGroupsRequest groupRequest, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> GetAll([FromQuery] UserGroupsRequest groupRequest, CancellationToken token)
             {
                 var result = await _groupService.GetAllAsync(groupRequest, token);
                 return SendResponse(result);
@@ -123,7 +129,8 @@ namespace Lotus
             /// <returns>Статус успешности</returns>
             //---------------------------------------------------------------------------------------------------------
             [HttpDelete("delete")]
-            public async Task<IActionResult> Delete([FromQuery] Int32 id, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> Delete([FromQuery] Int32 id, CancellationToken token)
             {
                 var result = await _groupService.DeleteAsync(id, token);
                 return SendResponse(result);

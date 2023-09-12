@@ -73,16 +73,16 @@ namespace Lotus
 
             #region ======================================= СВОЙСТВА ==================================================
             /// <summary>
-            /// Служебное наименование разрешения
-            /// </summary>
-            [MaxLength(20)]
-            public String SystemName { get; set; } = null!;
-
-            /// <summary>
             /// Наименование разрешения
             /// </summary>
+            [MaxLength(20)]
+            public String Name { get; set; } = null!;
+
+            /// <summary>
+            /// Отображаемое наименование разрешения
+            /// </summary>
             [MaxLength(40)]
-            public String? DispalyName { get; set; }
+            public String? DisplayName { get; set; }
 
             /// <summary>
             /// Список ролей куда входит данное разрешение

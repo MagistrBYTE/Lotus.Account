@@ -141,10 +141,11 @@ namespace Lotus
             [MaxLength(30)]
             public String? Surname { get; set; }
 
-            /// <summary>
-            /// Отчество пользователя
-            /// </summary>
-            public String? Patronymic { get; set; }
+			/// <summary>
+			/// Отчество пользователя
+			/// </summary>
+			[MaxLength(30)]
+			public String? Patronymic { get; set; }
 
             /// <summary>
             /// Полное имя (ФИО)
@@ -199,7 +200,7 @@ namespace Lotus
                     }
                     else
                     {
-                        return (Role.SystemName);
+                        return (Role.Name);
                     }
                 }
                 set { }
@@ -215,7 +216,7 @@ namespace Lotus
                 {
                     if (Role is not null && Role.Permissions is not null)
                     {
-                        return Role.Permissions.Select(p => p.SystemName).ToHashSet();
+                        return Role.Permissions.Select(p => p.Name).ToHashSet();
                     }
 
                     return new HashSet<String>();
@@ -232,7 +233,7 @@ namespace Lotus
                 {
                     if (Role is not null && Role.Permissions is not null)
                     {
-                        return String.Join(SeparatorForText, Role.Permissions.Select(p => p.SystemName).ToArray());
+                        return String.Join(SeparatorForText, Role.Permissions.Select(p => p.Name).ToArray());
                     }
 
                     return String.Empty;
@@ -262,9 +263,9 @@ namespace Lotus
             {
                 get
                 {
-                    if (Post is not null && Post.ShortName is not null)
+                    if (Post is not null && Post.DisplayName is not null)
                     {
-                        return (Post.ShortName);
+                        return (Post.DisplayName);
                     }
                     else
                     {

@@ -3,14 +3,14 @@ import { IValidationResult, ValidationResultSuccess } from './ValidationResult';
 /**
  * Интерфейс для определения правила валидации
  */
-export interface IValidationRule
+export interface IValidationRule<TValue = any>
 {
-    validation:(value: any|null) => IValidationResult;
+    validation:(value: TValue|null) => IValidationResult;
 }
 
-export class ValidationSuccess implements IValidationRule
+export class ValidationSuccess<TValue = any> implements IValidationRule<TValue>
 {
-  validation(value: any):IValidationResult
+  validation(value: TValue|null):IValidationResult
   {
     return ValidationResultSuccess;
   }

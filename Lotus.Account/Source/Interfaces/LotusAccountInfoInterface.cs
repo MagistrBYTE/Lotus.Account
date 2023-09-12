@@ -91,7 +91,7 @@ namespace Lotus
             // ДОЛЖНОСТЬ
             //
             /// <summary>
-            /// Краткое наименование должности
+            /// Отображаемое наименование должности
             /// </summary>
             public String PostShortName { get; set; }
 

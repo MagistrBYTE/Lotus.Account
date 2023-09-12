@@ -34,7 +34,7 @@ namespace Lotus
             {
                 Id = 1,
                 Name = "Инспектор",
-                ShortName = "Инспектор",
+                DisplayName = "Инспектор",
             };
 
             /// <summary>
@@ -44,7 +44,7 @@ namespace Lotus
             {
                 Id = 2,
                 Name = "Старший инспектор",
-                ShortName = "Старший инспектор",
+                DisplayName = "Старший инспектор",
             };
 
             /// <summary>
@@ -54,7 +54,7 @@ namespace Lotus
             {
                 Id = 3,
                 Name = "Ведущий специалист",
-                ShortName = "Ведущий специалист",
+                DisplayName = "Ведущий специалист",
             };
 
             /// <summary>
@@ -64,7 +64,7 @@ namespace Lotus
             {
                 Id = 4,
                 Name = "Начальник отдела",
-                ShortName = "Начальник отдела",
+                DisplayName = "Начальник отдела",
             };
             #endregion
         }

@@ -32,9 +32,9 @@ namespace Lotus
             public String Name { get; set; } = null!;
 
             /// <summary>
-            /// Краткое наименование должности
+            /// Отображаемое наименование должности
             /// </summary>
-            public String? ShortName { get; set; }
+            public String? DisplayName { get; set; }
         }
         //-------------------------------------------------------------------------------------------------------------
         /**@}*/

@@ -12,6 +12,8 @@
 //=====================================================================================================================
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 //---------------------------------------------------------------------------------------------------------------------
 using Lotus.Core;
 using Lotus.Repository;
@@ -81,7 +83,8 @@ namespace Lotus
                 }
 
                 // Create a new ClaimsIdentity holding the user identity.
-                var identity = new ClaimsIdentity("OpenIddict.Server.AspNetCore");
+                var identity = new ClaimsIdentity(TokenValidationParameters.DefaultAuthenticationType, Claims.Name,
+					Claims.Role);
 
 				var sessionId = Guid.NewGuid().ToString("D");
 				user.FillClaims(identity, sessionId);

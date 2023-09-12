@@ -11,9 +11,12 @@
 // Последнее изменение от 30.04.2023
 //=====================================================================================================================
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using OpenIddict.Server.AspNetCore;
 //---------------------------------------------------------------------------------------------------------------------
 using Lotus.Web;
 using Lotus.Repository;
+using OpenIddict.Validation.AspNetCore;
 //=====================================================================================================================
 namespace Lotus
 {
@@ -60,7 +63,8 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             [HttpPost("create")]
             [ProducesResponseType(typeof(Response<UserRoleDto>), StatusCodes.Status201Created)]
-            public async Task<IActionResult> Create([FromBody] UserRoleCreateRequest roleCreate, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> Create([FromBody] UserRoleCreateRequest roleCreate, CancellationToken token)
             {
                 var result = await _roleService.CreateAsync(roleCreate, token);
                 return SendResponse(result);
@@ -76,7 +80,8 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             [HttpPut("update")]
             [ProducesResponseType(typeof(Response<UserRoleDto>), StatusCodes.Status200OK)]
-            public async Task<IActionResult> Update([FromBody] UserRoleDto roleUpdate, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> Update([FromBody] UserRoleDto roleUpdate, CancellationToken token)
             {
                 var result = await _roleService.UpdateAsync(roleUpdate, token);
                 return SendResponse(result);
@@ -92,6 +97,7 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			[HttpGet("get")]
 			[ProducesResponseType(typeof(Response<UserRoleDto>), StatusCodes.Status200OK)]
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 			public async Task<IActionResult> Get([FromQuery] Int32 id, CancellationToken token)
 			{
 				var result = await _roleService.GetAsync(id, token);
@@ -108,7 +114,8 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			[HttpGet("getall")]
             [ProducesResponseType(typeof(ResponsePage<UserRoleDto>), StatusCodes.Status200OK)]
-            public async Task<IActionResult> GetAll([FromQuery] UserRolesRequest roleRequest, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> GetAll([FromQuery] UserRolesRequest roleRequest, CancellationToken token)
             {
                 var result = await _roleService.GetAllAsync(roleRequest, token);
                 return SendResponse(result);
@@ -123,7 +130,8 @@ namespace Lotus
             /// <returns>Статус успешности</returns>
             //---------------------------------------------------------------------------------------------------------
             [HttpDelete("delete")]
-            public async Task<IActionResult> Delete([FromQuery] Int32 id, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> Delete([FromQuery] Int32 id, CancellationToken token)
             {
                 var result = await _roleService.DeleteAsync(id, token);
                 return SendResponse(result);

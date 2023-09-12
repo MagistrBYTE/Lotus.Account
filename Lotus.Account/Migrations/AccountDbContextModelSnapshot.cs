@@ -56,7 +56,8 @@ namespace Lotus.Account.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.Property<string>("Patronymic")
-                        .HasColumnType("text");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<int?>("PostId")
                         .HasColumnType("integer");
@@ -104,12 +105,12 @@ namespace Lotus.Account.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<string>("DisplayName")
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)");
 
-                    b.Property<string>("ShortName")
+                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
@@ -149,12 +150,12 @@ namespace Lotus.Account.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<string>("DisplayName")
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)");
 
-                    b.Property<string>("ShortName")
+                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
@@ -166,32 +167,32 @@ namespace Lotus.Account.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Хранители",
-                            ShortName = "Хранители"
+                            DisplayName = "Хранители",
+                            Name = "Хранители"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Север",
-                            ShortName = "Север"
+                            DisplayName = "Север",
+                            Name = "Север"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Юг",
-                            ShortName = "Юг"
+                            DisplayName = "Юг",
+                            Name = "Юг"
                         },
                         new
                         {
                             Id = 4,
-                            Name = "Восток",
-                            ShortName = "Восток"
+                            DisplayName = "Восток",
+                            Name = "Восток"
                         },
                         new
                         {
                             Id = 5,
-                            Name = "Запад",
-                            ShortName = "Запад"
+                            DisplayName = "Запад",
+                            Name = "Запад"
                         });
                 });
 
@@ -290,11 +291,11 @@ namespace Lotus.Account.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DispalyName")
+                    b.Property<string>("DisplayName")
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)");
 
-                    b.Property<string>("SystemName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
@@ -307,20 +308,20 @@ namespace Lotus.Account.Migrations
                         new
                         {
                             Id = 1,
-                            DispalyName = "Администрирование системы",
-                            SystemName = "admin"
+                            DisplayName = "Администратор",
+                            Name = "admin"
                         },
                         new
                         {
                             Id = 2,
-                            DispalyName = "Модератор",
-                            SystemName = "editor"
+                            DisplayName = "Модератор",
+                            Name = "editor"
                         },
                         new
                         {
                             Id = 3,
-                            DispalyName = "Пользователь",
-                            SystemName = "user"
+                            DisplayName = "Пользователь",
+                            Name = "user"
                         });
                 });
 
@@ -332,12 +333,12 @@ namespace Lotus.Account.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<string>("DisplayName")
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)");
 
-                    b.Property<string>("ShortName")
+                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
@@ -349,26 +350,26 @@ namespace Lotus.Account.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Инспектор",
-                            ShortName = "Инспектор"
+                            DisplayName = "Инспектор",
+                            Name = "Инспектор"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Старший инспектор",
-                            ShortName = "Старший инспектор"
+                            DisplayName = "Старший инспектор",
+                            Name = "Старший инспектор"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Ведущий специалист",
-                            ShortName = "Ведущий специалист"
+                            DisplayName = "Ведущий специалист",
+                            Name = "Ведущий специалист"
                         },
                         new
                         {
                             Id = 4,
-                            Name = "Начальник отдела",
-                            ShortName = "Начальник отдела"
+                            DisplayName = "Начальник отдела",
+                            Name = "Начальник отдела"
                         });
                 });
 
@@ -380,11 +381,11 @@ namespace Lotus.Account.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DispalyName")
+                    b.Property<string>("DisplayName")
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)");
 
-                    b.Property<string>("SystemName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
@@ -397,20 +398,20 @@ namespace Lotus.Account.Migrations
                         new
                         {
                             Id = 1,
-                            DispalyName = "Администратор",
-                            SystemName = "admin"
+                            DisplayName = "Администратор",
+                            Name = "admin"
                         },
                         new
                         {
                             Id = 2,
-                            DispalyName = "Редактор",
-                            SystemName = "editor"
+                            DisplayName = "Редактор",
+                            Name = "editor"
                         },
                         new
                         {
                             Id = 3,
-                            DispalyName = "Пользователь",
-                            SystemName = "user"
+                            DisplayName = "Пользователь",
+                            Name = "user"
                         });
                 });
 

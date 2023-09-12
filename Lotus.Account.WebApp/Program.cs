@@ -1,7 +1,10 @@
 ﻿//---------------------------------------------------------------------------------------------------------------------
 using Lotus.Account;
 using Lotus.Web;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
+using OpenIddict.Server.AspNetCore;
+using OpenIddict.Validation.AspNetCore;
 using System.Reflection;
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -33,10 +36,12 @@ builder.Services.AddLotusAccountDatabaseServices(builder.Configuration);
 //
 // Сервисы аутентификации и авторизации
 //
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 builder.Services.AddLotusAccountServices();
 builder.Services.AddLotusAccountOpenIddictServices(null);
 builder.Services.AddLotusPermissionsExtension();
-builder.Services.AddAuthorizationCore();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

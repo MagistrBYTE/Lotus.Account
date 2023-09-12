@@ -1,31 +1,34 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { IResponsePage } from 'src/core/types/Response';
-import { IPageInfoResponse, IPageInfoRequest } from 'src/core/types/PageInfo';
-import { Stack, Pagination, CircularProgress, Box, List, IconButton } from '@mui/material';
-import { IGrouping } from 'src/core/types/Grouping';
+import React, { useEffect, useRef, useState } from 'react';
+import { Stack, Pagination, CircularProgress, Box, List, Button, Dialog, DialogActions, DialogContent, Badge, Menu, MenuItem, IconButton } from '@mui/material';
+import { TPlacementDensity } from 'src/ui/types/PlacementDensity';
+import { getLayoutClientHeight } from 'src/app/layout';
+import { localization } from 'src/resources/localization';
+import { useScreenResizeOrOrientation } from 'src/shared/hooks/useScreenTypeChanged';
+import { IObjectInfo } from 'src/shared/objectInfo/ObjectInfo';
+import { IFilterProperty, hasFilterPropertiesValue } from 'src/shared/types/FilterProperty';
+import { IGrouping } from 'src/shared/types/Grouping';
+import { IPageInfoResponse, IPageInfoRequest } from 'src/shared/types/PageInfo';
+import { IRequest } from 'src/shared/types/Request';
+import { IResponsePage } from 'src/shared/types/Response';
+import { ISortProperty } from 'src/shared/types/Sorting';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import SortIcon from '@mui/icons-material/Sort';
-import DensitySmallIcon from '@mui/icons-material/DensitySmall';
-import { IPropertiesInfo } from 'src/shared/reflection/PropertiesInfo';
-import { IRequest } from 'src/shared/request/Request';
-import { localization } from 'src/shared/localization';
-import { getLayoutClientHeight } from 'src/shared/layout';
-import { IFilterProperty } from 'src/shared/filtering/FilterProperty';
-import { useScreenResizeOrOrientation } from 'src/core/hooks/useScreenTypeChanged';
-import { ToastWrapper, toastError } from '../../Info/Toast';
-import { DialogFilterPanel } from './components/DialogFilterPanel';
-
+import { DialogAppBar } from '../../Display';
+import { ToastWrapper, toastError } from '../../Alert/Toast';
+import { DensityButton } from './components/DensityButton';
+import { SortButton } from './components/SortButton';
+import { IFormFilterRefType } from './components/FormFilter/FormFilter';
+import { FormFilter } from './components/FormFilter';
 
 export interface IListViewProps<TItem extends Record<string, any>> 
 {
   onGetItems: (filter: IRequest) => Promise<IResponsePage<TItem>>
-  renderList: (list: TItem[]|IGrouping<TItem>[]) => JSX.Element;
-  propertiesInfo: IPropertiesInfo;
+  renderList: (list: TItem[]|IGrouping<TItem>[], density: TPlacementDensity) => JSX.Element;
+  objectInfo: IObjectInfo;
 }
 
 export const ListView = <TItem extends Record<string, any>>(props: IListViewProps<TItem>) => 
 {
-  const { onGetItems, renderList, propertiesInfo} = props;
+  const { onGetItems, renderList, objectInfo} = props;
 
   const pageSize = 10;
 
@@ -36,9 +39,17 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
   const [paginationModel, setPaginationModel] = useState({ pageSize: pageSize, pageIndex: 1 });
 
   // Фильтрация
+  const formFilterRef = useRef<IFormFilterRefType>(null);
   const [filterProperties, setFilterProperties] = useState<IFilterProperty[]>([]);
   const [openFilterDialog, setOpenFilterDialog] = useState<boolean>(false);
-  
+  const [isFilterStatus, setIsFilterStatus] = useState<boolean>(false);
+
+  // Сортировка
+  const [sortProperties, setSortProperties] = useState<ISortProperty[]>([]);
+
+  // Плотность размещения
+  const [placementDensity, setPlacementDensity] = useState<TPlacementDensity>(TPlacementDensity.Normal);
+
   const [autoCloseToastify, setAutoCloseToastify] = useState<number | false>(2000);
 
   // Ссылки на элементы
@@ -68,7 +79,9 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
 
     const filtering = filterProperties;
 
-    return { pageInfo: pageInfo, filtering:filtering };
+    const sorting = sortProperties;
+
+    return { pageInfo: pageInfo, filtering:filtering, sorting:sorting };
   }
 
   const refreshItems = (async (filter: IRequest) => 
@@ -92,7 +105,7 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
   });
 
   //
-  // Обработчики событий
+  // Изменение макета
   //
 
   const handleScreenChange = ()=>
@@ -100,6 +113,9 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
     setHeightViewList(calcHeightViewList());
   }
 
+  //
+  // Фильтрация
+  //
   const handleCloseFilterDialog = () => 
   {
     setOpenFilterDialog(false);
@@ -108,8 +124,31 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
   const handleOpenFilterDialog = () => 
   {
     setOpenFilterDialog(true);
-  }  
+  }
 
+  const handleApplyFilterProperties = () =>
+  {
+    const actualFilters = formFilterRef.current!.getFilters();
+    setOpenFilterDialog(false);
+
+    const hasValues = hasFilterPropertiesValue(actualFilters);
+
+    setIsFilterStatus(hasValues);
+
+    setFilterProperties(actualFilters);
+  }
+
+  const handleClearFilterProperties = () =>
+  {
+    formFilterRef.current!.clearFilters();
+    setFilterProperties([]);
+    setIsFilterStatus(false);
+    setOpenFilterDialog(false);
+  }
+
+  //
+  // Пангинация
+  //
   const pageChangeHandle = (event: React.ChangeEvent<unknown>, page: number) =>
   {
     setPaginationModel({pageSize: paginationModel.pageSize, pageIndex: page});
@@ -134,7 +173,7 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
   {
     const filter = getFilterQueryItems();
     refreshItems(filter);
-  }, [paginationModel.pageIndex, paginationModel.pageSize, filterProperties]);
+  }, [paginationModel.pageIndex, paginationModel.pageSize, filterProperties, sortProperties]);
 
   useEffect(() => 
   {
@@ -150,21 +189,27 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
   return (
     <>
       <Stack ref={refTabFilter} display={'flex'} flexDirection={'row'} justifyContent={'space-around'}>
-        <IconButton size='large' >
-          <SortIcon/>
-        </IconButton>
-        <IconButton  size='large'>
-          <DensitySmallIcon/>
-        </IconButton>
-        <IconButton size='large' onClick={handleOpenFilterDialog} >
-          <FilterListIcon/>
-        </IconButton>
+        <SortButton
+          objectInfo={objectInfo}
+          initialSortProperties={sortProperties}
+          onSetSortProperties={setSortProperties}
+        />
+        <DensityButton
+          initialDensity={placementDensity}
+          onSetPlacementDensity={setPlacementDensity}/>
+        <Button variant='outlined' size='large' onClick={handleOpenFilterDialog}  
+          startIcon=
+            {
+              <Badge variant="dot" color="success" invisible={!isFilterStatus}>
+                <FilterListIcon/>
+              </Badge>
+            }/>
       </Stack>
       <Box sx={{height: heightViewList, overflow: 'scroll'}}>
         <List>
           <Stack display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'} >
             {isLoading && <CircularProgress color="secondary" />}
-            {!isLoading && renderList(items)}  
+            {!isLoading && renderList(items, placementDensity)}  
           </Stack>
         </List>
       </Box>
@@ -176,12 +221,24 @@ export const ListView = <TItem extends Record<string, any>>(props: IListViewProp
       <ToastWrapper
         autoClose={autoCloseToastify}
       />
-      <DialogFilterPanel  
+      <Dialog
+        fullScreen
         open={openFilterDialog}
-        close={handleCloseFilterDialog}
-        propertiesInfo={propertiesInfo} 
-        initialFilterProperties={filterProperties}
-        applyFilterProperties={setFilterProperties} />
+        onClose={handleCloseFilterDialog}>
+        <DialogAppBar onClose={handleCloseFilterDialog}/>
+        <DialogContent>
+          <FormFilter
+            ref={formFilterRef}
+            initialFilterProperties={filterProperties}
+            objectInfo={objectInfo}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button variant='outlined' color='warning' onClick={handleClearFilterProperties}>{localization.actions.clear}</Button>
+          <Button variant='outlined' onClick={handleCloseFilterDialog}>{localization.actions.cancel}</Button>
+          <Button variant='outlined' color='primary' autoFocus onClick={handleApplyFilterProperties}>{localization.actions.confirm}</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

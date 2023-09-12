@@ -58,7 +58,7 @@ namespace Lotus
                             .AllowPasswordFlow()            // Пароль
                             .AllowClientCredentialsFlow()   // Приложение
                             .AllowRefreshTokenFlow()        // RefreshToken
-                            .SetAccessTokenLifetime(TimeSpan.FromMinutes(5))
+                            .SetAccessTokenLifetime(TimeSpan.FromMinutes(30))
                             .SetRefreshTokenLifetime(TimeSpan.FromMinutes(60));
 
                         options
@@ -66,7 +66,11 @@ namespace Lotus
 							.SetLogoutEndpointUris(XRoutesConstants.LogoutEndpoint)
 							.SetUserinfoEndpointUris(XRoutesConstants.UserInfoEndpoint);
 
-                        options
+						// Register the signing and encryption credentials.
+						options.AddDevelopmentEncryptionCertificate()
+							   .AddDevelopmentSigningCertificate();
+
+						options
                             .AcceptAnonymousClients();
 
                         options
@@ -99,8 +103,7 @@ namespace Lotus
                         }
                     });
 
-
-                return services;
+				return services;
             }
 
 			//---------------------------------------------------------------------------------------------------------

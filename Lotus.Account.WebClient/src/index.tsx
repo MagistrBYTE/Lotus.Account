@@ -6,7 +6,7 @@ import { ThemeProvider } from '@mui/material';
 import registerServiceWorker from './registerServiceWorker';
 import { store } from './app/store';
 import { App } from './app/App';
-import useThemeSelector, { ColorModeContext } from './ui/hooks/useThemeSelector';
+import { useThemeSelector, ColorModeContext } from './app/theme';
 
 const container = document.getElementById('root');
 const root = createRoot(container as HTMLElement);

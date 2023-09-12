@@ -10,10 +10,12 @@
 // Версия: 1.0.0.0
 // Последнее изменение от 30.04.2023
 //=====================================================================================================================
-using Lotus.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using OpenIddict.Validation.AspNetCore;
 //---------------------------------------------------------------------------------------------------------------------
 using Lotus.Web;
+using Lotus.Repository;
 //=====================================================================================================================
 namespace Lotus
 {
@@ -61,7 +63,8 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             [HttpPost("create")]
             [ProducesResponseType(typeof(Response<UserPermissionDto>), StatusCodes.Status201Created)]
-            public async Task<IActionResult> Create([FromBody] UserPermissionCreateRequest positionCreate, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> Create([FromBody] UserPermissionCreateRequest positionCreate, CancellationToken token)
             {
                 var result = await _permissionService.CreateAsync(positionCreate, token);
                 return SendResponse(result);
@@ -77,7 +80,8 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             [HttpPut("update")]
             [ProducesResponseType(typeof(Response<UserPermissionDto>), StatusCodes.Status200OK)]
-            public async Task<IActionResult> Update([FromBody] UserPermissionDto positionUpdate, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> Update([FromBody] UserPermissionDto positionUpdate, CancellationToken token)
             {
                 var result = await _permissionService.UpdateAsync(positionUpdate, token);
                 return SendResponse(result);
@@ -93,7 +97,8 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             [HttpGet("getall")]
             [ProducesResponseType(typeof(ResponsePage<UserPermissionDto>), StatusCodes.Status200OK)]
-            public async Task<IActionResult> GetAll([FromQuery] UserPermissionsRequest positionRequest, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> GetAll([FromQuery] UserPermissionsRequest positionRequest, CancellationToken token)
             {
                 var result = await _permissionService.GetAllAsync(positionRequest, token);
                 return SendResponse(result);
@@ -108,7 +113,8 @@ namespace Lotus
             /// <returns>Статус успешности</returns>
             //---------------------------------------------------------------------------------------------------------
             [HttpDelete("delete")]
-            public async Task<IActionResult> Delete([FromQuery] Int32 id, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> Delete([FromQuery] Int32 id, CancellationToken token)
             {
                 var result = await _permissionService.DeleteAsync(id, token);
                 return SendResponse(result);

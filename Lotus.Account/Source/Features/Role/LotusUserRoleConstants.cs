@@ -32,8 +32,8 @@ namespace Lotus
             public static readonly UserRole Admin = new UserRole()
             {
                 Id = 1,
-                DispalyName = "Администратор",
-                SystemName = "admin",
+				Name = "admin",
+                DisplayName = "Администратор",
             };
 
             /// <summary>
@@ -42,8 +42,8 @@ namespace Lotus
             public static readonly UserRole Editor = new UserRole()
             {
                 Id = 2,
-                DispalyName = "Редактор",
-                SystemName = "editor",
+				Name = "editor",
+                DisplayName = "Редактор",
             };
 
             /// <summary>
@@ -52,8 +52,8 @@ namespace Lotus
             public static readonly UserRole User = new UserRole()
             {
                 Id = 3,
-                DispalyName = "Пользователь",
-                SystemName = "user",
+				Name = "user",
+                DisplayName = "Пользователь",
             };
         }
         //-------------------------------------------------------------------------------------------------------------

@@ -27,14 +27,14 @@ namespace Lotus
         public class UserPermissionDto : IdentifierDtoId<Int32>
         {
             /// <summary>
-            /// Служебное наименование разрешения
-            /// </summary>
-            public String SystemName { get; set; } = null!;
-
-            /// <summary>
             /// Наименование разрешения
             /// </summary>
-            public String? DispalyName { get; set; }
+            public String Name { get; set; } = null!;
+
+			/// <summary>
+			/// Отображаемое наименование разрешения
+			/// </summary>
+			public String? DisplayName { get; set; }
         }
         //-------------------------------------------------------------------------------------------------------------
         /**@}*/

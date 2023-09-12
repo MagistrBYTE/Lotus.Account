@@ -1,6 +1,7 @@
 {
   "compilerOptions":
   {
+      "noImplicitOverride": true,
       "allowJs": true,                      // Разрешает импорт файлов JavaScript в проект, а не только файлы .ts и .tsx
       "allowSyntheticDefaultImports": true, // Позволяет импортировать более красиво: import React from "react";
       "baseUrl": ".",

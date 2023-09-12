@@ -1,1 +1,0 @@
-export { FilterPanel, type IFilterPanelProps } from './FilterPanel';

@@ -58,16 +58,16 @@ namespace Lotus
 
             #region ======================================= СВОЙСТВА ==================================================
             /// <summary>
-            /// Служебное наименование роли
-            /// </summary>
-            [MaxLength(20)]
-            public String SystemName { get; set; } = null!;
-
-            /// <summary>
             /// Наименование роли
             /// </summary>
-            [MaxLength(40)]
-            public String? DispalyName { get; set; }
+            [MaxLength(20)]
+            public String Name { get; set; } = null!;
+
+			/// <summary>
+			/// Отображаемое наименование роли
+			/// </summary>
+			[MaxLength(40)]
+            public String? DisplayName { get; set; }
 
             /// <summary>
             /// Список разрешений для данной роли

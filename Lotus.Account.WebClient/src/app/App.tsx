@@ -1,19 +1,13 @@
 import * as React from 'react';
 import { Route, Routes  } from 'react-router-dom';
-import { GroupsPage } from 'src/modules/group';
-import { PermissionsPage } from 'src/modules/permission';
-import { PositionsPage } from 'src/modules/position';
-import { RolesPage } from 'src/modules/role';
-import { UsersPage } from 'src/modules/user';
-import { LoginPage, AutoLoginPage, RegisterPage, RestorePasswordPage, authNavigation } from 'src/shared/auth';
-import { useScreenTypeChanged } from 'src/shared/layout';
-import { accountNavigation } from 'src/shared/account/accountNavigation';
-import { MainLayoutPermission } from 'src/shared/layout/ui/MainLayoutPermission';
-import { ProfilePage, NotificationsPage, ConfigurationPage } from 'src/shared/account';
-import { MainLayout } from 'src/shared/layout/ui';
-import { DummyPage } from './DummyPage';
-import { HomePage } from './HomePage';
-import { mainNavigations } from './mainNavigations';
+import { AboutPage, HomePage } from 'src/pages/Base';
+import { AutoLoginPage, LoginPage, RegisterPage, RestorePasswordPage } from 'src/pages/Auth';
+import { UserNotificationsPage, UserProfilePage, UserSettingsPage } from 'src/pages/Account';
+import { UserGroupsPage, UserPermissionsPage, UserPositionsPage, UserRolesPage, UsersPage } from 'src/pages/Admin';
+import { routes } from './routes';
+import { MainLayout } from './layout/ui';
+import { useScreenTypeChanged } from './layout';
+import { MainLayoutPermission } from './layout/ui/MainLayoutPermission';
 
 export const App: React.FC = () => 
 {
@@ -22,60 +16,59 @@ export const App: React.FC = () =>
   return (
     <React.Suspense fallback={<div>Loading...</div>}>
       <Routes>
+        {/* Общие */}
         <Route 
-          path={mainNavigations.home.path} 
+          path={routes.home.path} 
           element={<MainLayout page={<HomePage/>}/>}/>
+        <Route 
+          path={routes.about.path} 
+          element={<MainLayout page={<AboutPage/>}/>}/>          
 
         {/* Авторизация и регистрация */}
         <Route
-          path={authNavigation.login.path}
-          element={<LoginPage pathSuccess={accountNavigation.profile.path} />}/>
+          path={routes.login.path}
+          element={<LoginPage pathSuccess={routes.home.path} />}/>
         <Route
-          path={authNavigation.autoLogin.path}
-          element={<AutoLoginPage pathSuccess={accountNavigation.profile.path} />}/> 
+          path={routes.autoLogin.path}
+          element={<AutoLoginPage pathSuccess={routes.home.path} />}/> 
         <Route
-          path={authNavigation.registr.path}
-          element={<RegisterPage pathSuccess={authNavigation.login.path} />}/>
+          path={routes.register.path}
+          element={<RegisterPage pathSuccess={routes.login.path} />}/>
         <Route
-          path={authNavigation.restorePassword.path}
-          element={<RestorePasswordPage pathSuccess={authNavigation.login.path} />}/>                 
+          path={routes.restorePassword.path}
+          element={<RestorePasswordPage pathSuccess={routes.login.path} />}/>                 
 
         {/* Личные страницы */}
         <Route 
-          path={accountNavigation.profile.path} 
-          element={<MainLayoutPermission {...accountNavigation.profile}  page={<ProfilePage />} />}/>
+          path={routes.userProfile.path} 
+          element={<MainLayoutPermission {...routes.userProfile} page={<UserProfilePage />} />}/>
         <Route 
-          path={accountNavigation.notification.path} 
-          element={<MainLayoutPermission {...accountNavigation.notification} page={<NotificationsPage/>}/>}/>
+          path={routes.userNotifications.path} 
+          element={<MainLayoutPermission {...routes.userNotifications} page={<UserNotificationsPage/>}/>}/>
         <Route 
-          path={accountNavigation.configuration.path} 
-          element={<MainLayoutPermission {...accountNavigation.configuration} page={<ConfigurationPage/>}/>}/>
+          path={routes.userSettings.path} 
+          element={<MainLayoutPermission {...routes.userSettings} page={<UserSettingsPage/>}/>}/>
 
         {/* Управление */}
         <Route 
-          path={mainNavigations.users.path} 
-          element={<MainLayoutPermission {...mainNavigations.users} page={<UsersPage/>}/>}/>
+          path={routes.users.path} 
+          element={<MainLayoutPermission {...routes.users} page={<UsersPage/>}/>}/>
 
         <Route 
-          path={mainNavigations.roles.path} 
-          element={<MainLayoutPermission {...mainNavigations.roles} page={<RolesPage/>}/>}/>
+          path={routes.userRoles.path} 
+          element={<MainLayoutPermission {...routes.userRoles} page={<UserRolesPage/>}/>}/>
 
         <Route 
-          path={mainNavigations.permissions.path} 
-          element={<MainLayoutPermission {...mainNavigations.permissions} page={<PermissionsPage/>}/>}/> 
+          path={routes.userPermissions.path} 
+          element={<MainLayoutPermission {...routes.userPermissions} page={<UserPermissionsPage/>}/>}/> 
 
         <Route 
-          path={mainNavigations.groups.path} 
-          element={<MainLayoutPermission {...mainNavigations.groups} page={<GroupsPage/>}/>}/> 
+          path={routes.userPositions.path} 
+          element={<MainLayoutPermission {...routes.userPositions} page={<UserPositionsPage/>}/>}/> 
 
         <Route 
-          path={mainNavigations.positions.path} 
-          element={<MainLayoutPermission {...mainNavigations.positions} page={<PositionsPage/>}/>}/> 
-
-        {/* Разное */}
-        <Route 
-          path={mainNavigations.dummy.path} 
-          element={<DummyPage/>}/>
+          path={routes.userGroups.path} 
+          element={<MainLayoutPermission {...routes.userGroups} page={<UserGroupsPage/>}/>}/> 
       </Routes>
     </React.Suspense>
   );

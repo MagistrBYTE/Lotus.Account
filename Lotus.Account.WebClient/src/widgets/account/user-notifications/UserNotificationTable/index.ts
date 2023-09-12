@@ -1,0 +1,1 @@
+export { UserNotificationTable } from './UserNotificationTable';

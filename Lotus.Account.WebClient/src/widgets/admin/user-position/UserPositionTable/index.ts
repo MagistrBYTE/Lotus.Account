@@ -1,0 +1,1 @@
+export {UserPositionTable} from './UserPositionTable';

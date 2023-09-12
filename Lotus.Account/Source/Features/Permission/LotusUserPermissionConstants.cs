@@ -32,9 +32,9 @@ namespace Lotus
             public static readonly UserPermission Admin = new UserPermission()
             {
                 Id = 1,
-                DispalyName = "Администрирование системы",
-                SystemName = "admin",
-            };
+				Name = "admin",
+				DisplayName = "Администратор",
+			};
 
             /// <summary>
             /// Базовое разрешение для модератора/редактора
@@ -42,8 +42,8 @@ namespace Lotus
             public static readonly UserPermission Editor = new UserPermission()
             {
                 Id = 2,
-                DispalyName = "Модератор",
-                SystemName = "editor",
+				Name = "editor",
+                DisplayName = "Модератор",
             };
 
             /// <summary>
@@ -52,8 +52,8 @@ namespace Lotus
             public static readonly UserPermission User = new UserPermission()
             {
                 Id = 3,
-                DispalyName = "Пользователь",
-                SystemName = "user",
+				Name = "user",
+                DisplayName = "Пользователь",
             };
         }
         //-------------------------------------------------------------------------------------------------------------

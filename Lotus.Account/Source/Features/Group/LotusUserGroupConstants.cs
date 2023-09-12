@@ -33,7 +33,7 @@ namespace Lotus
             {
                 Id = 1,
                 Name = "Хранители",
-                ShortName = "Хранители",
+                DisplayName = "Хранители",
             };
 
 			/// <summary>
@@ -43,7 +43,7 @@ namespace Lotus
             {
                 Id = 2,
                 Name = "Север",
-				ShortName = "Север",
+				DisplayName = "Север",
             };
 
 			/// <summary>
@@ -53,7 +53,7 @@ namespace Lotus
             {
                 Id = 3,
 				Name = "Юг",
-				ShortName = "Юг",
+				DisplayName = "Юг",
             };
 
 			/// <summary>
@@ -63,7 +63,7 @@ namespace Lotus
 			{
 				Id = 4,
 				Name = "Восток",
-				ShortName = "Восток",
+				DisplayName = "Восток",
 			};
 
 			/// <summary>
@@ -73,7 +73,7 @@ namespace Lotus
 			{
 				Id = 5,
 				Name = "Запад",
-				ShortName = "Запад",
+				DisplayName = "Запад",
 			};
 		}
         //-------------------------------------------------------------------------------------------------------------

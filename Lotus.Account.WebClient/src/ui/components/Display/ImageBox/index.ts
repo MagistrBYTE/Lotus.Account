@@ -1,0 +1,1 @@
+export { ImageBox, type IImageBoxProps } from './ImageBox';

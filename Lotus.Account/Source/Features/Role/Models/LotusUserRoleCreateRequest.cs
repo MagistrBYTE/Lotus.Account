@@ -27,14 +27,14 @@ namespace Lotus
         public class UserRoleCreateRequest
 		{
             /// <summary>
-            /// Служебное наименование роли
-            /// </summary>
-            public String SystemName { get; set; } = null!;
-
-            /// <summary>
             /// Наименование роли
             /// </summary>
-            public String? DispalyName { get; set; }
+            public String Name { get; set; } = null!;
+
+			/// <summary>
+			/// Отображаемое наименование роли
+			/// </summary>
+			public String? DisplayName { get; set; }
         }
         //-------------------------------------------------------------------------------------------------------------
         /**@}*/

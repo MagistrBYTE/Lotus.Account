@@ -3,7 +3,7 @@ import { IValidationResult } from './ValidationResult';
 /**
  * Интерфейс для определения валидации
  */
-export interface IValidation
+export interface IValidation<TValue = any>
 {
-    validation:(value: any|null) => IValidationResult;
+    validation:(value: TValue|null) => IValidationResult;
 }

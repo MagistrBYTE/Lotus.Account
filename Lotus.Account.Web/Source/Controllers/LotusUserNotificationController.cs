@@ -11,6 +11,8 @@
 // Последнее изменение от 30.04.2023
 //=====================================================================================================================
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using OpenIddict.Validation.AspNetCore;
 //---------------------------------------------------------------------------------------------------------------------
 using Lotus.Web;
 using Lotus.Repository;
@@ -61,7 +63,8 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             [HttpPost("create")]
             [ProducesResponseType(typeof(Response<UserNotificationDto>), StatusCodes.Status201Created)]
-            public async Task<IActionResult> Create([FromBody] UserNotificationCreateRequest notificationCreate, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> Create([FromBody] UserNotificationCreateRequest notificationCreate, CancellationToken token)
             {
                 var result = await _notificationService.CreateAsync(notificationCreate, token);
                 return SendResponse(result);
@@ -77,7 +80,8 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             [HttpPut("update")]
             [ProducesResponseType(typeof(Response<UserNotificationDto>), StatusCodes.Status200OK)]
-            public async Task<IActionResult> Update([FromBody] UserNotificationDto notificationUpdate, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> Update([FromBody] UserNotificationDto notificationUpdate, CancellationToken token)
             {
                 var result = await _notificationService.UpdateAsync(notificationUpdate, token);
                 return SendResponse(result);
@@ -93,6 +97,7 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			[HttpGet("get")]
 			[ProducesResponseType(typeof(Response<UserNotificationDto>), StatusCodes.Status200OK)]
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 			public async Task<IActionResult> Get([FromQuery] String id, CancellationToken token)
 			{
 				var result = await _notificationService.GetAsync(Guid.Parse(id), token);
@@ -109,7 +114,8 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			[HttpGet("getall")]
             [ProducesResponseType(typeof(ResponsePage<UserNotificationDto>), StatusCodes.Status200OK)]
-            public async Task<IActionResult> GetAll([FromQuery] UserNotificationsRequest notificationRequest, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> GetAll([FromQuery] UserNotificationsRequest notificationRequest, CancellationToken token)
             {
                 var result = await _notificationService.GetAllAsync(notificationRequest, token);
                 return SendResponse(result);
@@ -124,7 +130,8 @@ namespace Lotus
             /// <returns>Статус успешности</returns>
             //---------------------------------------------------------------------------------------------------------
             [HttpDelete("delete")]
-            public async Task<IActionResult> Delete([FromQuery] String id, CancellationToken token)
+			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+			public async Task<IActionResult> Delete([FromQuery] String id, CancellationToken token)
             {
                 var result = await _notificationService.DeleteAsync(Guid.Parse(id), token);
                 return SendResponse(result);

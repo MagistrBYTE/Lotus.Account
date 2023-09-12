@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
+using OpenIddict.Validation.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 //---------------------------------------------------------------------------------------------------------------------
 using Lotus.Web;
@@ -187,7 +188,7 @@ namespace Lotus
 			/// <returns>Информация о статусе аутентификации текущего пользователя</returns>
 			//---------------------------------------------------------------------------------------------------------
 			[HttpGet(XRoutesConstants.UserInfoEndpoint)]
-            [Authorize(AuthenticationSchemes = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)]
+            [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
             public async Task<IActionResult> UserAuthorizeInfoAsync()
             {
                 var claimsPrincipal = (await this.HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal;

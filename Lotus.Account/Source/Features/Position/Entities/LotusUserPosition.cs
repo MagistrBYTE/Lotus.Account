@@ -60,14 +60,14 @@ namespace Lotus
             /// <summary>
             /// Наименование должности
             /// </summary>
-            [MaxLength(40)]
+            [MaxLength(20)]
             public String Name { get; set; } = String.Empty;
 
             /// <summary>
-            /// Краткое наименование должности
+            /// Отображаемое наименование должности
             /// </summary>
-            [MaxLength(20)]
-            public String? ShortName { get; set; }
+            [MaxLength(40)]
+            public String? DisplayName { get; set; }
 
             /// <summary>
             /// Все пользователи

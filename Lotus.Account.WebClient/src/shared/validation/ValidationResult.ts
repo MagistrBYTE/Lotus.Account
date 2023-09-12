@@ -14,4 +14,7 @@ export interface IValidationResult
     text?: string 
 }
 
+/**
+ * Успешный результат валидации
+ */
 export const ValidationResultSuccess:IValidationResult = {error: false};

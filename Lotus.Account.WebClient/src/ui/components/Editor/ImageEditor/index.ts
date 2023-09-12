@@ -1,1 +1,0 @@
-export { ImageEditor, type IImageEditorProps } from './ImageEditor';

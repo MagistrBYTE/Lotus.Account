@@ -60,14 +60,14 @@ namespace Lotus
             /// <summary>
             /// Наименование сферы деятельности
             /// </summary>
-            [MaxLength(40)]
-            public String Name { get; set; } = String.Empty;
+            [MaxLength(20)]
+            public String Name { get; set; } = null!;
 
             /// <summary>
-            /// Краткое наименование сферы деятельности
+            /// Отображаемое наименование сферы деятельности
             /// </summary>
-            [MaxLength(20)]
-            public String? ShortName { get; set; }
+            [MaxLength(40)]
+            public String? DisplayName { get; set; }
 
             /// <summary>
             /// Все пользователи

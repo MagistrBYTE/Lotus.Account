@@ -1,6 +1,6 @@
 import { Container } from '@mui/material';
 import React, { ReactNode, useState } from 'react';
-import { getLayoutBreakpoints, useLayoutState } from 'src/shared/layout';
+import { getLayoutBreakpoints, useLayoutState } from 'src/app/layout';
 
 export interface IPageContainerProps 
 {
