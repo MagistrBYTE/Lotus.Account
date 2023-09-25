@@ -18,8 +18,6 @@ export const AccountMenu: React.FC<IAccountMenuProps> = ({isVisibleCaption, ...p
   const menuId = 'primary-account-menu';
   const isMenuOpen = Boolean(anchorElem);
 
-  const dispatch = useAppDispatch();
-
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => 
   {
     setAnchorElem(event.currentTarget);
@@ -33,7 +31,7 @@ export const AccountMenu: React.FC<IAccountMenuProps> = ({isVisibleCaption, ...p
   const handleMenuLogout = async () =>
   {
     handleMenuClose();
-    await AuthService.Logout(dispatch);
+    await AuthService.Logout();
   }
 
   return <>

@@ -25,6 +25,7 @@ export const convertPropertyDescriptorToColumn = <TItem extends Record<string, a
     // @ts-ignore 
     accessorKey: property.fieldName,
     header: property.name,
+    
 
     // Фильтрация
     enableColumnFilter: (property.filtering && property.filtering.enabled) ?? false,

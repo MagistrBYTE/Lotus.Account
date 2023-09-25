@@ -2,14 +2,13 @@ import { IRoute } from '../types/Route';
 import { BaseCommand } from './Command';
 
 /**
- * Класс команды для простой навигации
+ * Класс команды для генерирования пользовательских событий
  */
-export class NavigationCommand<TCommandParameter = any> extends BaseCommand<TCommandParameter>
+export class EventCommand<TCommandParameter = any> extends BaseCommand<TCommandParameter>
 { 
-  constructor(name: string, route: IRoute) 
+  constructor(name: string) 
   {
     super(name);
-    this.route = route;
   }
 
   /**
@@ -17,6 +16,8 @@ export class NavigationCommand<TCommandParameter = any> extends BaseCommand<TCom
    */
   public override execute():void
   {
+    const event = new Event('openModal');
+    window.dispatchEvent(event);
   }
 
   /**

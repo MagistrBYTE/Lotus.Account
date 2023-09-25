@@ -8,6 +8,10 @@ export const UserPermissionTable: React.FC = () =>
     <TableView<IUserPermission> 
       objectInfo={UserPermissionObjectInfo}
       enableColumnResizing={true}
+      enableEditing={true}
+      enableRowActions={true}
+      positionActionsColumn='last' 
+      enableColumnFilterModes={true}
       onGetItems={UserPermissionApi.getUserPermissionsAsync}
       onAddItem={UserPermissionApi.addUserPermissionAsync}
       onUpdateItem={UserPermissionApi.updateUserPermissionAsync}

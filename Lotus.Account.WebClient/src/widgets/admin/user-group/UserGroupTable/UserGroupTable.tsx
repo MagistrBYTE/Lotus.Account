@@ -8,6 +8,10 @@ export const UserGroupTable: React.FC = () =>
     <TableView<IUserGroup> 
       objectInfo={UserGroupObjectInfo}
       enableColumnResizing={true}
+      enableEditing={true}
+      enableRowActions={true}
+      positionActionsColumn='last'
+      enableColumnFilterModes={true}
       onGetItems={UserGroupApi.getUserGroupsAsync}
       onAddItem={UserGroupApi.addUserGroupAsync}
       onUpdateItem={UserGroupApi.updateUserGroupAsync}

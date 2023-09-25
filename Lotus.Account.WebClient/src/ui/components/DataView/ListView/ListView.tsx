@@ -13,7 +13,7 @@ import { IResponsePage } from 'src/shared/types/Response';
 import { ISortProperty } from 'src/shared/types/Sorting';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { DialogAppBar } from '../../Display';
-import { ToastWrapper, toastError } from '../../Alert/Toast';
+import { ToastWrapper, toastError } from '../../Feedback/Toast';
 import { DensityButton } from './components/DensityButton';
 import { SortButton } from './components/SortButton';
 import { IFormFilterRefType } from './components/FormFilter/FormFilter';

@@ -7,6 +7,7 @@ import registerServiceWorker from './registerServiceWorker';
 import { store } from './app/store';
 import { App } from './app/App';
 import { useThemeSelector, ColorModeContext } from './app/theme';
+import { ModalContainer } from './ui/components/Feedback/ModalContainer';
 
 const container = document.getElementById('root');
 const root = createRoot(container as HTMLElement);
@@ -26,6 +27,7 @@ const AppRenderer = () =>
           </ColorModeContext.Provider>
         </Provider>
       </BrowserRouter>
+      <ModalContainer/>
     </React.Fragment>
   );
 };

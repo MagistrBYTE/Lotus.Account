@@ -1,5 +1,5 @@
 import React from 'react';
-import { SxProps, Theme, Drawer, List, useTheme, IconButton } from '@mui/material';
+import { SxProps, Theme, Drawer, List, useTheme, IconButton, Divider } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useAppDispatch } from 'src/app/store';
 import { VerticalStack } from 'src/ui/components/Layout';
@@ -9,6 +9,7 @@ import { CommandButton } from 'src/ui/components/Editor';
 import { TCommandButtonType } from 'src/ui/components/Editor/CommandButton';
 import { TokenHelper } from 'src/modules/auth';
 import { AccountMenu } from 'src/widgets/account/AccountMenu';
+import { DelimiterCommand } from 'src/shared/command/DelimiterCommand';
 
 export interface ILeftPanelProps
 {
@@ -65,12 +66,19 @@ export const LeftPanel: React.FC<ILeftPanelProps> = (props:ILeftPanelProps) =>
       <List>
         {
           commands.map((command, index) => 
-          {          
-            return <CommandButton key={index} 
-              isVisibleLabel 
-              buttonType={TCommandButtonType.ListItem}
-              command={command}
-              onBeforeCommand={handleBeforeNavigation} />;
+          {
+            if(command instanceof DelimiterCommand)
+            {
+              return <Divider key={index}/>
+            }
+            else
+            { 
+              return <CommandButton key={index} 
+                isVisibleLabel 
+                buttonType={TCommandButtonType.ListItem}
+                command={command}
+                onBeforeCommand={handleBeforeNavigation} />;
+            }
           })
         } 
       </List>
@@ -91,12 +99,19 @@ export const LeftPanel: React.FC<ILeftPanelProps> = (props:ILeftPanelProps) =>
         <MenuIcon />
       </IconButton>
       {layoutState.leftPanel.isOpen && commands.map((command, index) => 
-      {          
-        return <CommandButton key={index} 
-          isVisibleLabel 
-          buttonType={TCommandButtonType.Icon}
-          command={command}
-          onBeforeCommand={handleBeforeNavigation} />;
+      {
+        if(command instanceof DelimiterCommand)
+        {
+          return <Divider key={index}/>
+        }
+        else
+        {         
+          return <CommandButton key={index} 
+            isVisibleLabel 
+            buttonType={TCommandButtonType.Icon}
+            command={command}
+            onBeforeCommand={handleBeforeNavigation} />;
+        }
       })}
       {layoutState.leftPanel.isOpen && isAuth && <AccountMenu isVisibleCaption/>}    
     </VerticalStack>

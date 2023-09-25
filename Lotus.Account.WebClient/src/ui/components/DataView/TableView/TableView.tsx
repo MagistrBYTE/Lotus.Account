@@ -16,7 +16,7 @@ import { IResponsePage, IResponse } from 'src/shared/types/Response';
 import { getSelectOptionText, getSelectOptionTexts } from 'src/shared/types/SelectOption';
 import { ISortObject, ISortProperty } from 'src/shared/types/Sorting';
 import { capitalizeFirstLetter } from 'src/shared/utils/base/string';
-import { ToastWrapper, toastError, toastPromise } from '../../Alert/Toast';
+import { ToastWrapper, toastError, toastPromise } from '../../Feedback/Toast';
 import { ImageGallery, MultiSelect, OneSelect } from '../../Editor';
 import { ImageBox } from '../../Display';
 import { EditTableFilterString, EditTableFilterEnum, EditTableFilterArray } from './TableViewFilterTypes';
@@ -418,7 +418,7 @@ export const TableView = <TItem extends Record<string, any> & IEditable,>(props:
 
       result.then(() => 
       {
-        const newItems = items.filter(x => x.id !== currentItem!.id);
+        const newItems = items.filter(x => x.id !== deleteItem!.id);
         setItems(newItems);
       })
     }
@@ -587,22 +587,20 @@ export const TableView = <TItem extends Record<string, any> & IEditable,>(props:
           {localization.actions.delete}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {localization.actions.deleteObject}<br></br>
-            <>
-              {deleteItem &&
-                properties.map((p) =>
+          {localization.actions.deleteObject}<br></br>
+          <div>
+            {deleteItem &&
+                properties.map((p, index) =>
                 {
                   const value = deleteItem![p.fieldName];
                   const name = p.name;
-                  return <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', margin: '8px'}}>
-                    <span style={{margin: '4px'}} >{name}</span>
-                    <span style={{margin: '4px'}} ><b>{value}</b></span>
+                  return <div key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', margin: '8px'}}>
+                    <span style={{margin: '4px'}}>{name}</span>
+                    <span style={{margin: '4px'}}><b>{value}</b></span>
                   </div>;
                 })
-              }
-            </>
-          </DialogContentText>
+            }
+          </div>
         </DialogContent>
         <DialogActions>
           <Button variant='outlined' onClick={handleCloseDeleteDialog}>{localization.actions.cancel}</Button>

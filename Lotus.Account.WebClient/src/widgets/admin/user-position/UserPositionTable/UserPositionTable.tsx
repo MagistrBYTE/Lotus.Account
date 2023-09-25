@@ -8,6 +8,10 @@ export const UserPositionTable: React.FC = () =>
     <TableView<IUserPosition>
       objectInfo={UserPositionObjectInfo}
       enableColumnResizing={true}
+      enableEditing={true}
+      enableRowActions={true}
+      positionActionsColumn='last'
+      enableColumnFilterModes={true}
       onGetItems={UserPositionApi.getUserPositionsAsync}
       onAddItem={UserPositionApi.addUserPositionAsync}
       onUpdateItem={UserPositionApi.updateUserPositionAsync}

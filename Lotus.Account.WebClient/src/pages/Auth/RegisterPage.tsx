@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ChangeEvent, useState } from 'react';
 import { LoadingButton } from '@mui/lab';
 import { Container, Stack, Box, Typography, TextField } from '@mui/material';
-import { ToastWrapper, toastError } from 'src/ui/components/Alert/Toast';
+import { ToastWrapper, toastError } from 'src/ui/components/Feedback/Toast';
 import { AuthService, IRegisterParameters } from 'src/modules/auth';
 import { localization } from 'src/resources/localization';
 

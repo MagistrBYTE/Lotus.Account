@@ -8,6 +8,7 @@ import { BaseCommand, ICommand } from 'src/shared/command/Command';
 import { NavigationCommand } from 'src/shared/command/NavigationCommand';
 import { localization } from 'src/resources/localization';
 import { routes } from 'src/app/routes';
+import { EventCommand } from 'src/shared/command/EventCommand';
 
 class AdminCommandsClass extends CommandServiceClass
 {
@@ -44,7 +45,8 @@ class AdminCommandsClass extends CommandServiceClass
   {
     super();
     
-    this.roles = new NavigationCommand('userRoles', routes.userRoles);
+    // this.roles = new NavigationCommand('userRoles', routes.userRoles);
+    this.roles = new EventCommand('userRoles');
     this.roles.icon = <GamesIcon/>
     this.roles.label = localization.role.roles
     this.roles.group = 'admin';

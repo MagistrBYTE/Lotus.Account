@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthService } from 'src/modules/auth';
 import { localization } from 'src/resources/localization';
-import { ToastWrapper, toastError } from 'src/ui/components/Alert/Toast';
+import { ToastWrapper, toastError } from 'src/ui/components/Feedback/Toast';
 
 export interface IAutoLoginPageProps
 {
@@ -15,8 +15,6 @@ export interface IAutoLoginPageProps
 
 export const AutoLoginPage: React.FC<IAutoLoginPageProps> = ({pathSuccess}:IAutoLoginPageProps) => 
 {
-  const navigate = useNavigate();
-
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => 

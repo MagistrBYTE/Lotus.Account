@@ -13,6 +13,7 @@ export const UserRoleTable: React.FC = () =>
       enableEditing={true}
       enableRowActions={true}
       positionActionsColumn='last'
+      enableColumnFilterModes={true}
       onGetItems={UserRoleApi.getUserRolesAsync}
       onAddItem={UserRoleApi.addUserRoleAsync}
       onUpdateItem={UserRoleApi.updateUserRoleAsync}

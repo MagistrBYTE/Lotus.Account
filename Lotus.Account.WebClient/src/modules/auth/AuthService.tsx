@@ -37,7 +37,7 @@ class AuthServiceClass
    * @param redirectUrl URL-адрес перенаправления в случае успешного входа
    * @returns 
    */
-  public async Login(login: string, password: string, remembeMe?: boolean, redirectUrl?: string, dispath?: any) 
+  public async Login(login: string, password: string, remembeMe?: boolean, redirectUrl?: string) 
   {
     const response = await AuthApi.Login(login, password);
     if(response)
@@ -55,12 +55,6 @@ class AuthServiceClass
         if(redirectUrl)
         {
           location.assign(redirectUrl);
-        }
-
-        if(dispath)
-        {
-          const commandsName = [AdminCommands.roles.name, AdminCommands.permisions.name, AdminCommands.positions.name, AdminCommands.groups.name];
-          dispath(setCommandsLeftPanelLayoutAction(commandsName));
         }
       }
     }    
@@ -83,7 +77,7 @@ class AuthServiceClass
   /**
    * Выход из сайта
    */
-  public async Logout(dispath: any)
+  public async Logout()
   {
     await AuthApi.Logout();
 
@@ -94,15 +88,10 @@ class AuthServiceClass
     TokenHelper.clearAccessToken();
 
     // Очищаем дополнительные зависимости
-    localStorage.removeItem(KeyLayoutState);
-    localStorage.removeItem(KeyTheme);
+    window.localStorage.removeItem(KeyLayoutState);
+    window.localStorage.removeItem(KeyTheme);
 
     location.assign('/');
-
-    if(dispath)
-    {
-      dispath(setCommandsLeftPanelLayoutAction([BaseCommands.home.name, BaseCommands.about.name]));
-    }
   }
 
   /**

@@ -3,7 +3,7 @@ import { ChangeEvent, useState } from 'react';
 import { Avatar, Box, Checkbox, Container, FormControlLabel, Link, Stack, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { LoadingButton } from '@mui/lab';
-import { ToastWrapper, toastError } from 'src/ui/components/Alert/Toast';
+import { ToastWrapper, toastError } from 'src/ui/components/Feedback/Toast';
 import { AuthService } from 'src/modules/auth';
 import { localization } from 'src/resources/localization';
 import { routes } from 'src/app/routes';
@@ -19,8 +19,6 @@ export interface ILoginPageProps
 
 export const LoginPage: React.FC<ILoginPageProps> = ({pathSuccess}:ILoginPageProps) => 
 {
-  const dispath = useAppDispatch();
-
   const [isLoading, setLoading] = useState(false);
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
@@ -49,7 +47,7 @@ export const LoginPage: React.FC<ILoginPageProps> = ({pathSuccess}:ILoginPagePro
     setLoading(true);
     try
     {
-      await AuthService.Login(login, password, remembeMe, pathSuccess, dispath);
+      await AuthService.Login(login, password, remembeMe, pathSuccess);
       setLoading(false);
     }
     catch(error)
