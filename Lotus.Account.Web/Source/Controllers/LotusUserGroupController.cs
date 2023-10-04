@@ -111,7 +111,7 @@ namespace Lotus
 			/// <param name="token">Токен отмены</param>
 			/// <returns>Cписок групп</returns>
 			//---------------------------------------------------------------------------------------------------------
-			[HttpGet("getall")]
+			[HttpGet("getAll")]
             [ProducesResponseType(typeof(ResponsePage<UserGroupDto>), StatusCodes.Status200OK)]
 			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 			public async Task<IActionResult> GetAll([FromQuery] UserGroupsRequest groupRequest, CancellationToken token)

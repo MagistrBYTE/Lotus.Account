@@ -95,7 +95,7 @@ namespace Lotus
             /// <param name="token">Токен отмены</param>
             /// <returns>Cписок разрешений</returns>
             //---------------------------------------------------------------------------------------------------------
-            [HttpGet("getall")]
+            [HttpGet("getAll")]
             [ProducesResponseType(typeof(ResponsePage<UserPermissionDto>), StatusCodes.Status200OK)]
 			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 			public async Task<IActionResult> GetAll([FromQuery] UserPermissionsRequest positionRequest, CancellationToken token)

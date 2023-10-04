@@ -111,7 +111,7 @@ namespace Lotus
 			/// <param name="token">Токен отмены</param>
 			/// <returns>Cписок должностей</returns>
 			//---------------------------------------------------------------------------------------------------------
-			[HttpGet("getall")]
+			[HttpGet("getAll")]
             [ProducesResponseType(typeof(ResponsePage<UserPositionDto>), StatusCodes.Status200OK)]
 			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 			public async Task<IActionResult> GetAll([FromQuery] UserPositionsRequest positionRequest, CancellationToken token)

@@ -112,7 +112,7 @@ namespace Lotus
 			/// <param name="token">Токен отмены</param>
 			/// <returns>Cписок уведомлений</returns>
 			//---------------------------------------------------------------------------------------------------------
-			[HttpGet("getall")]
+			[HttpGet("getAll")]
             [ProducesResponseType(typeof(ResponsePage<UserNotificationDto>), StatusCodes.Status200OK)]
 			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 			public async Task<IActionResult> GetAll([FromQuery] UserNotificationsRequest notificationRequest, CancellationToken token)

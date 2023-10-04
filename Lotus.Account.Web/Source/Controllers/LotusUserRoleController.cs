@@ -112,7 +112,7 @@ namespace Lotus
 			/// <param name="token">Токен отмены</param>
 			/// <returns>Cписок ролей</returns>
 			//---------------------------------------------------------------------------------------------------------
-			[HttpGet("getall")]
+			[HttpGet("getAll")]
             [ProducesResponseType(typeof(ResponsePage<UserRoleDto>), StatusCodes.Status200OK)]
 			[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 			public async Task<IActionResult> GetAll([FromQuery] UserRolesRequest roleRequest, CancellationToken token)
