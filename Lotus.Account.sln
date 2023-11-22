@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lotus.Web.Common", "..\Lotu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lotus.Account.Web", "Lotus.Account.Web\Lotus.Account.Web.csproj", "{8233CD83-EA06-4D36-B569-8109E13F3F48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lotus.Account.WebApp", "Lotus.Account.WebApp\Lotus.Account.WebApp.csproj", "{965ADAF8-DC44-4702-ABD5-95F4FC06C9CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lotus.Account.WebApp", "Lotus.Account.WebApp\Lotus.Account.WebApp.csproj", "{965ADAF8-DC44-4702-ABD5-95F4FC06C9CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,7 +60,7 @@ Global
 		{8233CD83-EA06-4D36-B569-8109E13F3F48}.Release|Any CPU.Build.0 = Release|Any CPU
 		{965ADAF8-DC44-4702-ABD5-95F4FC06C9CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{965ADAF8-DC44-4702-ABD5-95F4FC06C9CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{965ADAF8-DC44-4702-ABD5-95F4FC06C9CA}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{965ADAF8-DC44-4702-ABD5-95F4FC06C9CA}.Publish|Any CPU.ActiveCfg = Publish|Any CPU
 		{965ADAF8-DC44-4702-ABD5-95F4FC06C9CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{965ADAF8-DC44-4702-ABD5-95F4FC06C9CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
