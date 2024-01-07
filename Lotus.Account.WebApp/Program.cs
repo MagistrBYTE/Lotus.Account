@@ -1,10 +1,6 @@
 ﻿//---------------------------------------------------------------------------------------------------------------------
 using Lotus.Account;
 using Lotus.Web;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.OpenApi.Models;
-using OpenIddict.Server.AspNetCore;
-using OpenIddict.Validation.AspNetCore;
 using System.Reflection;
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -93,7 +89,7 @@ await app.InitLotusAccountDatabase();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllers();
+	endpoints.MapControllers();
 	endpoints.MapFallbackToFile("index.html");
 });
 
