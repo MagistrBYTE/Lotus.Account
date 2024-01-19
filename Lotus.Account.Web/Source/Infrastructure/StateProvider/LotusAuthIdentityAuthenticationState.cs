@@ -35,9 +35,9 @@ namespace Lotus
         public class CIdentityAuthenticationStateProvider : ServerAuthenticationStateProvider
         {
             #region ======================================= ДАННЫЕ ====================================================
-            private readonly HttpClient mHttpClient;
-            private readonly IHttpContextAccessor mHttpContextAccessor;
-            private UserAuthorizeInfo? mUserInfo;
+            private readonly HttpClient _httpClient;
+            private readonly IHttpContextAccessor _httpContextAccessor;
+            private UserAuthorizeInfo? _userInfo;
             #endregion
 
             #region ======================================= КОНСТРУКТОРЫ ==============================================
@@ -51,9 +51,9 @@ namespace Lotus
             public CIdentityAuthenticationStateProvider(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
             {
                 var server_uri = configuration.GetSection("Authorization").GetValue<String>(XRoutesConstants.ServerUri);
-                mHttpClient = new HttpClient();
-                mHttpClient.BaseAddress = new Uri(server_uri);
-                mHttpContextAccessor = httpContextAccessor;
+                _httpClient = new HttpClient();
+                _httpClient.BaseAddress = new Uri(server_uri!);
+                _httpContextAccessor = httpContextAccessor;
             }
             #endregion
 
@@ -67,43 +67,35 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             public async Task Login(LoginParametersDto loginParameters)
             {
-                var httpContex = mHttpContextAccessor.HttpContext;
+                var httpContex = _httpContextAccessor.HttpContext;
 
                 // Прокидываем все заголовки от браузера
                 // которые нужны для последующей идентификации пользователя
                 foreach (var item in httpContex!.Request.Headers)
                 {
-                    if (!mHttpClient.DefaultRequestHeaders.Contains(item.Key))
+                    if (!_httpClient.DefaultRequestHeaders.Contains(item.Key))
                     {
-                        mHttpClient.DefaultRequestHeaders.Add(item.Key, item.Value.ToString());
+                        _httpClient.DefaultRequestHeaders.Add(item.Key, item.Value.ToString());
                     }
                 }
+				var tokenResponse = await _httpClient.RequestPasswordTokenAsync(new PasswordTokenRequest
+				{
+					Address = XRoutesConstants.TokenEndpoint,
+					UserName = loginParameters.Login,
+					Password = loginParameters.Password,
+				});
 
-                try
-                {
-                    var tokenResponse = await mHttpClient.RequestPasswordTokenAsync(new PasswordTokenRequest
-                    {
-                        Address = XRoutesConstants.TokenEndpoint,
-                        UserName = loginParameters.Login,
-                        Password = loginParameters.Password,
-                    });
+				if (tokenResponse.IsError)
+				{
+					throw new ArgumentException(tokenResponse.Error, nameof(loginParameters));
+				}
 
-                    if (tokenResponse.IsError)
-                    {
-                        throw new Exception(tokenResponse.Error);
-                    }
+				_userInfo = new UserAuthorizeInfo();
+				_userInfo.SetThisFrom(tokenResponse.AccessToken!);
+				_userInfo.IsAuthenticated = true;
 
-                    mUserInfo = new UserAuthorizeInfo();
-                    mUserInfo.SetThisFrom(tokenResponse.AccessToken);
-                    mUserInfo.IsAuthenticated = true;
-
-                    NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-            }
+				NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+			}
 
             //---------------------------------------------------------------------------------------------------------
             /// <summary>
@@ -114,19 +106,12 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             public async Task Register(RegisterParametersDto registerParameters)
             {
-                try
-                {
-                    var response = await mHttpClient.PostAsJsonAsync(XRoutesConstants.RegisterEndpoint, registerParameters);
+				var response = await _httpClient.PostAsJsonAsync(XRoutesConstants.RegisterEndpoint, registerParameters);
 
-                    response.EnsureSuccessStatusCode();
+				response.EnsureSuccessStatusCode();
 
-                    NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-            }
+				NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+			}
 
             //---------------------------------------------------------------------------------------------------------
             /// <summary>
@@ -136,17 +121,10 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             public async Task Logout()
             {
-                try
-                {
-                    var result = await mHttpClient.PostAsync(XRoutesConstants.LogoutEndpoint, null);
-                    mUserInfo = null;
-                    NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-            }
+				await _httpClient.PostAsync(XRoutesConstants.LogoutEndpoint, null);
+				_userInfo = null;
+				NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+			}
 
             //---------------------------------------------------------------------------------------------------------
             /// <summary>
@@ -156,31 +134,22 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             public async Task<UserAuthorizeInfo> GetUserAuthorizeInfo()
             {
-                if (mUserInfo != null && mUserInfo.IsAuthenticated)
+                if (_userInfo != null && _userInfo.IsAuthenticated)
                 {
-                    return mUserInfo;
+                    return _userInfo;
                 }
 
-                //mIsSending = true;
                 var requestMessage = new HttpRequestMessage();
-                requestMessage.RequestUri = new Uri(mHttpClient.BaseAddress + "api/Authorize/UserAuthorizeInfo");
+                requestMessage.RequestUri = new Uri(_httpClient.BaseAddress + "api/Authorize/UserAuthorizeInfo");
+				var response = await _httpClient.SendAsync(requestMessage);
+				response.EnsureSuccessStatusCode();
 
-                try
-                {
-                    var response = await mHttpClient.SendAsync(requestMessage);
-                    response.EnsureSuccessStatusCode();
+				var responseBody = await response.Content.ReadAsStringAsync();
+				var authorizeInfo = JsonConvert.DeserializeObject<UserAuthorizeInfo>(responseBody);
 
-                    var responseBody = await response.Content.ReadAsStringAsync();
-                    var authorizeInfo = JsonConvert.DeserializeObject<UserAuthorizeInfo>(responseBody);
+				_userInfo = authorizeInfo;
 
-                    mUserInfo = authorizeInfo;
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-
-                return mUserInfo!;
+				return _userInfo!;
             }
             #endregion
 
@@ -195,10 +164,10 @@ namespace Lotus
             {
                 var identity = new ClaimsIdentity();
 
-                if (mUserInfo != null && mUserInfo.IsAuthenticated)
+                if (_userInfo != null && _userInfo.IsAuthenticated)
                 {
                     identity = new ClaimsIdentity("Server authentication");
-                    mUserInfo.FillClaims(identity);
+                    _userInfo.FillClaims(identity);
                 }
 
                 return Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity)));

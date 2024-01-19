@@ -1,7 +1,7 @@
 ﻿//---------------------------------------------------------------------------------------------------------------------
+using System.Reflection;
 using Lotus.Account;
 using Lotus.Web;
-using System.Reflection;
 //---------------------------------------------------------------------------------------------------------------------
 
 var builder = WebApplication.CreateBuilder(args);
@@ -87,10 +87,12 @@ app.UseWebSockets();
 
 await app.InitLotusAccountDatabase();
 
-app.UseEndpoints(endpoints =>
+#pragma warning disable ASP0014
+app.UseEndpoints(configure: endpoints =>
 {
 	endpoints.MapControllers();
 	endpoints.MapFallbackToFile("index.html");
 });
+#pragma warning restore ASP0014
 
 app.Run();

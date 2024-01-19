@@ -187,10 +187,11 @@ namespace Lotus
             /// </summary>
             public Int32? RoleId { get; set; }
 
-            /// <summary>
-            /// Служебное наименование роли
-            /// </summary>
-            public String RoleSystemName
+			/// <summary>
+			/// Служебное наименование роли
+			/// </summary>
+			[NotMapped]
+			public String RoleSystemName
             {
                 get
                 {

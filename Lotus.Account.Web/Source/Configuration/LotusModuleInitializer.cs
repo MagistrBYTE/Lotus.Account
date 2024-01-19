@@ -115,7 +115,7 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			public static IServiceCollection AddLotusAccountServices(this IServiceCollection services)
             {
-				services.AddScoped<ILotusDataStorage, DataStorageAccount>();
+				services.AddScoped<ILotusRepository, RepositoryAccount>();
 				services.AddScoped<ILotusUserService, UserService>();
 				services.AddScoped<ILotusAuthorizeService, AuthorizeService>();
 				services.AddScoped<ILotusUserGroupService, UserGroupService>();

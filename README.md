@@ -6,3 +6,7 @@
  - `Lotus.Account.Web` - модуль WebApi учетной записи пользователя.
  - `Lotus.Account.WebApp` - модуль Web-приложения учетной записи пользователя.
  - `Lotus.Account.WebClient` - модуль клиентского Web-приложения учетной записи пользователя.
+
+## Зависит от:
+ - Lotus.Core, версия 2.4.2
+ - Lotus.Repository, версия 2.4.2

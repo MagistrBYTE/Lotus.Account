@@ -10,9 +10,10 @@
 // Версия: 1.0.0.0
 // Последнее изменение от 30.04.2023
 //=====================================================================================================================
-using Lotus.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+//---------------------------------------------------------------------------------------------------------------------
+using Lotus.Repository;
 //=====================================================================================================================
 namespace Lotus
 {
@@ -140,7 +141,7 @@ namespace Lotus
 
 				// Customize the ASP.NET Identity model and override the defaults if needed.
 				// For example, you can rename the ASP.NET Identity table names and more.
-				// Add your customizations after calling base.OnModelCreating(builder);
+				// Add your customizations after calling base.OnModelCreating(builder)
 
 				foreach (var entity in modelBuilder.Model.GetEntityTypes())
 				{
@@ -159,10 +160,10 @@ namespace Lotus
 
 		//-------------------------------------------------------------------------------------------------------------
 		/// <summary>
-		/// 
+		/// Репозиторий для взаимодействия с контекстом базы данных всех пользователей и учетных данных
 		/// </summary>
 		//-------------------------------------------------------------------------------------------------------------
-		public class DataStorageAccount : DataStorageContextDb<AccountDbContext>
+		public class RepositoryAccount : RepositoryContextDb<AccountDbContext>
 		{
 			//---------------------------------------------------------------------------------------------------------
 			/// <summary>
@@ -170,7 +171,7 @@ namespace Lotus
 			/// </summary>
 			/// <param name="context">Контекс базы данных</param>
 			//---------------------------------------------------------------------------------------------------------
-			public DataStorageAccount(AccountDbContext context) 
+			public RepositoryAccount(AccountDbContext context) 
 				: base(context)
 			{
 			}

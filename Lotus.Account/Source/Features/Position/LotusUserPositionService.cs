@@ -30,7 +30,7 @@ namespace Lotus
 		public class UserPositionService : ILotusUserPositionService
         {
             #region ======================================= ДАННЫЕ ====================================================
-            private readonly ILotusDataStorage _dataStorage;
+            private readonly ILotusRepository _repository;
             #endregion
 
             #region ======================================= КОНСТРУКТОРЫ ==============================================
@@ -38,11 +38,11 @@ namespace Lotus
             /// <summary>
             /// Конструктор инициализирует объект класса указанными параметрами
             /// </summary>
-            /// <param name="dataStorage">Интерфейс для работы с сущностями</param>
+            /// <param name="repository">Интерфейс для работы с сущностями</param>
             //---------------------------------------------------------------------------------------------------------
-            public UserPositionService(ILotusDataStorage dataStorage)
+            public UserPositionService(ILotusRepository repository)
             {
-                _dataStorage = dataStorage;
+                _repository = repository;
             }
             #endregion
 
@@ -59,8 +59,8 @@ namespace Lotus
             {
                 UserPosition entity = positionCreate.Adapt<UserPosition>();
 
-				await _dataStorage.AddAsync(entity);
-                await _dataStorage.FlushAsync(token);
+				await _repository.AddAsync(entity);
+                await _repository.FlushAsync(token);
 
                 UserPositionDto result = entity.Adapt<UserPositionDto>();
 
@@ -79,8 +79,8 @@ namespace Lotus
             {
                 UserPosition entity = positionUpdate.Adapt<UserPosition>();
 
-				_dataStorage.Update(entity);
-                await _dataStorage.FlushAsync(token);
+				_repository.Update(entity);
+                await _repository.FlushAsync(token);
 
                 UserPositionDto result = entity.Adapt<UserPositionDto>();
 
@@ -97,7 +97,7 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			public async Task<Response<UserPositionDto>> GetAsync(Int32 id, CancellationToken token)
 			{
-				UserPosition? entity = await _dataStorage.GetByIdAsync<UserPosition, Int32>(id, token);
+				UserPosition? entity = await _repository.GetByIdAsync<UserPosition, Int32>(id, token);
 				if (entity == null)
 				{
 					return XResponse.Failed<UserPositionDto>(XUserPositionErrors.NotFound);
@@ -118,7 +118,7 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			public async Task<ResponsePage<UserPositionDto>> GetAllAsync(UserPositionsRequest positionRequest, CancellationToken token)
             {
-				var query = _dataStorage.Query<UserPosition>();
+				var query = _repository.Query<UserPosition>();
 
                 query = query.Filter(positionRequest.Filtering);
 
@@ -139,7 +139,7 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             public async Task<Response> DeleteAsync(Int32 id, CancellationToken token)
             {
-				UserPosition? entity = await _dataStorage.GetByIdAsync<UserPosition, Int32>(id, token);
+				UserPosition? entity = await _repository.GetByIdAsync<UserPosition, Int32>(id, token);
 				if (entity == null)
 				{
 					return XResponse.Failed<UserPositionDto>(XUserPositionErrors.NotFound);
@@ -150,8 +150,8 @@ namespace Lotus
                     return XResponse.Failed(XUserPositionErrors.NotDeleteConst);
                 }
 
-                _dataStorage.Remove(entity!);
-                await _dataStorage.FlushAsync(token);
+                _repository.Remove(entity!);
+                await _repository.FlushAsync(token);
 
                 return XResponse.Succeed();
             }

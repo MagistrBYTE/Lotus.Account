@@ -31,7 +31,7 @@ namespace Lotus
         public class UserNotificationService : ILotusUserNotificationService
         {
             #region ======================================= ДАННЫЕ ====================================================
-            private readonly ILotusDataStorage _dataStorage;
+            private readonly ILotusRepository _repository;
             #endregion
 
             #region ======================================= КОНСТРУКТОРЫ ==============================================
@@ -39,11 +39,11 @@ namespace Lotus
             /// <summary>
             /// Конструктор инициализирует объект класса указанными параметрами
             /// </summary>
-            /// <param name="dataStorage">Интерфейс для работы с сущностями</param>
+            /// <param name="repository">Интерфейс для работы с сущностями</param>
             //---------------------------------------------------------------------------------------------------------
-            public UserNotificationService(ILotusDataStorage dataStorage)
+            public UserNotificationService(ILotusRepository repository)
             {
-                _dataStorage = dataStorage;
+                _repository = repository;
             }
             #endregion
 
@@ -60,8 +60,8 @@ namespace Lotus
             {
                 UserNotification entity = notificationCreate.Adapt<UserNotification>();
 
-				await _dataStorage.AddAsync(entity);
-                await _dataStorage.FlushAsync(token);
+				await _repository.AddAsync(entity);
+                await _repository.FlushAsync(token);
 
                 UserNotificationDto result = entity.Adapt<UserNotificationDto>();
 
@@ -81,8 +81,8 @@ namespace Lotus
                 UserNotification entity = notificationUpdate.Adapt<UserNotification>();
 				entity.Created = DateTime.UtcNow;
 
-				_dataStorage.Update(entity);
-                await _dataStorage.FlushAsync(token);
+				_repository.Update(entity);
+                await _repository.FlushAsync(token);
 
                 UserNotificationDto result = entity.Adapt<UserNotificationDto>();
 
@@ -99,7 +99,7 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			public async Task<Response<UserNotificationDto>> GetAsync(Guid id, CancellationToken token)
 			{
-				UserNotification? entity = await _dataStorage.GetByIdAsync<UserNotification, Guid>(id, token);
+				UserNotification? entity = await _repository.GetByIdAsync<UserNotification, Guid>(id, token);
 				if (entity == null)
 				{
 					return XResponse.Failed<UserNotificationDto>(XUserNotificationErrors.NotFound);
@@ -120,7 +120,7 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			public async Task<ResponsePage<UserNotificationDto>> GetAllAsync(UserNotificationsRequest notificationRequest, CancellationToken token)
             {
-                var query = _dataStorage.Query<UserNotification>();
+                var query = _repository.Query<UserNotification>();
 
                 query = query.Filter(notificationRequest.Filtering);
 
@@ -141,14 +141,14 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             public async Task<Response> DeleteAsync(Guid id, CancellationToken token)
             {
-				UserNotification? entity = await _dataStorage.GetByIdAsync<UserNotification, Guid>(id, token);
+				UserNotification? entity = await _repository.GetByIdAsync<UserNotification, Guid>(id, token);
 				if (entity == null)
                 {
                     return XResponse.Failed(XUserNotificationErrors.NotFound);
                 }
 
-                _dataStorage.Remove(entity!);
-                await _dataStorage.FlushAsync(token);
+                _repository.Remove(entity!);
+                await _repository.FlushAsync(token);
 
                 return XResponse.Succeed();
             }

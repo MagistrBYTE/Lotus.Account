@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Lotus.Account.Migrations
 {
     [DbContext(typeof(AccountDbContext))]
-    [Migration("20230912105613_Initial")]
+    [Migration("20240119090232_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Lotus.Account.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.10")
+                .HasAnnotation("ProductVersion", "8.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -68,10 +68,6 @@ namespace Lotus.Account.Migrations
                     b.Property<int?>("RoleId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("RoleSystemName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Surname")
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
@@ -95,7 +91,6 @@ namespace Lotus.Account.Migrations
                             PasswordHash = "012f28fd2973783520fa3115f886102a09c8a15e",
                             Patronymic = "Сергеевич",
                             RoleId = 1,
-                            RoleSystemName = "Нет роли",
                             Surname = "Дементьев"
                         });
                 });
@@ -467,12 +462,20 @@ namespace Lotus.Account.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("text");
 
+                    b.Property<string>("ApplicationType")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
                     b.Property<string>("ClientId")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("ClientSecret")
                         .HasColumnType("text");
+
+                    b.Property<string>("ClientType")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("ConcurrencyToken")
                         .IsConcurrencyToken()
@@ -487,6 +490,9 @@ namespace Lotus.Account.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("DisplayNames")
+                        .HasColumnType("text");
+
+                    b.Property<string>("JsonWebKeySet")
                         .HasColumnType("text");
 
                     b.Property<string>("Permissions")
@@ -504,9 +510,8 @@ namespace Lotus.Account.Migrations
                     b.Property<string>("Requirements")
                         .HasColumnType("text");
 
-                    b.Property<string>("Type")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                    b.Property<string>("Settings")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

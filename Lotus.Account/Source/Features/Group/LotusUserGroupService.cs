@@ -30,7 +30,7 @@ namespace Lotus
         public class UserGroupService : ILotusUserGroupService
         {
             #region ======================================= ДАННЫЕ ====================================================
-            private readonly ILotusDataStorage _dataStorage;
+            private readonly ILotusRepository _repository;
 			#endregion
 
 			#region ======================================= КОНСТРУКТОРЫ ==============================================
@@ -38,11 +38,11 @@ namespace Lotus
 			/// <summary>
 			/// Конструктор инициализирует объект класса указанными параметрами
 			/// </summary>
-			/// <param name="dataStorage">Интерфейс для работы с сущностями</param>
+			/// <param name="repository">Интерфейс для работы с сущностями</param>
 			//---------------------------------------------------------------------------------------------------------
-			public UserGroupService(ILotusDataStorage dataStorage)
+			public UserGroupService(ILotusRepository repository)
             {
-				_dataStorage = dataStorage;
+				_repository = repository;
             }
             #endregion
 
@@ -59,8 +59,8 @@ namespace Lotus
             {
                 UserGroup entity = groupCreate.Adapt<UserGroup>();
 
-				await _dataStorage.AddAsync(entity);
-                await _dataStorage.FlushAsync(token);
+				await _repository.AddAsync(entity);
+                await _repository.FlushAsync(token);
 
                 UserGroupDto result = entity.Adapt<UserGroupDto>();
 
@@ -79,8 +79,8 @@ namespace Lotus
             {
                 UserGroup entity = groupUpdate.Adapt<UserGroup>();
 
-				_dataStorage.Update(entity);
-                await _dataStorage.FlushAsync(token);
+				_repository.Update(entity);
+                await _repository.FlushAsync(token);
 
                 UserGroupDto result = entity.Adapt<UserGroupDto>();
 
@@ -97,7 +97,7 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			public async Task<Response<UserGroupDto>> GetAsync(Int32 id, CancellationToken token)
 			{
-				UserGroup? entity = await _dataStorage.GetByIdAsync<UserGroup, Int32>(id, token);
+				UserGroup? entity = await _repository.GetByIdAsync<UserGroup, Int32>(id, token);
 				if (entity == null)
 				{
 					return XResponse.Failed<UserGroupDto>(XUserGroupErrors.NotFound);
@@ -118,7 +118,7 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			public async Task<ResponsePage<UserGroupDto>> GetAllAsync(UserGroupsRequest groupRequest, CancellationToken token)
             {
-				var query = _dataStorage.Query<UserGroup>();
+				var query = _repository.Query<UserGroup>();
 
                 query = query.Filter(groupRequest.Filtering);
 
@@ -139,7 +139,7 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             public async Task<Response> DeleteAsync(Int32 id, CancellationToken token)
             {
-                UserGroup? entity = await _dataStorage.GetByIdAsync<UserGroup, Int32>(id, token);
+                UserGroup? entity = await _repository.GetByIdAsync<UserGroup, Int32>(id, token);
                 if (entity == null)
                 {
                     return XResponse.Failed(XUserGroupErrors.NotFound);
@@ -150,8 +150,8 @@ namespace Lotus
                     return XResponse.Failed(XUserGroupErrors.NotDeleteConst);
                 }
 
-				_dataStorage.Remove(entity!);
-                await _dataStorage.FlushAsync(token);
+				_repository.Remove(entity!);
+                await _repository.FlushAsync(token);
 
                 return XResponse.Succeed();
             }

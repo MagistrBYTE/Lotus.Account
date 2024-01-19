@@ -30,7 +30,7 @@ namespace Lotus
         public class UserRoleService : ILotusUserRoleService
         {
             #region ======================================= ДАННЫЕ ====================================================
-            private readonly ILotusDataStorage _dataStorage;
+            private readonly ILotusRepository _repository;
             #endregion
 
             #region ======================================= КОНСТРУКТОРЫ ==============================================
@@ -38,11 +38,11 @@ namespace Lotus
             /// <summary>
             /// Конструктор инициализирует объект класса указанными параметрами
             /// </summary>
-            /// <param name="dataStorage">Интерфейс для работы с сущностями</param>
+            /// <param name="repository">Интерфейс для работы с сущностями</param>
             //---------------------------------------------------------------------------------------------------------
-            public UserRoleService(ILotusDataStorage dataStorage)
+            public UserRoleService(ILotusRepository repository)
             {
-                _dataStorage = dataStorage;
+                _repository = repository;
             }
             #endregion
 
@@ -59,8 +59,8 @@ namespace Lotus
             {
                 UserRole entity = roleCreate.Adapt<UserRole>();
 
-				await _dataStorage.AddAsync(entity);
-                await _dataStorage.FlushAsync(token);
+				await _repository.AddAsync(entity);
+                await _repository.FlushAsync(token);
 
                 UserRoleDto result = entity.Adapt<UserRoleDto>();
 
@@ -77,7 +77,7 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             public async Task<Response<UserRoleDto>> UpdateAsync(UserRoleDto roleUpdate, CancellationToken token)
             {
-				var queryRoles = _dataStorage.Query<UserRole>();
+				var queryRoles = _repository.Query<UserRole>();
 
 				UserRole? entity = queryRoles.Include(x => x.Permissions)
                     .FirstOrDefault(x => x.Id == roleUpdate.Id);
@@ -86,7 +86,7 @@ namespace Lotus
                 {
                     roleUpdate.Adapt<UserRoleDto, UserRole>(entity);
 
-					var queryPermissions = _dataStorage.Query<UserPermission>();
+					var queryPermissions = _repository.Query<UserPermission>();
 
 					var actualPermissions = queryPermissions
 						.Where(x => roleUpdate.PermissionIds.Contains(x.Id))
@@ -102,8 +102,8 @@ namespace Lotus
                         }
                     }
 
-					_dataStorage.Update(entity);
-                    await _dataStorage.FlushAsync(token);
+					_repository.Update(entity);
+                    await _repository.FlushAsync(token);
 
                     UserRoleDto result = entity.Adapt<UserRoleDto>();
 
@@ -123,7 +123,7 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			public async Task<Response<UserRoleDto>> GetAsync(Int32 id, CancellationToken token)
 			{
-				UserRole? entity = await _dataStorage.GetByIdAsync<UserRole, Int32>(id, token);
+				UserRole? entity = await _repository.GetByIdAsync<UserRole, Int32>(id, token);
 
 				if (entity == null)
 				{
@@ -145,7 +145,7 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			public async Task<ResponsePage<UserRoleDto>> GetAllAsync(UserRolesRequest roleRequest, CancellationToken token)
             {
-                var query = _dataStorage.Query<UserRole>();
+                var query = _repository.Query<UserRole>();
 
                 query = query.Filter(roleRequest.Filtering);
 
@@ -166,7 +166,7 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             public async Task<Response> DeleteAsync(Int32 id, CancellationToken token)
             {
-				UserRole? entity = await _dataStorage.GetByIdAsync<UserRole, Int32>(id, token);
+				UserRole? entity = await _repository.GetByIdAsync<UserRole, Int32>(id, token);
 
 				if (entity == null)
 				{
@@ -178,8 +178,8 @@ namespace Lotus
                     return XResponse.Failed(XUserRoleErrors.NotDeleteConst);
                 }
 
-				_dataStorage.Remove(entity!);
-                await _dataStorage.FlushAsync(token);
+				_repository.Remove(entity!);
+                await _repository.FlushAsync(token);
 
                 return XResponse.Succeed();
             }

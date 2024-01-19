@@ -33,7 +33,7 @@ namespace Lotus
         public class AuthorizeService : ILotusAuthorizeService
         {
             #region ======================================= ДАННЫЕ ====================================================
-            private readonly ILotusDataStorage _dataStorage;
+            private readonly ILotusRepository _repository;
 			#endregion
 
 			#region ======================================= КОНСТРУКТОРЫ ==============================================
@@ -41,11 +41,11 @@ namespace Lotus
 			/// <summary>
 			/// Конструктор инициализирует объект класса указанными параметрами
 			/// </summary>
-			/// <param name="dataStorage">Интерфейс для работы с сущностями</param>
+			/// <param name="repository">Интерфейс для работы с сущностями</param>
 			//---------------------------------------------------------------------------------------------------------
-			public AuthorizeService(ILotusDataStorage dataStorage)
+			public AuthorizeService(ILotusRepository repository)
             {
-				_dataStorage = dataStorage;
+				_repository = repository;
             }
             #endregion
 
@@ -59,7 +59,7 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             public async Task<Response<ClaimsPrincipal>> LoginAsync(LoginParametersDto loginParameters)
             {
-				var users = _dataStorage.Query<User>();
+				var users = _repository.Query<User>();
 
 				// Пробуем найти пользователя с таким именем
 				var user = await users.Where(x => (x.Login == loginParameters.Login || x.Email == loginParameters.Login))
@@ -117,7 +117,7 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			public async Task<Response> RegisterAsync(RegisterParametersDto registerParameters, CancellationToken token)
 			{
-				var users = _dataStorage.Query<User>();
+				var users = _repository.Query<User>();
 				var user = users.FirstOrDefault(x => x.Login == registerParameters.Login);
 
 				if (user is not null)
@@ -143,8 +143,8 @@ namespace Lotus
 					PostId = XUserPositionConstants.Inspector.Id
 				};
 
-				await _dataStorage.AddAsync(user);
-				await _dataStorage.FlushAsync(token);
+				await _repository.AddAsync(user);
+				await _repository.FlushAsync(token);
 
 				return XResponse.Succeed();
 			}

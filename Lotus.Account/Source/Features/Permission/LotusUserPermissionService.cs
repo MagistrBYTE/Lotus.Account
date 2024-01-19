@@ -30,7 +30,7 @@ namespace Lotus
         public class UserPermissionService : ILotusUserPermissionService
         {
             #region ======================================= ДАННЫЕ ====================================================
-            private readonly ILotusDataStorage _dataStorage;
+            private readonly ILotusRepository _repository;
             #endregion
 
             #region ======================================= КОНСТРУКТОРЫ ==============================================
@@ -38,11 +38,11 @@ namespace Lotus
             /// <summary>
             /// Конструктор инициализирует объект класса указанными параметрами
             /// </summary>
-            /// <param name="dataStorage">Интерфейс для работы с сущностями</param>
+            /// <param name="repository">Интерфейс для работы с сущностями</param>
             //---------------------------------------------------------------------------------------------------------
-            public UserPermissionService(ILotusDataStorage dataStorage)
+            public UserPermissionService(ILotusRepository repository)
             {
-                _dataStorage = dataStorage;
+                _repository = repository;
             }
             #endregion
 
@@ -59,8 +59,8 @@ namespace Lotus
             {
                 UserPermission entity = permissionCreate.Adapt<UserPermission>();
 
-				await _dataStorage.AddAsync(entity);
-                await _dataStorage.FlushAsync(token);
+				await _repository.AddAsync(entity);
+                await _repository.FlushAsync(token);
 
                 UserPermissionDto result = entity.Adapt<UserPermissionDto>();
 
@@ -79,8 +79,8 @@ namespace Lotus
             {
                 UserPermission entity = permissionUpdate.Adapt<UserPermission>();
 
-				_dataStorage.Update(entity);
-                await _dataStorage.FlushAsync(token);
+				_repository.Update(entity);
+                await _repository.FlushAsync(token);
 
                 UserPermissionDto result = entity.Adapt<UserPermissionDto>();
 
@@ -97,7 +97,7 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             public async Task<ResponsePage<UserPermissionDto>> GetAllAsync(UserPermissionsRequest permissionRequest, CancellationToken token)
             {
-				var query = _dataStorage.Query<UserPermission>();
+				var query = _repository.Query<UserPermission>();
 
                 query = query.Filter(permissionRequest.Filtering);
 
@@ -118,7 +118,7 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             public async Task<Response> DeleteAsync(Int32 id, CancellationToken token)
             {
-                UserPermission? entity = await _dataStorage.GetByIdAsync<UserPermission, Int32>(id, token);
+                UserPermission? entity = await _repository.GetByIdAsync<UserPermission, Int32>(id, token);
                 if (entity == null)
                 {
                     return XResponse.Failed(XUserPermissionErrors.NotFound);
@@ -129,8 +129,8 @@ namespace Lotus
                     return XResponse.Failed(XUserPermissionErrors.NotDeleteConst);
                 }
 
-				_dataStorage.Remove(entity!);
-                await _dataStorage.FlushAsync(token);
+				_repository.Remove(entity!);
+                await _repository.FlushAsync(token);
 
                 return XResponse.Succeed();
             }

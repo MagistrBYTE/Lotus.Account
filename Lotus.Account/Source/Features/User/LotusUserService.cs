@@ -31,7 +31,7 @@ namespace Lotus
         public class UserService : ILotusUserService
         {
             #region ======================================= ДАННЫЕ ====================================================
-            private readonly ILotusDataStorage _dataStorage;
+            private readonly ILotusRepository _repository;
             #endregion
 
             #region ======================================= КОНСТРУКТОРЫ ==============================================
@@ -39,11 +39,11 @@ namespace Lotus
             /// <summary>
             /// Конструктор инициализирует объект класса указанными параметрами
             /// </summary>
-            /// <param name="dataStorage">Интерфейс для работы с сущностями</param>
+            /// <param name="repository">Интерфейс для работы с сущностями</param>
             //---------------------------------------------------------------------------------------------------------
-            public UserService(ILotusDataStorage dataStorage)
+            public UserService(ILotusRepository repository)
             {
-                _dataStorage = dataStorage;
+                _repository = repository;
             }
             #endregion
 
@@ -58,7 +58,7 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             public async Task<Response<UserDto>> CreateAsync(UserCreateRequest userCreate, CancellationToken token)
             {
-				var queryUser = _dataStorage.Query<User>();
+				var queryUser = _repository.Query<User>();
 
 				var user = queryUser.FirstOrDefault(x => x.Login == userCreate.Login);
 
@@ -80,8 +80,8 @@ namespace Lotus
                     Post = XUserPositionConstants.Inspector
                 };
 
-				await _dataStorage.AddAsync(user);
-                await _dataStorage.FlushAsync(token);
+				await _repository.AddAsync(user);
+                await _repository.FlushAsync(token);
 
                 UserDto result = user.Adapt<UserDto>();
 
@@ -100,8 +100,8 @@ namespace Lotus
             {
                 User user = userUpdate.Adapt<User>();
 
-                _dataStorage.Update(user);
-                await _dataStorage.FlushAsync(token);
+                _repository.Update(user);
+                await _repository.FlushAsync(token);
 
                 UserDto result = user.Adapt<UserDto>();
 
@@ -118,7 +118,7 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			public async Task<Response<UserDto>> GetAsync(Guid id, CancellationToken token)
 			{
-				User? entity = await _dataStorage.GetByIdAsync<User, Guid>(id, token);
+				User? entity = await _repository.GetByIdAsync<User, Guid>(id, token);
 
 				if (entity == null)
 				{
@@ -140,7 +140,7 @@ namespace Lotus
 			//---------------------------------------------------------------------------------------------------------
 			public async Task<ResponsePage<UserDto>> GetAllAsync(UsersRequest userRequest, CancellationToken token)
             {
-				var query = _dataStorage.Query<User>();
+				var query = _repository.Query<User>();
 
                 query = query.Filter(userRequest.Filtering);
 
@@ -161,7 +161,7 @@ namespace Lotus
             //---------------------------------------------------------------------------------------------------------
             public async Task<Response> DeleteAsync(Guid id, CancellationToken token)
             {
-				User? entity = await _dataStorage.GetByIdAsync<User, Guid>(id, token);
+				User? entity = await _repository.GetByIdAsync<User, Guid>(id, token);
 
 				if (entity == null)
 				{
@@ -173,8 +173,8 @@ namespace Lotus
 					return XResponse.Failed<UserDto>(XUserErrors.NotDeleteConst);
 				}
 
-				_dataStorage.Remove(entity!);
-                await _dataStorage.FlushAsync(token);
+				_repository.Remove(entity!);
+                await _repository.FlushAsync(token);
 
                 return XResponse.Succeed();
             }

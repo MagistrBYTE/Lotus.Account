@@ -67,8 +67,8 @@ namespace Lotus
 
                 userInfo.Email = claims.FindFirstValue(ClaimTypes.Email);
 
-                userInfo.RoleSystemName = claims.FindFirstValue(ClaimTypes.Role);
-                userInfo.PermissionsSystemNamesAsText = claims.FindFirstValue(XClaimsConstants.UserPermissions);
+                userInfo.RoleSystemName = claims.FindFirstValue(ClaimTypes.Role) ?? String.Empty;
+                userInfo.PermissionsSystemNamesAsText = claims.FindFirstValue(XClaimsConstants.UserPermissions) ?? String.Empty;
 
                 userInfo.Name = claims.FindFirstValue(XClaimsConstants.UserName);
                 userInfo.Surname = claims.FindFirstValue(XClaimsConstants.UserSurname);
@@ -77,9 +77,9 @@ namespace Lotus
                 var birthday = claims.FindFirstValue(ClaimTypes.DateOfBirth);
                 userInfo.Birthday = birthday != null ? DateOnly.Parse(birthday) : null;
 
-                userInfo.PostShortName = claims.FindFirstValue(XClaimsConstants.Position);
+                userInfo.PostShortName = claims.FindFirstValue(XClaimsConstants.Position) ?? String.Empty;
 
-                userInfo.GroupNamesAsText = claims.FindFirstValue(XClaimsConstants.UserGroup);
+                userInfo.GroupNamesAsText = claims.FindFirstValue(XClaimsConstants.UserGroup) ?? String.Empty;
             }
 
             //---------------------------------------------------------------------------------------------------------

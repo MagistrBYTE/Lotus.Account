@@ -24,6 +24,8 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 using Lotus.Web;
 using Lotus.Core;
 using Lotus.Repository;
+//---------------------------------------------------------------------------------------------------------------------
+#pragma warning disable 
 //=====================================================================================================================
 namespace Lotus
 {
@@ -88,8 +90,8 @@ namespace Lotus
 
                 if (request is null)
                 {
-                    throw new ArgumentNullException(nameof(request));
-                }
+					throw new ArgumentNullException(nameof(request));
+				}
 
                 if (request.GrantType == GrantTypes.Password)
                 {
@@ -99,10 +101,10 @@ namespace Lotus
                         Password = request.Password!,
                     };
 
-                    var device = HttpContext.GetDeviceFromRequest();
-                    var browser = HttpContext.GetBrowserFromRequest();
+					// var device = HttpContext.GetDeviceFromRequest();
+					// var browser = HttpContext.GetBrowserFromRequest();
 
-                    var response = await _authorizeService.LoginAsync(parameters);
+					var response = await _authorizeService.LoginAsync(parameters);
 
                     if (response.Result != null && response.Result.Succeeded == false)
                     {
@@ -128,8 +130,10 @@ namespace Lotus
                 {
                     if (request.GrantType == GrantTypes.RefreshToken)
                     {
-                        // Retrieve the claims principal stored in the refresh token.
-                        var principal = (await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal;
+						// Retrieve the claims principal stored in the refresh token.
+						var result = await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)!;
+
+                        var principal = result.Principal!;
 
                         // Набор утверждений
                         principal.SetScopes(XOpenIddictConfiguration.GetScopesDefaults());

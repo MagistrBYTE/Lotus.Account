@@ -26,18 +26,21 @@ namespace Lotus.Account.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    ApplicationType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     ClientId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     ClientSecret = table.Column<string>(type: "text", nullable: true),
+                    ClientType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     ConcurrencyToken = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     ConsentType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     DisplayName = table.Column<string>(type: "text", nullable: true),
                     DisplayNames = table.Column<string>(type: "text", nullable: true),
+                    JsonWebKeySet = table.Column<string>(type: "text", nullable: true),
                     Permissions = table.Column<string>(type: "text", nullable: true),
                     PostLogoutRedirectUris = table.Column<string>(type: "text", nullable: true),
                     Properties = table.Column<string>(type: "text", nullable: true),
                     RedirectUris = table.Column<string>(type: "text", nullable: true),
                     Requirements = table.Column<string>(type: "text", nullable: true),
-                    Type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                    Settings = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -199,7 +202,6 @@ namespace Lotus.Account.Migrations
                     Patronymic = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
                     Birthday = table.Column<DateOnly>(type: "date", nullable: true),
                     RoleId = table.Column<int>(type: "integer", nullable: true),
-                    RoleSystemName = table.Column<string>(type: "text", nullable: false),
                     PostId = table.Column<int>(type: "integer", nullable: true),
                     AvatarId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
@@ -422,8 +424,8 @@ namespace Lotus.Account.Migrations
             migrationBuilder.InsertData(
                 schema: "adm",
                 table: "User",
-                columns: new[] { "Id", "AvatarId", "Birthday", "Email", "EmailConfirmed", "Login", "Name", "PasswordHash", "Patronymic", "PostId", "RoleId", "RoleSystemName", "Surname" },
-                values: new object[] { new Guid("e3182c8f-87bc-4e27-a27f-b32e3e2b8018"), null, null, "dementevds@gmail.com", false, "DanielDem", "Даниил", "012f28fd2973783520fa3115f886102a09c8a15e", "Сергеевич", null, 1, "Нет роли", "Дементьев" });
+                columns: new[] { "Id", "AvatarId", "Birthday", "Email", "EmailConfirmed", "Login", "Name", "PasswordHash", "Patronymic", "PostId", "RoleId", "Surname" },
+                values: new object[] { new Guid("e3182c8f-87bc-4e27-a27f-b32e3e2b8018"), null, null, "dementevds@gmail.com", false, "DanielDem", "Даниил", "012f28fd2973783520fa3115f886102a09c8a15e", "Сергеевич", null, 1, "Дементьев" });
 
             migrationBuilder.InsertData(
                 schema: "adm",
