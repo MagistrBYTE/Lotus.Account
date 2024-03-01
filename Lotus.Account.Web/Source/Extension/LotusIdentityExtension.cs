@@ -2,8 +2,12 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Lotus.Account
 {
-    /** \addtogroup AccountWebApiExtension
-    *@{*/
+    /**
+     * \defgroup AccountWebApiExtension Методы расширения
+     * \ingroup AccountWebApi
+     * \brief Методы расширения.
+     * @{
+     */
     /// <summary>
     /// Статический класс реализующий методы расширения для работы подсистемой Identity.
     /// </summary>
