@@ -1,6 +1,6 @@
-using Microsoft.EntityFrameworkCore;
-
 using Lotus.Repository;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Lotus.Account
 {

@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+
 using Lotus.Account;
 using Lotus.Web;
 
@@ -41,8 +42,8 @@ builder.Services.AddLotusPermissionsExtension();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-	var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-	options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 var app = builder.Build();
@@ -55,9 +56,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
-	app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 else
 {
@@ -88,8 +89,8 @@ await app.InitLotusAccountDatabase();
 #pragma warning disable ASP0014
 app.UseEndpoints(configure: endpoints =>
 {
-	endpoints.MapControllers();
-	endpoints.MapFallbackToFile("index.html");
+    endpoints.MapControllers();
+    endpoints.MapFallbackToFile("index.html");
 });
 #pragma warning restore ASP0014
 
