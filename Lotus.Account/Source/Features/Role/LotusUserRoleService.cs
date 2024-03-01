@@ -1,193 +1,136 @@
-﻿//=====================================================================================================================
-// Проект: Модуль учетной записи пользователя
-// Раздел: Подсистема работы с ролями
-// Автор: MagistrBYTE aka DanielDem <dementevds@gmail.com>
-//---------------------------------------------------------------------------------------------------------------------
-/** \file LotusUserRoleService.cs
-*		Cервис для работы с ролями.
-*/
-//---------------------------------------------------------------------------------------------------------------------
-// Версия: 1.0.0.0
-// Последнее изменение от 30.04.2023
-//=====================================================================================================================
-using Mapster;
-using Microsoft.EntityFrameworkCore;
-//---------------------------------------------------------------------------------------------------------------------
 using Lotus.Repository;
-//=====================================================================================================================
-namespace Lotus
+
+using Mapster;
+
+using Microsoft.EntityFrameworkCore;
+
+namespace Lotus.Account
 {
-    namespace Account
+    /** \addtogroup AccountRole
+    *@{*/
+    /// <summary>
+    /// Cервис для работы с дожностями.
+    /// </summary>
+    public class UserRoleService : ILotusUserRoleService
     {
-        //-------------------------------------------------------------------------------------------------------------
-        /** \addtogroup AccountRole
-		*@{*/
-        //-------------------------------------------------------------------------------------------------------------
+        #region Fields
+        private readonly ILotusDataStorage _dataStorage;
+        #endregion
+
+        #region Constructors
         /// <summary>
-        /// Cервис для работы с дожностями
+        /// Конструктор инициализирует объект класса указанными параметрами.
         /// </summary>
-        //-------------------------------------------------------------------------------------------------------------
-        public class UserRoleService : ILotusUserRoleService
+        /// <param name="dataStorage">Интерфейс для работы с сущностями.</param>
+        public UserRoleService(ILotusDataStorage dataStorage)
         {
-            #region ======================================= ДАННЫЕ ====================================================
-            private readonly ILotusRepository _repository;
-            #endregion
+            _dataStorage = dataStorage;
+        }
+        #endregion
 
-            #region ======================================= КОНСТРУКТОРЫ ==============================================
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Конструктор инициализирует объект класса указанными параметрами
-            /// </summary>
-            /// <param name="repository">Интерфейс для работы с сущностями</param>
-            //---------------------------------------------------------------------------------------------------------
-            public UserRoleService(ILotusRepository repository)
+        #region ILotusUserRoleService methods
+        /// <inheritdoc/>
+        public async Task<Response<UserRoleDto>> CreateAsync(UserRoleCreateRequest roleCreate, CancellationToken token)
+        {
+            var entity = roleCreate.Adapt<UserRole>();
+
+            await _dataStorage.AddAsync(entity, token);
+            await _dataStorage.SaveChangesAsync(token);
+
+            var result = entity.Adapt<UserRoleDto>();
+
+            return XResponse.Succeed(result);
+        }
+
+        /// <inheritdoc/>
+        public async Task<Response<UserRoleDto>> UpdateAsync(UserRoleDto roleUpdate, CancellationToken token)
+        {
+            var queryRoles = _dataStorage.Query<UserRole>();
+
+            var entity = queryRoles.Include(x => x.Permissions)
+                    .FirstOrDefault(x => x.Id == roleUpdate.Id);
+
+            if (entity is not null)
             {
-                _repository = repository;
-            }
-            #endregion
+                roleUpdate.Adapt<UserRoleDto, UserRole>(entity);
 
-            #region ======================================= ОБЩИЕ МЕТОДЫ ==============================================
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Создание роли по указанным данным
-            /// </summary>
-            /// <param name="roleCreate">Параметры для создания роли</param>
-            /// <param name="token">Токен отмены</param>
-            /// <returns>Должность</returns>
-            //---------------------------------------------------------------------------------------------------------
-            public async Task<Response<UserRoleDto>> CreateAsync(UserRoleCreateRequest roleCreate, CancellationToken token)
-            {
-                UserRole entity = roleCreate.Adapt<UserRole>();
+                var queryPermissions = _dataStorage.Query<UserPermission>();
 
-				await _repository.AddAsync(entity);
-                await _repository.FlushAsync(token);
+                var actualPermissions = queryPermissions
+                    .Where(x => roleUpdate.PermissionIds.Contains(x.Id))
+                    .ToArray();
 
-                UserRoleDto result = entity.Adapt<UserRoleDto>();
+                entity.Permissions.Clear();
+
+                if (actualPermissions.Length > 0)
+                {
+                    foreach (var permission in actualPermissions)
+                    {
+                        entity.Permissions.Add(permission);
+                    }
+                }
+
+                _dataStorage.Update(entity);
+                await _dataStorage.SaveChangesAsync(token);
+
+                var result = entity.Adapt<UserRoleDto>();
 
                 return XResponse.Succeed(result);
             }
 
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Обновление данных указанной роли
-            /// </summary>
-            /// <param name="roleUpdate">Параметры обновляемой роли</param>
-            /// <param name="token">Токен отмены</param>
-            /// <returns>Должность</returns>
-            //---------------------------------------------------------------------------------------------------------
-            public async Task<Response<UserRoleDto>> UpdateAsync(UserRoleDto roleUpdate, CancellationToken token)
+            return XResponse.Failed<UserRoleDto>(XUserRoleErrors.NotFound);
+        }
+
+        /// <inheritdoc/>
+        public async Task<Response<UserRoleDto>> GetAsync(int id, CancellationToken token)
+        {
+            var entity = await _dataStorage.GetByIdAsync<UserRole, int>(id, token);
+
+            if (entity == null)
             {
-				var queryRoles = _repository.Query<UserRole>();
-
-				UserRole? entity = queryRoles.Include(x => x.Permissions)
-                    .FirstOrDefault(x => x.Id == roleUpdate.Id);
-
-                if (entity is not null)
-                {
-                    roleUpdate.Adapt<UserRoleDto, UserRole>(entity);
-
-					var queryPermissions = _repository.Query<UserPermission>();
-
-					var actualPermissions = queryPermissions
-						.Where(x => roleUpdate.PermissionIds.Contains(x.Id))
-                        .ToArray();
-
-                    entity.Permissions.Clear();
-
-                    if (actualPermissions.Length > 0)
-                    {
-                        foreach (var permission in actualPermissions)
-                        {
-                            entity.Permissions.Add(permission);
-                        }
-                    }
-
-					_repository.Update(entity);
-                    await _repository.FlushAsync(token);
-
-                    UserRoleDto result = entity.Adapt<UserRoleDto>();
-
-                    return XResponse.Succeed(result);
-                }
-
                 return XResponse.Failed<UserRoleDto>(XUserRoleErrors.NotFound);
             }
 
-			//---------------------------------------------------------------------------------------------------------
-			/// <summary>
-			/// Получение указанной роли
-			/// </summary>
-			/// <param name="id">Идентификатор роли</param>
-			/// <param name="token">Токен отмены</param>
-			/// <returns>Роль</returns>
-			//---------------------------------------------------------------------------------------------------------
-			public async Task<Response<UserRoleDto>> GetAsync(Int32 id, CancellationToken token)
-			{
-				UserRole? entity = await _repository.GetByIdAsync<UserRole, Int32>(id, token);
+            var result = entity.Adapt<UserRoleDto>();
 
-				if (entity == null)
-				{
-					return XResponse.Failed<UserRoleDto>(XUserRoleErrors.NotFound);
-				}
-
-				UserRoleDto result = entity.Adapt<UserRoleDto>();
-
-				return XResponse.Succeed(result);
-			}
-
-			//---------------------------------------------------------------------------------------------------------
-			/// <summary>
-			/// Получение списка ролей
-			/// </summary>
-			/// <param name="roleRequest">Параметры получения списка</param>
-			/// <param name="token">Токен отмены</param>
-			/// <returns>Cписок ролей</returns>
-			//---------------------------------------------------------------------------------------------------------
-			public async Task<ResponsePage<UserRoleDto>> GetAllAsync(UserRolesRequest roleRequest, CancellationToken token)
-            {
-                var query = _repository.Query<UserRole>();
-
-                query = query.Filter(roleRequest.Filtering);
-
-				var queryOrder = query.Sort(roleRequest.Sorting, x => x.Id);
-
-				var result = await queryOrder.ToResponsePageAsync<UserRole, UserRoleDto>(roleRequest, token);
-
-                return result;
-            }
-
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Удаление роли
-            /// </summary>
-            /// <param name="id">Идентификатор роли</param>
-            /// <param name="token">Токен отмены</param>
-            /// <returns>Статус успешности</returns>
-            //---------------------------------------------------------------------------------------------------------
-            public async Task<Response> DeleteAsync(Int32 id, CancellationToken token)
-            {
-				UserRole? entity = await _repository.GetByIdAsync<UserRole, Int32>(id, token);
-
-				if (entity == null)
-				{
-					return XResponse.Failed<UserRoleDto>(XUserRoleErrors.NotFound);
-				}
-
-				if (entity.Id < 4)
-                {
-                    return XResponse.Failed(XUserRoleErrors.NotDeleteConst);
-                }
-
-				_repository.Remove(entity!);
-                await _repository.FlushAsync(token);
-
-                return XResponse.Succeed();
-            }
-            #endregion
+            return XResponse.Succeed(result);
         }
-        //-------------------------------------------------------------------------------------------------------------
-        /**@}*/
-        //-------------------------------------------------------------------------------------------------------------
+
+        /// <inheritdoc/>
+        public async Task<ResponsePage<UserRoleDto>> GetAllAsync(UserRolesRequest roleRequest, CancellationToken token)
+        {
+            var query = _dataStorage.Query<UserRole>();
+
+            query = query.Filter(roleRequest.Filtering);
+
+            var queryOrder = query.Sort(roleRequest.Sorting, x => x.Id);
+
+            var result = await queryOrder.ToResponsePageAsync<UserRole, UserRoleDto>(roleRequest, token);
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public async Task<Response> DeleteAsync(int id, CancellationToken token)
+        {
+            var entity = await _dataStorage.GetByIdAsync<UserRole, int>(id, token);
+
+            if (entity == null)
+            {
+                return XResponse.Failed<UserRoleDto>(XUserRoleErrors.NotFound);
+            }
+
+            if (entity.Id < 4)
+            {
+                return XResponse.Failed(XUserRoleErrors.NotDeleteConst);
+            }
+
+            _dataStorage.Remove(entity!);
+            await _dataStorage.SaveChangesAsync(token);
+
+            return XResponse.Succeed();
+        }
+        #endregion
     }
+    /**@}*/
 }
-//=====================================================================================================================

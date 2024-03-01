@@ -1,162 +1,105 @@
-﻿//=====================================================================================================================
-// Проект: Модуль учетной записи пользователя
-// Раздел: Подсистема работы с уведомлениями
-// Автор: MagistrBYTE aka DanielDem <dementevds@gmail.com>
-//---------------------------------------------------------------------------------------------------------------------
-/** \file LotusUserNotificationService.cs
-*		Cервис для работы с уведомлениями.
-*/
-//---------------------------------------------------------------------------------------------------------------------
-// Версия: 1.0.0.0
-// Последнее изменение от 30.04.2023
-//=====================================================================================================================
-using Mapster;
-using Microsoft.EntityFrameworkCore;
-//---------------------------------------------------------------------------------------------------------------------
 using Lotus.Core;
 using Lotus.Repository;
-//=====================================================================================================================
-namespace Lotus
+
+using Mapster;
+
+using Microsoft.EntityFrameworkCore;
+
+namespace Lotus.Account
 {
-    namespace Account
+    /** \addtogroup AccountNotification
+    *@{*/
+    /// <summary>
+    /// Cервис для работы с уведомлениями.
+    /// </summary>
+    public class UserNotificationService : ILotusUserNotificationService
     {
-        //-------------------------------------------------------------------------------------------------------------
-        /** \addtogroup AccountNotification
-		*@{*/
-        //-------------------------------------------------------------------------------------------------------------
+        #region Fields
+        private readonly ILotusDataStorage _dataStorage;
+        #endregion
+
+        #region Constructors
         /// <summary>
-        /// Cервис для работы с уведомлениями
+        /// Конструктор инициализирует объект класса указанными параметрами.
         /// </summary>
-        //-------------------------------------------------------------------------------------------------------------
-        public class UserNotificationService : ILotusUserNotificationService
+        /// <param name="dataStorage">Интерфейс для работы с сущностями.</param>
+        public UserNotificationService(ILotusDataStorage dataStorage)
         {
-            #region ======================================= ДАННЫЕ ====================================================
-            private readonly ILotusRepository _repository;
-            #endregion
-
-            #region ======================================= КОНСТРУКТОРЫ ==============================================
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Конструктор инициализирует объект класса указанными параметрами
-            /// </summary>
-            /// <param name="repository">Интерфейс для работы с сущностями</param>
-            //---------------------------------------------------------------------------------------------------------
-            public UserNotificationService(ILotusRepository repository)
-            {
-                _repository = repository;
-            }
-            #endregion
-
-            #region ======================================= ОБЩИЕ МЕТОДЫ ==============================================
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Создание уведомления по указанным данным
-            /// </summary>
-            /// <param name="notificationCreate">Параметры для создания уведомления</param>
-            /// <param name="token">Токен отмены</param>
-            /// <returns>Уведомление</returns>
-            //---------------------------------------------------------------------------------------------------------
-            public async Task<Response<UserNotificationDto>> CreateAsync(UserNotificationCreateRequest notificationCreate, CancellationToken token)
-            {
-                UserNotification entity = notificationCreate.Adapt<UserNotification>();
-
-				await _repository.AddAsync(entity);
-                await _repository.FlushAsync(token);
-
-                UserNotificationDto result = entity.Adapt<UserNotificationDto>();
-
-                return XResponse.Succeed(result);
-            }
-
-			//---------------------------------------------------------------------------------------------------------
-			/// <summary>
-			/// Обновление данных указанного уведомления
-			/// </summary>
-			/// <param name="notificationUpdate">Параметры обновляемого уведомления</param>
-			/// <param name="token">Токен отмены</param>
-			/// <returns>Уведомление</returns>
-			//---------------------------------------------------------------------------------------------------------
-			public async Task<Response<UserNotificationDto>> UpdateAsync(UserNotificationDto notificationUpdate, CancellationToken token)
-            {
-                UserNotification entity = notificationUpdate.Adapt<UserNotification>();
-				entity.Created = DateTime.UtcNow;
-
-				_repository.Update(entity);
-                await _repository.FlushAsync(token);
-
-                UserNotificationDto result = entity.Adapt<UserNotificationDto>();
-
-                return XResponse.Succeed(result);
-            }
-
-			//---------------------------------------------------------------------------------------------------------
-			/// <summary>
-			/// Получение указанного уведомления
-			/// </summary>
-			/// <param name="id">Идентификатор уведомления</param>
-			/// <param name="token">Токен отмены</param>
-			/// <returns>Уведомление</returns>
-			//---------------------------------------------------------------------------------------------------------
-			public async Task<Response<UserNotificationDto>> GetAsync(Guid id, CancellationToken token)
-			{
-				UserNotification? entity = await _repository.GetByIdAsync<UserNotification, Guid>(id, token);
-				if (entity == null)
-				{
-					return XResponse.Failed<UserNotificationDto>(XUserNotificationErrors.NotFound);
-				}
-
-				UserNotificationDto result = entity.Adapt<UserNotificationDto>();
-
-				return XResponse.Succeed(result);
-			}
-
-			//---------------------------------------------------------------------------------------------------------
-			/// <summary>
-			/// Получение списка уведомлений
-			/// </summary>
-			/// <param name="notificationRequest">Параметры получения списка</param>
-			/// <param name="token">Токен отмены</param>
-			/// <returns>Cписок уведомлений</returns>
-			//---------------------------------------------------------------------------------------------------------
-			public async Task<ResponsePage<UserNotificationDto>> GetAllAsync(UserNotificationsRequest notificationRequest, CancellationToken token)
-            {
-                var query = _repository.Query<UserNotification>();
-
-                query = query.Filter(notificationRequest.Filtering);
-
-				var queryOrder = query.Sort(notificationRequest.Sorting, x => x.Created);
-
-				var result = await queryOrder.ToResponsePageAsync<UserNotification, UserNotificationDto>(notificationRequest, token);
-
-                return result;
-            }
-
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Удаление уведомления
-            /// </summary>
-            /// <param name="id">Идентификатор уведомления</param>
-            /// <param name="token">Токен отмены</param>
-            /// <returns>Статус успешности</returns>
-            //---------------------------------------------------------------------------------------------------------
-            public async Task<Response> DeleteAsync(Guid id, CancellationToken token)
-            {
-				UserNotification? entity = await _repository.GetByIdAsync<UserNotification, Guid>(id, token);
-				if (entity == null)
-                {
-                    return XResponse.Failed(XUserNotificationErrors.NotFound);
-                }
-
-                _repository.Remove(entity!);
-                await _repository.FlushAsync(token);
-
-                return XResponse.Succeed();
-            }
-            #endregion
+            _dataStorage = dataStorage;
         }
-        //-------------------------------------------------------------------------------------------------------------
-        /**@}*/
-        //-------------------------------------------------------------------------------------------------------------
+        #endregion
+
+        #region ILotusUserNotificationService methods
+        /// <inheritdoc/>
+        public async Task<Response<UserNotificationDto>> CreateAsync(UserNotificationCreateRequest notificationCreate, CancellationToken token)
+        {
+            var entity = notificationCreate.Adapt<UserNotification>();
+
+            await _dataStorage.AddAsync(entity, token);
+            await _dataStorage.SaveChangesAsync(token);
+
+            var result = entity.Adapt<UserNotificationDto>();
+
+            return XResponse.Succeed(result);
+        }
+
+        /// <inheritdoc/>
+        public async Task<Response<UserNotificationDto>> UpdateAsync(UserNotificationDto notificationUpdate, CancellationToken token)
+        {
+            var entity = notificationUpdate.Adapt<UserNotification>();
+            entity.Created = DateTime.UtcNow;
+
+            _dataStorage.Update(entity);
+            await _dataStorage.SaveChangesAsync(token);
+
+            var result = entity.Adapt<UserNotificationDto>();
+
+            return XResponse.Succeed(result);
+        }
+
+        /// <inheritdoc/>
+        public async Task<Response<UserNotificationDto>> GetAsync(Guid id, CancellationToken token)
+        {
+            var entity = await _dataStorage.GetByIdAsync<UserNotification, Guid>(id, token);
+            if (entity == null)
+            {
+                return XResponse.Failed<UserNotificationDto>(XUserNotificationErrors.NotFound);
+            }
+
+            var result = entity.Adapt<UserNotificationDto>();
+
+            return XResponse.Succeed(result);
+        }
+
+        /// <inheritdoc/>
+        public async Task<ResponsePage<UserNotificationDto>> GetAllAsync(UserNotificationsRequest notificationRequest, CancellationToken token)
+        {
+            var query = _dataStorage.Query<UserNotification>();
+
+            query = query.Filter(notificationRequest.Filtering);
+
+            var queryOrder = query.Sort(notificationRequest.Sorting, x => x.Created);
+
+            var result = await queryOrder.ToResponsePageAsync<UserNotification, UserNotificationDto>(notificationRequest, token);
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public async Task<Response> DeleteAsync(Guid id, CancellationToken token)
+        {
+            var entity = await _dataStorage.GetByIdAsync<UserNotification, Guid>(id, token);
+            if (entity == null)
+            {
+                return XResponse.Failed(XUserNotificationErrors.NotFound);
+            }
+
+            _dataStorage.Remove(entity!);
+            await _dataStorage.SaveChangesAsync(token);
+
+            return XResponse.Succeed();
+        }
+        #endregion
     }
+    /**@}*/
 }
-//=====================================================================================================================

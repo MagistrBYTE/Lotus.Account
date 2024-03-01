@@ -1,69 +1,45 @@
-﻿//=====================================================================================================================
-// Проект: Модуль WebApi учетной записи пользователя
-// Раздел: Подсистема инфраструктуры
-// Автор: MagistrBYTE aka DanielDem <dementevds@gmail.com>
-//---------------------------------------------------------------------------------------------------------------------
-/** \file LotusPermissionsExtension.cs
-*		Методы расширения для авторизации на основе разрешений.
-*/
-//---------------------------------------------------------------------------------------------------------------------
-// Версия: 1.0.0.0
-// Последнее изменение от 30.04.2023
-//=====================================================================================================================
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-//---------------------------------------------------------------------------------------------------------------------
 using Lotus.Web;
-//=====================================================================================================================
-namespace Lotus
+
+using Microsoft.AspNetCore.Authorization;
+
+namespace Lotus.Account
 {
-    namespace Account
+    /** \addtogroup AccountWebApiInfrastructure
+    *@{*/
+    /// <summary>
+    /// Статический класс реализующий методы расширения для авторизации на основе разрешений.
+    /// </summary>
+    public static class XPermissionsExtension
     {
-        //-------------------------------------------------------------------------------------------------------------
-        /** \addtogroup AccountWebApiInfrastructure
-		*@{*/
-        //-------------------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Статический класс реализующий методы расширения для авторизации на основе разрешений
+        /// Добавление зависимостей для авторизации на основе разрешений.
         /// </summary>
-        //-------------------------------------------------------------------------------------------------------------
-        public static class XPermissionsExtension
+        /// <param name="services">Коллекция сервисов.</param>
+        /// <returns>Коллекция сервисов.</returns>
+        public static IServiceCollection AddLotusPermissionsExtension(this IServiceCollection services)
         {
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Добавление зависимостей для авторизации на основе разрешений
-            /// </summary>
-            /// <param name="services">Коллекция сервисов</param>
-            /// <returns>Коллекция сервисов</returns>
-            //---------------------------------------------------------------------------------------------------------
-            public static IServiceCollection AddLotusPermissionsExtension(this IServiceCollection services)
-            {
-                services
-                    .AddSingleton<IAuthorizationPolicyProvider, PermissionsPolicyProvider>()
-                    .AddScoped<IAuthorizationHandler, PermissionsHandler>()
-                    .AddScoped<Func<UserAuthorizeInfo?>>(sp => sp.GetService<UserAuthorizeInfo>)
-                    .AddScoped<UserAuthorizeInfo>(
-                        sp =>
+            services
+                .AddSingleton<IAuthorizationPolicyProvider, PermissionsPolicyProvider>()
+                .AddScoped<IAuthorizationHandler, PermissionsHandler>()
+                .AddScoped<Func<UserAuthorizeInfo?>>(sp => sp.GetService<UserAuthorizeInfo>)
+                .AddScoped<UserAuthorizeInfo>(
+                    sp =>
+                    {
+                        var contextAccessor = sp.GetService<IHttpContextAccessor>();
+                        var claimsIdentity = contextAccessor!.GetClaimsIdentity();
+
+                        if (claimsIdentity is not null)
                         {
-                            var contextAccessor = sp.GetService<IHttpContextAccessor>();
-                            ClaimsIdentity? claimsIdentity = contextAccessor!.GetClaimsIdentity();
+                            var info = new UserAuthorizeInfo();
+                            info.SetThisFrom(claimsIdentity);
+                            return info;
+                        }
 
-                            if (claimsIdentity is not null)
-                            {
-                                var info = new UserAuthorizeInfo();
-                                info.SetThisFrom(claimsIdentity);
-                                return info;
-                            }
+                        return new UserAuthorizeInfo();
+                    });
 
-                            return new UserAuthorizeInfo();
-                        });
-
-                return services;
-            }
+            return services;
         }
-        //-------------------------------------------------------------------------------------------------------------
-        /**@}*/
-        //-------------------------------------------------------------------------------------------------------------
     }
+    /**@}*/
 }
-//=====================================================================================================================

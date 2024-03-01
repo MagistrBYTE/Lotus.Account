@@ -1,99 +1,76 @@
-﻿//=====================================================================================================================
-// Проект: Модуль учетной записи пользователя
-// Раздел: Подсистема работы с уведомлениями
-// Автор: MagistrBYTE aka DanielDem <dementevds@gmail.com>
-//---------------------------------------------------------------------------------------------------------------------
-/** \file LotusUserNotification.cs
-*		Класс для определения уведомления пользователя.
-*/
-//---------------------------------------------------------------------------------------------------------------------
-// Версия: 1.0.0.0
-// Последнее изменение от 30.04.2023
-//=====================================================================================================================
-using Microsoft.EntityFrameworkCore;
-//---------------------------------------------------------------------------------------------------------------------
 using Lotus.Core;
-//=====================================================================================================================
-namespace Lotus
+
+using Microsoft.EntityFrameworkCore;
+
+namespace Lotus.Account
 {
-    namespace Account
+    /**
+     * \defgroup AccountNotification Подсистема работы с уведомлениями
+     * \ingroup Account
+     * \brief Подсистема работы с уведомлениями.
+     * @{
+     */
+    /// <summary>
+    /// Класс для определения сообщения пользователя.
+    /// </summary>
+    public class UserNotification : EntityDb<Guid>
     {
-		//-------------------------------------------------------------------------------------------------------------
-		/**
-         * \defgroup AccountNotification Подсистема работы с уведомлениями
-         * \ingroup Account
-         * \brief Подсистема работы с уведомлениями.
-         * @{
-         */
-		//-------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Класс для определения сообщения пользователя
-		/// </summary>
-		//-------------------------------------------------------------------------------------------------------------
-		public class UserNotification : EntityDb<Guid>
+        #region Const
+        /// <summary>
+        /// Имя таблицы.
+        /// </summary>
+        public const string TABLE_NAME = "UserNotification";
+        #endregion
+
+        #region Models methods
+        /// <summary>
+        /// Конфигурирование модели для типа <see cref="UserNotification"/>.
+        /// </summary>
+        /// <param name="modelBuilder">Интерфейс для построения моделей.</param>
+        public static void ModelCreating(ModelBuilder modelBuilder)
         {
-            #region ======================================= КОНСТАНТНЫЕ ДАННЫЕ ========================================
-            /// <summary>
-            /// Имя таблицы
-            /// </summary>
-            public const String TABLE_NAME = "UserNotification";
-			#endregion
+            // Определение для таблицы
+            var model = modelBuilder.Entity<UserNotification>();
+            model.ToTable(TABLE_NAME, XDbConstants.SchemeName);
+        }
+        #endregion
 
-			#region ======================================= МЕТОДЫ ОПРЕДЕЛЕНИЯ МОДЕЛЕЙ ================================
-			//---------------------------------------------------------------------------------------------------------
-			/// <summary>
-			/// Конфигурирование модели для типа <see cref="UserNotification"/>
-			/// </summary>
-			/// <param name="modelBuilder">Интерфейс для построения моделей</param>
-			//---------------------------------------------------------------------------------------------------------
-			public static void ModelCreating(ModelBuilder modelBuilder)
-            {
-                // Определение для таблицы
-                var model = modelBuilder.Entity<UserNotification>();
-                model.ToTable(TABLE_NAME, XDbConstants.SchemeName);
-            }
-			#endregion
+        #region Properties
+        /// <summary>
+        /// Тема уведомления.
+        /// </summary>
+        public string? Topic { get; set; }
 
-			#region ======================================= СВОЙСТВА ==================================================
-			/// <summary>
-			/// Тема уведомления
-			/// </summary>
-			public String? Topic { get; set; }
+        /// <summary>
+        /// Источник уведомления.
+        /// </summary>
+        public string? Sender { get; set; }
 
-			/// <summary>
-			/// Источник уведомления
-			/// </summary>
-			public String? Sender { get; set; }
+        /// <summary>
+        /// Важность уведомления.
+        /// </summary>
+        public int? Importance { get; set; }
 
-			/// <summary>
-			/// Важность уведомления
-			/// </summary>
-			public Int32? Importance { get; set; }
+        /// <summary>
+        /// Содержание уведомления.
+        /// </summary>
+        public string Content { get; set; } = null!;
 
-			/// <summary>
-			/// Содержание уведомления
-			/// </summary>
-			public String Content { get; set; } = null!;
+        /// <summary>
+        /// Время создания уведомления.
+        /// </summary>
+        public DateTime Created { get; set; }
 
-			/// <summary>
-			/// Время создания уведомления
-			/// </summary>
-			public DateTime Created { get; set; }
+        /// <summary>
+        /// Статус прочитания уведомления.
+        /// </summary>
+        public bool IsRead { get; set; }
 
-			/// <summary>
-			/// Статус прочитания уведомления
-			/// </summary>
-			public Boolean IsRead { get; set; }
-
-			/// <summary>
-			/// Статус нахождения уведомления в архиве
-			/// </summary>
-			public Boolean IsArchive { get; set; }
-			#endregion
-		}
-        //-------------------------------------------------------------------------------------------------------------
-        /**@}*/
-        //-------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Статус нахождения уведомления в архиве.
+        /// </summary>
+        public bool IsArchive { get; set; }
+        #endregion
     }
+    /**@}*/
 }
-//=====================================================================================================================

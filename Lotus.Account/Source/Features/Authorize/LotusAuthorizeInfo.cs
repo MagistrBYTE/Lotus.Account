@@ -1,134 +1,109 @@
-﻿//=====================================================================================================================
-// Проект: Модуль учетной записи пользователя
-// Раздел: Подсистема авторизации
-// Автор: MagistrBYTE aka DanielDem <dementevds@gmail.com>
-//---------------------------------------------------------------------------------------------------------------------
-/** \file LotusAuthorizeInfo.cs
-*		Класс определяющий минимальную информацию об авторизации пользователя.
-*/
-//---------------------------------------------------------------------------------------------------------------------
-// Версия: 1.0.0.0
-// Последнее изменение от 30.04.2023
-//=====================================================================================================================
-using System;
-//=====================================================================================================================
-namespace Lotus
+namespace Lotus.Account
 {
-    namespace Account
+    /** \addtogroup AccountAuthorize
+    *@{*/
+    /// <summary>
+    /// Класс определяющий минимальную информацию об авторизации пользователя.
+    /// </summary>
+    public class UserAuthorizeInfo : IUserInfo
     {
-        //-------------------------------------------------------------------------------------------------------------
-        /** \addtogroup AccountAuthorize
-		*@{*/
-        //-------------------------------------------------------------------------------------------------------------
+        #region Properties
         /// <summary>
-        /// Класс определяющий минимальную информацию об авторизации пользователя
+        /// Статус авторизации пользователя.
         /// </summary>
-        //-------------------------------------------------------------------------------------------------------------
-        public class UserAuthorizeInfo : IUserInfo
+        public bool IsAuthenticated { get; set; }
+
+        //
+        // ИДЕНТИФИКАЦИЯ
+        //
+        /// <summary>
+        /// Идентификатор пользователя.
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
+        /// Логин пользователя.
+        /// </summary>
+        public string Login { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Почта пользователя.
+        /// </summary>
+        public string? Email { get; set; }
+
+        /// <summary>
+        /// Статус потверждение почты.
+        /// </summary>
+        public bool EmailConfirmed { get; set; }
+
+        //
+        // ПЕРСОНАЛЬНЫЕ ДАННЫЕ
+        //
+        /// <summary>
+        /// Имя пользователя.
+        /// </summary>
+        public string? Name { get; set; }
+
+        /// <summary>
+        /// Фамилия пользователя.
+        /// </summary>
+        public string? Surname { get; set; }
+
+        /// <summary>
+        /// Отчество пользователя.
+        /// </summary>
+        public string? Patronymic { get; set; }
+
+        /// <summary>
+        /// День рождение.
+        /// </summary>
+        public DateOnly? Birthday { get; set; }
+
+        //
+        // РОЛЬ И РАЗРЕШЕНИЯ
+        //
+        /// <summary>
+        /// Служебное наименование роли.
+        /// </summary>
+        public string RoleSystemName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Список системных имен разрешений в виде текста.
+        /// </summary>
+        public string PermissionsSystemNamesAsText { get; set; } = string.Empty;
+
+        //
+        // ДОЛЖНОСТЬ
+        //
+        /// <summary>
+        /// Отображаемое наименование должности.
+        /// </summary>
+        public string PostShortName { get; set; } = string.Empty;
+
+        //
+        // ГРУППЫ
+        //
+        /// <summary>
+        /// Список имен групп пользователя в виде текста.
+        /// </summary>
+        public string GroupNamesAsText { get; set; } = string.Empty;
+        //
+        // CФЕРЫ ДЕЯТЕЛЬНОСТИ
+        //
+        /// <summary>
+        /// Список имен сфер деятельности пользователя в виде текста.
+        /// </summary>
+        public string FieldActivityNamesAsText { get; set; } = string.Empty;
+        #endregion
+
+        #region Constructors
+        /// <summary>
+        /// Конструктор по умолчанию инициализирует объект класса предустановленными значениями.
+        /// </summary>
+        public UserAuthorizeInfo()
         {
-            #region ======================================= СВОЙСТВА ==================================================
-            /// <summary>
-            /// Статус авторизации пользователя
-            /// </summary>
-            public Boolean IsAuthenticated { get; set; }
-
-            //
-            // ИДЕНТИФИКАЦИЯ
-            //
-            /// <summary>
-            /// Идентификатор пользователя
-            /// </summary>
-            public Guid Id { get; set; }
-
-            /// <summary>
-            /// Логин пользователя
-            /// </summary>
-            public String Login { get; set; } = String.Empty;
-
-            /// <summary>
-            /// Почта пользователя
-            /// </summary>
-            public String? Email { get; set; }
-
-            /// <summary>
-            /// Статус потверждение почты
-            /// </summary>
-            public Boolean EmailConfirmed { get; set; }
-
-            //
-            // ПЕРСОНАЛЬНЫЕ ДАННЫЕ
-            //
-            /// <summary>
-            /// Имя пользователя
-            /// </summary>
-            public String? Name { get; set; }
-
-            /// <summary>
-            /// Фамилия пользователя
-            /// </summary>
-            public String? Surname { get; set; }
-
-            /// <summary>
-            /// Отчество пользователя
-            /// </summary>
-            public String? Patronymic { get; set; }
-
-            /// <summary>
-            /// День рождение
-            /// </summary>
-            public DateOnly? Birthday { get; set; }
-
-            //
-            // РОЛЬ И РАЗРЕШЕНИЯ
-            //
-            /// <summary>
-            /// Служебное наименование роли
-            /// </summary>
-            public String RoleSystemName { get; set; } = String.Empty;
-
-            /// <summary>
-            /// Список системных имен разрешений в виде текста
-            /// </summary>
-            public String PermissionsSystemNamesAsText { get; set; } = String.Empty;
-
-            //
-            // ДОЛЖНОСТЬ
-            //
-            /// <summary>
-            /// Отображаемое наименование должности
-            /// </summary>
-            public String PostShortName { get; set; } = String.Empty;
-
-            //
-            // ГРУППЫ
-            //
-            /// <summary>
-            /// Список имен групп пользователя в виде текста
-            /// </summary>
-            public String GroupNamesAsText { get; set; } = String.Empty;
-            //
-            // CФЕРЫ ДЕЯТЕЛЬНОСТИ
-            //
-            /// <summary>
-            /// Список имен сфер деятельности пользователя в виде текста
-            /// </summary>
-            public String FieldActivityNamesAsText { get; set; } = String.Empty;
-            #endregion
-
-            #region ======================================= КОНСТРУКТОРЫ ==============================================
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Конструктор по умолчанию инициализирует объект класса предустановленными значениями
-            /// </summary>
-            //---------------------------------------------------------------------------------------------------------
-            public UserAuthorizeInfo()
-            {
-            }
-            #endregion
         }
-        //-------------------------------------------------------------------------------------------------------------
-        /**@}*/
-        //-------------------------------------------------------------------------------------------------------------
+        #endregion
     }
+    /**@}*/
 }
-//=====================================================================================================================

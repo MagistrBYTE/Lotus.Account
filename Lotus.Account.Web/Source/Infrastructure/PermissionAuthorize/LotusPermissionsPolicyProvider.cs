@@ -1,101 +1,74 @@
-﻿//=====================================================================================================================
-// Проект: Модуль WebApi учетной записи пользователя
-// Раздел: Подсистема инфраструктуры
-// Автор: MagistrBYTE aka DanielDem <dementevds@gmail.com>
-//---------------------------------------------------------------------------------------------------------------------
-/** \file LotusPermissionsPolicyProvider.cs
-*		Политика для авторизации на основе разрешений.
-*/
-//---------------------------------------------------------------------------------------------------------------------
-// Версия: 1.0.0.0
-// Последнее изменение от 30.04.2023
-//=====================================================================================================================
 using System.Diagnostics.CodeAnalysis;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
-//=====================================================================================================================
-namespace Lotus
+
+namespace Lotus.Account
 {
-    namespace Account
+    /** \addtogroup AccountWebApiInfrastructure
+    *@{*/
+    /// <summary>
+    /// Политика для авторизации на основе разрешений.
+    /// </summary>
+    public class PermissionsPolicyProvider : IAuthorizationPolicyProvider
     {
-        //-------------------------------------------------------------------------------------------------------------
-        /** \addtogroup AccountWebApiInfrastructure
-		*@{*/
-        //-------------------------------------------------------------------------------------------------------------
+        #region Fields
+        private readonly DefaultAuthorizationPolicyProvider _policyProvider;
+        private static readonly char[] separator = new[] { ',' };
+        #endregion
+
+        #region Constructors
         /// <summary>
-        /// Политика для авторизации на основе разрешений
+        /// Конструктор инициализирует объект класса указанными параметрами.
         /// </summary>
-        //-------------------------------------------------------------------------------------------------------------
-        public class PermissionsPolicyProvider : IAuthorizationPolicyProvider
+        /// <param name="options">Опции авторизации.</param>
+        public PermissionsPolicyProvider([NotNull] IOptions<AuthorizationOptions> options)
         {
-            #region ======================================= ДАННЫЕ ====================================================
-            private readonly DefaultAuthorizationPolicyProvider mPolicyProvider;
-            #endregion
-
-            #region ======================================= КОНСТРУКТОРЫ ==============================================
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Конструктор инициализирует объект класса указанными параметрами
-            /// </summary>
-            /// <param name="options">Опции авторизации</param>
-            //---------------------------------------------------------------------------------------------------------
-            public PermissionsPolicyProvider([NotNull] IOptions<AuthorizationOptions> options)
-            {
-                mPolicyProvider = new DefaultAuthorizationPolicyProvider(options);
-            }
-            #endregion
-
-            #region ======================================= ОБЩИЕ МЕТОДЫ ==============================================
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Получение политки по умолчанию
-            /// </summary>
-            /// <returns>Задача</returns>
-            //---------------------------------------------------------------------------------------------------------
-            public Task<AuthorizationPolicy> GetDefaultPolicyAsync()
-            {
-                var builder = new AuthorizationPolicyBuilder();
-                builder.RequireAuthenticatedUser();
-
-                return Task.FromResult(builder.Build());
-            }
-
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Получение политки по умолчанию
-            /// </summary>
-            /// <returns>Задача</returns>
-            //---------------------------------------------------------------------------------------------------------
-            public Task<AuthorizationPolicy?> GetFallbackPolicyAsync()
-            {
-                return mPolicyProvider.GetFallbackPolicyAsync()!;
-            }
-
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Получение политики
-            /// </summary>
-            /// <param name="policyName">Имя политики</param>
-            /// <returns>Задача</returns>
-            //---------------------------------------------------------------------------------------------------------
-            public Task<AuthorizationPolicy?> GetPolicyAsync(String policyName)
-            {
-                var functions = policyName.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
-                var builder = new AuthorizationPolicyBuilder();
-
-                builder.RequireAuthenticatedUser();
-                builder.AddRequirements(new PermissionsRequirement
-                {
-                    Permissions = new HashSet<String>(functions, StringComparer.OrdinalIgnoreCase)
-                });
-
-                return Task.FromResult(builder.Build())!;
-            }
-            #endregion
+            _policyProvider = new DefaultAuthorizationPolicyProvider(options);
         }
-        //-------------------------------------------------------------------------------------------------------------
-        /**@}*/
-        //-------------------------------------------------------------------------------------------------------------
+        #endregion
+
+        #region Main methods
+        /// <summary>
+        /// Получение политки по умолчанию.
+        /// </summary>
+        /// <returns>Задача.</returns>
+        public Task<AuthorizationPolicy> GetDefaultPolicyAsync()
+        {
+            var builder = new AuthorizationPolicyBuilder();
+            builder.RequireAuthenticatedUser();
+
+            return Task.FromResult(builder.Build());
+        }
+
+        /// <summary>
+        /// Получение политки по умолчанию.
+        /// </summary>
+        /// <returns>Задача.</returns>
+        public Task<AuthorizationPolicy?> GetFallbackPolicyAsync()
+        {
+            return _policyProvider.GetFallbackPolicyAsync()!;
+        }
+
+        /// <summary>
+        /// Получение политики.
+        /// </summary>
+        /// <param name="policyName">Имя политики.</param>
+        /// <returns>Задача.</returns>
+        public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
+        {
+            var functions = policyName.Split(separator, StringSplitOptions.RemoveEmptyEntries).ToArray();
+            var builder = new AuthorizationPolicyBuilder();
+
+            builder.RequireAuthenticatedUser();
+            builder.AddRequirements(new PermissionsRequirement
+            {
+                Permissions = new HashSet<string>(functions, StringComparer.OrdinalIgnoreCase)
+            });
+
+            return Task.FromResult(builder.Build())!;
+        }
+        #endregion
     }
+    /**@}*/
 }
-//=====================================================================================================================

@@ -1,15 +1,17 @@
-using System.ComponentModel.DataAnnotations;
-
 using Lotus.Core;
 
 namespace Lotus.Account
 {
-    /** \addtogroup AccountUser
-    *@{*/
+    /**
+     * \defgroup AccountInterfaces Подсистема интерфейсов
+     * \ingroup Account
+     * \brief Подсистема интерфейсов модуля.
+     * @{
+     */
     /// <summary>
-    /// Класс информатор пользователя.
+    /// Интерфейс для определения данных пользователя.
     /// </summary>
-    public class UserDto : IdentifierDtoId<Guid>
+    public interface IUserInfo : ILotusIdentifierGlobal
     {
         #region Properties
         //
@@ -18,7 +20,7 @@ namespace Lotus.Account
         /// <summary>
         /// Логин пользователя.
         /// </summary>
-        public string Login { get; set; } = null!;
+        public string Login { get; set; }
 
         /// <summary>
         /// Почта пользователя.
@@ -36,13 +38,11 @@ namespace Lotus.Account
         /// <summary>
         /// Имя пользователя.
         /// </summary>
-        [MaxLength(30)]
         public string? Name { get; set; }
 
         /// <summary>
         /// Фамилия пользователя.
         /// </summary>
-        [MaxLength(30)]
         public string? Surname { get; set; }
 
         /// <summary>
@@ -59,41 +59,39 @@ namespace Lotus.Account
         // РОЛЬ И РАЗРЕШЕНИЯ
         //
         /// <summary>
-        /// Идентификатор роли.
+        /// Служебное наименование роли.
         /// </summary>
-        public int RoleId { get; set; }
+        public string RoleSystemName { get; set; }
+
+        /// <summary>
+        /// Список системных имен разрешений в виде текста.
+        /// </summary>
+        public string PermissionsSystemNamesAsText { get; set; }
+
 
         //
         // ДОЛЖНОСТЬ
         //
         /// <summary>
-        /// Идентификатор должности.
+        /// Отображаемое наименование должности.
         /// </summary>
-        public int? PostId { get; set; }
+        public string PostShortName { get; set; }
 
         //
         // ГРУППЫ
         //
         /// <summary>
-        /// Группы пользователя.
+        /// Список имен групп пользователя в виде текста.
         /// </summary>
-        public List<int>? GroupsIds { get; set; }
+        public string GroupNamesAsText { get; set; }
 
         //
         // CФЕРЫ ДЕЯТЕЛЬНОСТИ
         //
         /// <summary>
-        /// Cферы деятельности пользователя.
+        /// Список имен сфер деятельности пользователя в виде текста.
         /// </summary>
-        public List<int>? FieldActivitiesIds { get; set; }
-
-        //
-        // АВАТАР
-        //
-        /// <summary>
-        /// Идентификатор аватарв.
-        /// </summary>
-        public Guid? AvatarId { get; set; }
+        public string FieldActivityNamesAsText { get; set; }
         #endregion
     }
     /**@}*/

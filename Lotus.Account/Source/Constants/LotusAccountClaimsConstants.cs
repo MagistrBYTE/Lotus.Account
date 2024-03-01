@@ -1,88 +1,65 @@
-﻿//=====================================================================================================================
-// Проект: Модуль учетной записи пользователя
-// Раздел: Константы
-// Автор: MagistrBYTE aka DanielDem <dementevds@gmail.com>
-//---------------------------------------------------------------------------------------------------------------------
-/** \file LotusAccountClaimsConstants.cs
-*		Константы для формирования данных в токене.
-*/
-//---------------------------------------------------------------------------------------------------------------------
-// Версия: 1.0.0.0
-// Последнее изменение от 30.04.2023
-//=====================================================================================================================
-using System;
-//=====================================================================================================================
-namespace Lotus
+namespace Lotus.Account
 {
-    namespace Account
+    /**
+     * \defgroup AccountConstants Константы
+     * \ingroup Account
+     * \brief Константы модуля.
+     * @{
+     */
+    /// <summary>
+    /// Константы утверждений для формирования данных в токене.
+    /// </summary>
+    public static class XClaimsConstants
     {
-        //-------------------------------------------------------------------------------------------------------------
-        /**
-         * \defgroup AccountConstants Константы
-         * \ingroup Account
-         * \brief Константы модуля.
-         * @{
-         */
-        //-------------------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Константы утверждений для формирования данных в токене
+        /// Идентификатор пользователя.
         /// </summary>
-        //-------------------------------------------------------------------------------------------------------------
-        public static class XClaimsConstants
-        {
-            /// <summary>
-            /// Идентификатор пользователя
-            /// </summary>
-            public const String UserId = "sub";
+        public const string UserId = "sub";
 
-            /// <summary>
-            /// Логин пользователя
-            /// </summary>
-            public const String UserLogin = "name";
+        /// <summary>
+        /// Логин пользователя.
+        /// </summary>
+        public const string UserLogin = "name";
 
-            /// <summary>
-            /// Роль пользователя
-            /// </summary>
-            public const String Role = "role";
+        /// <summary>
+        /// Роль пользователя.
+        /// </summary>
+        public const string Role = "role";
 
-            /// <summary>
-            /// Имя пользователя
-            /// </summary>
-            public const String UserName = "user_name";
+        /// <summary>
+        /// Имя пользователя.
+        /// </summary>
+        public const string UserName = "user_name";
 
-            /// <summary>
-            /// Фамилия пользователя
-            /// </summary>
-            public const String UserSurname = "user_surname";
+        /// <summary>
+        /// Фамилия пользователя.
+        /// </summary>
+        public const string UserSurname = "user_surname";
 
-            /// <summary>
-            /// Отчество пользователя
-            /// </summary>
-            public const String UserFathersname = "user_fathersname";
+        /// <summary>
+        /// Отчество пользователя.
+        /// </summary>
+        public const string UserFathersname = "user_fathersname";
 
-            /// <summary>
-            /// Должность пользователя
-            /// </summary>
-            public const String Position = "user_position";
+        /// <summary>
+        /// Должность пользователя.
+        /// </summary>
+        public const string Position = "user_position";
 
-            /// <summary>
-            /// Группа пользователя
-            /// </summary>
-            public const String UserGroup = "user_group";
+        /// <summary>
+        /// Группа пользователя.
+        /// </summary>
+        public const string UserGroup = "user_group";
 
-            /// <summary>
-            /// Разрешения пользователя
-            /// </summary>
-            public const String UserPermissions = "user_permissions";
+        /// <summary>
+        /// Разрешения пользователя.
+        /// </summary>
+        public const string UserPermissions = "user_permissions";
 
-            /// <summary>
-            /// Идентификатор сессии пользователя
-            /// </summary>
-            public const String UserSessionId = "user_session_id";
-        }
-        //-------------------------------------------------------------------------------------------------------------
-        /**@}*/
-        //-------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Идентификатор сессии пользователя.
+        /// </summary>
+        public const string UserSessionId = "user_session_id";
     }
+    /**@}*/
 }
-//=====================================================================================================================

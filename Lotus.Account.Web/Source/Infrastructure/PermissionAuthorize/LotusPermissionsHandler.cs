@@ -1,84 +1,59 @@
-﻿//=====================================================================================================================
-// Проект: Модуль WebApi учетной записи пользователя
-// Раздел: Подсистема инфраструктуры
-// Автор: MagistrBYTE aka DanielDem <dementevds@gmail.com>
-//---------------------------------------------------------------------------------------------------------------------
-/** \file LotusPermissionsHandler.cs
-*		Обработчик для авторизации на основе разрешений.
-*/
-//---------------------------------------------------------------------------------------------------------------------
-// Версия: 1.0.0.0
-// Последнее изменение от 30.04.2023
-//=====================================================================================================================
 using Microsoft.AspNetCore.Authorization;
-//=====================================================================================================================
-namespace Lotus
+
+namespace Lotus.Account
 {
-    namespace Account
+    /** \addtogroup AccountWebApiInfrastructure
+*@{*/
+    /// <summary>
+    /// Обработчик для авторизации на основе разрешений.
+    /// </summary>
+    public class PermissionsHandler : AuthorizationHandler<PermissionsRequirement>
     {
-        //-------------------------------------------------------------------------------------------------------------
-        /** \addtogroup AccountWebApiInfrastructure
-		*@{*/
-        //-------------------------------------------------------------------------------------------------------------
+        #region Fields
+        private readonly Func<UserAuthorizeInfo?> _authorizeInfo;
+        #endregion
+
+        #region Constructors
         /// <summary>
-        /// Обработчик для авторизации на основе разрешений
+        /// Конструктор инициализирует объект класса указанными параметрами.
         /// </summary>
-        //-------------------------------------------------------------------------------------------------------------
-        public class PermissionsHandler : AuthorizationHandler<PermissionsRequirement>
+        /// <param name="authorizeInfo">Делегат для получения информация об авторизации пользователя.</param>
+        public PermissionsHandler(Func<UserAuthorizeInfo?> authorizeInfo)
         {
-            #region ======================================= ДАННЫЕ ====================================================
-            private readonly Func<UserAuthorizeInfo?> mAuthorizeInfo;
-            #endregion
+            _authorizeInfo = authorizeInfo;
+        }
+        #endregion
 
-            #region ======================================= КОНСТРУКТОРЫ ==============================================
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Конструктор инициализирует объект класса указанными параметрами
-            /// </summary>
-            /// <param name="authorizeInfo">Делегат для получения информация об авторизации пользователя</param>
-            //---------------------------------------------------------------------------------------------------------
-            public PermissionsHandler(Func<UserAuthorizeInfo?> authorizeInfo)
+        #region Main methods
+        /// <summary>
+        /// Обработчик для авторизации на основе разрешений.
+        /// </summary>
+        /// <param name="context">Контекст авторизации.</param>
+        /// <param name="requirement">Объект ограничения.</param>
+        /// <returns>Задача.</returns>
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionsRequirement requirement)
+        {
+            var info = _authorizeInfo();
+
+            if (info != null)
             {
-                mAuthorizeInfo = authorizeInfo;
-            }
-            #endregion
-
-            #region ======================================= ПЕРЕГРУЖЕННЫЕ МЕТОДЫ ======================================
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Обработчик для авторизации на основе разрешений
-            /// </summary>
-            /// <param name="context">Контекст авторизации</param>
-            /// <param name="requirement">Объект ограничения</param>
-            /// <returns>Задача</returns>
-            //---------------------------------------------------------------------------------------------------------
-            protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionsRequirement requirement)
-            {
-                var info = mAuthorizeInfo();
-
-                if (info != null)
+                var isPermission = requirement.Permissions.Any(x => info.PermissionsSystemNamesAsText.Contains(x));
+                if (isPermission)
                 {
-                    var isPermission = requirement.Permissions.Any(x => info.PermissionsSystemNamesAsText.Contains(x));
-                    if (isPermission)
-                    {
-                        context.Succeed(requirement);
-                    }
-                    else
-                    {
-                        context.Fail();
-                    }
+                    context.Succeed(requirement);
                 }
                 else
                 {
                     context.Fail();
                 }
-                return Task.CompletedTask;
             }
-            #endregion
+            else
+            {
+                context.Fail();
+            }
+            return Task.CompletedTask;
         }
-        //-------------------------------------------------------------------------------------------------------------
-        /**@}*/
-        //-------------------------------------------------------------------------------------------------------------
+        #endregion
     }
+    /**@}*/
 }
-//=====================================================================================================================

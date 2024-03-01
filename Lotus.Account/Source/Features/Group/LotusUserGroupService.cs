@@ -1,165 +1,108 @@
-﻿//=====================================================================================================================
-// Проект: Модуль учетной записи пользователя
-// Раздел: Подсистема работы с группами
-// Автор: MagistrBYTE aka DanielDem <dementevds@gmail.com>
-//---------------------------------------------------------------------------------------------------------------------
-/** \file LotusUserGroupService.cs
-*		Cервис для работы с группами.
-*/
-//---------------------------------------------------------------------------------------------------------------------
-// Версия: 1.0.0.0
-// Последнее изменение от 30.04.2023
-//=====================================================================================================================
-using Mapster;
-using Microsoft.EntityFrameworkCore;
-//---------------------------------------------------------------------------------------------------------------------
 using Lotus.Repository;
-//=====================================================================================================================
-namespace Lotus
+
+using Mapster;
+
+using Microsoft.EntityFrameworkCore;
+
+namespace Lotus.Account
 {
-    namespace Account
+    /** \addtogroup AccountGroup
+    *@{*/
+    /// <summary>
+    /// Cервис для работы с группами.
+    /// </summary>
+    public class UserGroupService : ILotusUserGroupService
     {
-        //-------------------------------------------------------------------------------------------------------------
-        /** \addtogroup AccountGroup
-		*@{*/
-        //-------------------------------------------------------------------------------------------------------------
+        #region Fields
+        private readonly ILotusDataStorage _dataStorage;
+        #endregion
+
+        #region Constructors
         /// <summary>
-        /// Cервис для работы с группами
+        /// Конструктор инициализирует объект класса указанными параметрами.
         /// </summary>
-        //-------------------------------------------------------------------------------------------------------------
-        public class UserGroupService : ILotusUserGroupService
+        /// <param name="dataStorage">Интерфейс для работы с сущностями.</param>
+        public UserGroupService(ILotusDataStorage dataStorage)
         {
-            #region ======================================= ДАННЫЕ ====================================================
-            private readonly ILotusRepository _repository;
-			#endregion
-
-			#region ======================================= КОНСТРУКТОРЫ ==============================================
-			//---------------------------------------------------------------------------------------------------------
-			/// <summary>
-			/// Конструктор инициализирует объект класса указанными параметрами
-			/// </summary>
-			/// <param name="repository">Интерфейс для работы с сущностями</param>
-			//---------------------------------------------------------------------------------------------------------
-			public UserGroupService(ILotusRepository repository)
-            {
-				_repository = repository;
-            }
-            #endregion
-
-            #region ======================================= ОБЩИЕ МЕТОДЫ ==============================================
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Создание группы по указанным данным
-            /// </summary>
-            /// <param name="groupCreate">Параметры для создания группы</param>
-            /// <param name="token">Токен отмены</param>
-            /// <returns>Группа</returns>
-            //---------------------------------------------------------------------------------------------------------
-            public async Task<Response<UserGroupDto>> CreateAsync(UserGroupCreateRequest groupCreate, CancellationToken token)
-            {
-                UserGroup entity = groupCreate.Adapt<UserGroup>();
-
-				await _repository.AddAsync(entity);
-                await _repository.FlushAsync(token);
-
-                UserGroupDto result = entity.Adapt<UserGroupDto>();
-
-                return XResponse.Succeed(result);
-            }
-
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Обновление данных указанной группы
-            /// </summary>
-            /// <param name="groupUpdate">Параметры обновляемого группы</param>
-            /// <param name="token">Токен отмены</param>
-            /// <returns>Группа</returns>
-            //---------------------------------------------------------------------------------------------------------
-            public async Task<Response<UserGroupDto>> UpdateAsync(UserGroupDto groupUpdate, CancellationToken token)
-            {
-                UserGroup entity = groupUpdate.Adapt<UserGroup>();
-
-				_repository.Update(entity);
-                await _repository.FlushAsync(token);
-
-                UserGroupDto result = entity.Adapt<UserGroupDto>();
-
-                return XResponse.Succeed(result);
-            }
-
-			//---------------------------------------------------------------------------------------------------------
-			/// <summary>
-			/// Получение указанной группы
-			/// </summary>
-			/// <param name="id">Идентификатор группы</param>
-			/// <param name="token">Токен отмены</param>
-			/// <returns>Группа</returns>
-			//---------------------------------------------------------------------------------------------------------
-			public async Task<Response<UserGroupDto>> GetAsync(Int32 id, CancellationToken token)
-			{
-				UserGroup? entity = await _repository.GetByIdAsync<UserGroup, Int32>(id, token);
-				if (entity == null)
-				{
-					return XResponse.Failed<UserGroupDto>(XUserGroupErrors.NotFound);
-				}
-
-				UserGroupDto result = entity.Adapt<UserGroupDto>();
-
-				return XResponse.Succeed(result);
-			}
-
-			//---------------------------------------------------------------------------------------------------------
-			/// <summary>
-			/// Получение списка групп
-			/// </summary>
-			/// <param name="groupRequest">Параметры получения списка</param>
-			/// <param name="token">Токен отмены</param>
-			/// <returns>Cписок групп</returns>
-			//---------------------------------------------------------------------------------------------------------
-			public async Task<ResponsePage<UserGroupDto>> GetAllAsync(UserGroupsRequest groupRequest, CancellationToken token)
-            {
-				var query = _repository.Query<UserGroup>();
-
-                query = query.Filter(groupRequest.Filtering);
-
-				var queryOrder = query.Sort(groupRequest.Sorting, x => x.Id);
-
-				var result = await queryOrder.ToResponsePageAsync<UserGroup, UserGroupDto>(groupRequest, token);
-
-                return result;
-            }
-
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Удаление группы
-            /// </summary>
-            /// <param name="id">Идентификатор группы</param>
-            /// <param name="token">Токен отмены</param>
-            /// <returns>Статус успешности</returns>
-            //---------------------------------------------------------------------------------------------------------
-            public async Task<Response> DeleteAsync(Int32 id, CancellationToken token)
-            {
-                UserGroup? entity = await _repository.GetByIdAsync<UserGroup, Int32>(id, token);
-                if (entity == null)
-                {
-                    return XResponse.Failed(XUserGroupErrors.NotFound);
-                }
-
-                if (entity.Id < 4)
-                {
-                    return XResponse.Failed(XUserGroupErrors.NotDeleteConst);
-                }
-
-				_repository.Remove(entity!);
-                await _repository.FlushAsync(token);
-
-                return XResponse.Succeed();
-            }
-            #endregion
+            _dataStorage = dataStorage;
         }
-        //-------------------------------------------------------------------------------------------------------------
-        /**@}*/
-        //-------------------------------------------------------------------------------------------------------------
+        #endregion
+
+        #region ILotusUserGroupService methods
+        /// <inheritdoc/>
+        public async Task<Response<UserGroupDto>> CreateAsync(UserGroupCreateRequest groupCreate, CancellationToken token)
+        {
+            var entity = groupCreate.Adapt<UserGroup>();
+
+            await _dataStorage.AddAsync(entity, token);
+            await _dataStorage.SaveChangesAsync(token);
+
+            var result = entity.Adapt<UserGroupDto>();
+
+            return XResponse.Succeed(result);
+        }
+
+        /// <inheritdoc/>
+        public async Task<Response<UserGroupDto>> UpdateAsync(UserGroupDto groupUpdate, CancellationToken token)
+        {
+            var entity = groupUpdate.Adapt<UserGroup>();
+
+            _dataStorage.Update(entity);
+            await _dataStorage.SaveChangesAsync(token);
+
+            var result = entity.Adapt<UserGroupDto>();
+
+            return XResponse.Succeed(result);
+        }
+
+        /// <inheritdoc/>
+        public async Task<Response<UserGroupDto>> GetAsync(int id, CancellationToken token)
+        {
+            var entity = await _dataStorage.GetByIdAsync<UserGroup, int>(id, token);
+            if (entity == null)
+            {
+                return XResponse.Failed<UserGroupDto>(XUserGroupErrors.NotFound);
+            }
+
+            var result = entity.Adapt<UserGroupDto>();
+
+            return XResponse.Succeed(result);
+        }
+
+        /// <inheritdoc/>
+        public async Task<ResponsePage<UserGroupDto>> GetAllAsync(UserGroupsRequest groupRequest, CancellationToken token)
+        {
+            var query = _dataStorage.Query<UserGroup>();
+
+            query = query.Filter(groupRequest.Filtering);
+
+            var queryOrder = query.Sort(groupRequest.Sorting, x => x.Id);
+
+            var result = await queryOrder.ToResponsePageAsync<UserGroup, UserGroupDto>(groupRequest, token);
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public async Task<Response> DeleteAsync(int id, CancellationToken token)
+        {
+            var entity = await _dataStorage.GetByIdAsync<UserGroup, int>(id, token);
+            if (entity == null)
+            {
+                return XResponse.Failed(XUserGroupErrors.NotFound);
+            }
+
+            if (entity.Id < 4)
+            {
+                return XResponse.Failed(XUserGroupErrors.NotDeleteConst);
+            }
+
+            _dataStorage.Remove(entity!);
+            await _dataStorage.SaveChangesAsync(token);
+
+            return XResponse.Succeed();
+        }
+        #endregion
     }
+    /**@}*/
 }
-//=====================================================================================================================

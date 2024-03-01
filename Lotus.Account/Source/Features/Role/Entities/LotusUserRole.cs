@@ -1,88 +1,65 @@
-﻿//=====================================================================================================================
-// Проект: Модуль учетной записи пользователя
-// Раздел: Подсистема работы с ролями
-// Автор: MagistrBYTE aka DanielDem <dementevds@gmail.com>
-//---------------------------------------------------------------------------------------------------------------------
-/** \file LotusUserRole.cs
-*		Класс для определения роли пользователя.
-*/
-//---------------------------------------------------------------------------------------------------------------------
-// Версия: 1.0.0.0
-// Последнее изменение от 30.04.2023
-//=====================================================================================================================
-using System;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
-//---------------------------------------------------------------------------------------------------------------------
+
 using Lotus.Core;
-//=====================================================================================================================
-namespace Lotus
+
+using Microsoft.EntityFrameworkCore;
+
+namespace Lotus.Account
 {
-    namespace Account
+    /**
+     * \defgroup AccountRole Подсистема работы с ролями
+     * \ingroup Account
+     * \brief Подсистема работы с ролями.
+     * @{
+     */
+    /// <summary>
+    /// Класс для определения роли пользователя.
+    /// </summary>
+    public class UserRole : EntityDb<int>
     {
-		//-------------------------------------------------------------------------------------------------------------
-		/**
-         * \defgroup AccountRole Подсистема работы с ролями
-         * \ingroup Account
-         * \brief Подсистема работы с ролями.
-         * @{
-         */
-		//-------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Класс для определения роли пользователя
-		/// </summary>
-		//-------------------------------------------------------------------------------------------------------------
-		public class UserRole : EntityDb<Int32>
+        #region Const
+        /// <summary>
+        /// Имя таблицы.
+        /// </summary>
+        public const string TABLE_NAME = "UserRole";
+        #endregion
+
+        #region Models methods
+        /// <summary>
+        /// Конфигурирование модели для типа <see cref="UserRole"/>.
+        /// </summary>
+        /// <param name="modelBuilder">Интерфейс для построения моделей.</param>
+        public static void ModelCreating(ModelBuilder modelBuilder)
         {
-            #region ======================================= КОНСТАНТНЫЕ ДАННЫЕ ========================================
-            /// <summary>
-            /// Имя таблицы
-            /// </summary>
-            public const String TABLE_NAME = "UserRole";
-            #endregion
-
-            #region ======================================= МЕТОДЫ ОПРЕДЕЛЕНИЯ МОДЕЛЕЙ ================================
-            //---------------------------------------------------------------------------------------------------------
-            /// <summary>
-            /// Конфигурирование модели для типа <see cref="UserRole"/>
-            /// </summary>
-            /// <param name="modelBuilder">Интерфейс для построения моделей</param>
-            //---------------------------------------------------------------------------------------------------------
-            public static void ModelCreating(ModelBuilder modelBuilder)
-            {
-                // Определение для таблицы
-                var model = modelBuilder.Entity<UserRole>();
-                model.ToTable(TABLE_NAME, XDbConstants.SchemeName);
-            }
-            #endregion
-
-            #region ======================================= СВОЙСТВА ==================================================
-            /// <summary>
-            /// Наименование роли
-            /// </summary>
-            [MaxLength(20)]
-            public String Name { get; set; } = null!;
-
-			/// <summary>
-			/// Отображаемое наименование роли
-			/// </summary>
-			[MaxLength(40)]
-            public String? DisplayName { get; set; }
-
-            /// <summary>
-            /// Список разрешений для данной роли
-            /// </summary>
-            public ICollection<UserPermission> Permissions { get; set; } = new List<UserPermission>();
-
-            /// <summary>
-            /// Все пользователи данной роли
-            /// </summary>
-            public ICollection<User> Users { get; set; } = new HashSet<User>();
-            #endregion
+            // Определение для таблицы
+            var model = modelBuilder.Entity<UserRole>();
+            model.ToTable(TABLE_NAME, XDbConstants.SchemeName);
         }
-        //-------------------------------------------------------------------------------------------------------------
-        /**@}*/
-        //-------------------------------------------------------------------------------------------------------------
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Наименование роли.
+        /// </summary>
+        [MaxLength(20)]
+        public string Name { get; set; } = null!;
+
+        /// <summary>
+        /// Отображаемое наименование роли.
+        /// </summary>
+        [MaxLength(40)]
+        public string? DisplayName { get; set; }
+
+        /// <summary>
+        /// Список разрешений для данной роли.
+        /// </summary>
+        public ICollection<UserPermission> Permissions { get; set; } = new List<UserPermission>();
+
+        /// <summary>
+        /// Все пользователи данной роли.
+        /// </summary>
+        public ICollection<User> Users { get; set; } = new HashSet<User>();
+        #endregion
     }
+    /**@}*/
 }
-//=====================================================================================================================

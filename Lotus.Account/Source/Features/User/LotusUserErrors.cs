@@ -1,106 +1,85 @@
-﻿//=====================================================================================================================
-// Проект: Модуль учетной записи пользователя
-// Раздел: Подсистема работы с пользователем
-// Автор: MagistrBYTE aka DanielDem <dementevds@gmail.com>
-//---------------------------------------------------------------------------------------------------------------------
-/** \file LotusUserErrors.cs
-*		 Работа с ошибками подсистемы работы с пользователем.
-*/
-//---------------------------------------------------------------------------------------------------------------------
-// Версия: 1.0.0.0
-// Последнее изменение от 30.04.2023
-//=====================================================================================================================
 using Lotus.Core;
-//=====================================================================================================================
-namespace Lotus
+
+namespace Lotus.Account
 {
-    namespace Account
+    /** \addtogroup AccountUser
+    *@{*/
+    /// <summary>
+    /// Статический класс для определения ошибок подсистемы работы с пользователем.
+    /// </summary>
+    public static class XUserErrors
     {
-        //-------------------------------------------------------------------------------------------------------------
-        /** \addtogroup AccountUser
-		*@{*/
-        //-------------------------------------------------------------------------------------------------------------
+        #region Fields
         /// <summary>
-        /// Статический класс для определения ошибок подсистемы работы с пользователем.
+        /// Пользователь не найден.
         /// </summary>
-        //-------------------------------------------------------------------------------------------------------------
-        public static class XUserErrors
+        public static readonly Result UserNotFound = new()
         {
-            #region ======================================= ДАННЫЕ ====================================================
-            /// <summary>
-            /// Пользователь не найден
-            /// </summary>
-            public static readonly Result UserNotFound = new()
-            {
-                Code = 1000,
-                Message = "Пользователь не найден",
-                Succeeded = false,
-            };
+            Code = 1000,
+            Message = "Пользователь не найден",
+            Succeeded = false,
+        };
 
-            /// <summary>
-            /// Настроена двухфакторная авторизация
-            /// </summary>
-            public static readonly Result RequiresTwoFactor = new()
-            {
-                Code = 1002,
-                Message = "Настроена двухфакторная авторизация",
-                Succeeded = false,
-            };
+        /// <summary>
+        /// Настроена двухфакторная авторизация.
+        /// </summary>
+        public static readonly Result RequiresTwoFactor = new()
+        {
+            Code = 1002,
+            Message = "Настроена двухфакторная авторизация",
+            Succeeded = false,
+        };
 
-            /// <summary>
-            /// Пользователь заблокирован
-            /// </summary>
-            public static readonly Result UserLocked = new()
-            {
-                Code = 1003,
-                Message = "Пользователь заблокирован",
-                Succeeded = false,
-            };
+        /// <summary>
+        /// Пользователь заблокирован.
+        /// </summary>
+        public static readonly Result UserLocked = new()
+        {
+            Code = 1003,
+            Message = "Пользователь заблокирован",
+            Succeeded = false,
+        };
 
-            /// <summary>
-            /// Неверный пароль
-            /// </summary>
-            public static readonly Result WrongPassword = new()
-            {
-                Code = 1004,
-                Message = "Неверный пароль",
-                Succeeded = false,
-            };
+        /// <summary>
+        /// Неверный пароль.
+        /// </summary>
+        public static readonly Result WrongPassword = new()
+        {
+            Code = 1004,
+            Message = "Неверный пароль",
+            Succeeded = false,
+        };
 
-            /// <summary>
-            /// Данный логин уже используется
-            /// </summary>
-            public static readonly Result LoginAlreadyUse = new Result()
-            {
-                Code = 1008,
-                Message = "Данный логин уже используется",
-                Succeeded = false,
-            };
+        /// <summary>
+        /// Данный логин уже используется.
+        /// </summary>
+        public static readonly Result LoginAlreadyUse = new()
+        {
+            Code = 1008,
+            Message = "Данный логин уже используется",
+            Succeeded = false,
+        };
 
-			/// <summary>
-			/// Данный логин уже используется
-			/// </summary>
-			public static readonly Result InsecurePassword = new Result()
-			{
-				Code = 1009,
-				Message = "Небезопасный пароль",
-				Succeeded = false,
-			};
+        /// <summary>
+        /// Данный логин уже используется.
+        /// </summary>
+        public static readonly Result InsecurePassword = new()
+        {
+            Code = 1009,
+            Message = "Небезопасный пароль",
+            Succeeded = false,
+        };
 
-			/// <summary>
-			/// Нельзя удалить предустановленных пользователей
-			/// </summary>
-			public static readonly Result NotDeleteConst = new()
-			{
-				Code = 1010,
-				Message = "Нельзя удалить предустановленных пользователей",
-				Succeeded = false,
-			};
-			#endregion
-		}
-        //-------------------------------------------------------------------------------------------------------------
-        /**@}*/
-        //-------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Нельзя удалить предустановленных пользователей.
+        /// </summary>
+        public static readonly Result NotDeleteConst = new()
+        {
+            Code = 1010,
+            Message = "Нельзя удалить предустановленных пользователей",
+            Succeeded = false,
+        };
+        #endregion
     }
+    /**@}*/
 }
-//=====================================================================================================================
