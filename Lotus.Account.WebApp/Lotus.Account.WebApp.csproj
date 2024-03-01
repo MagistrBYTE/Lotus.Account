@@ -26,9 +26,13 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Lotus.Basis\Lotus.Core\Lotus.Core.csproj" />
-    <ProjectReference Include="..\..\Lotus.Basis\Lotus.Repository\Lotus.Repository.csproj" />
+  <ItemGroup Condition="'$(Configuration)' == 'Publish'">
+    <PackageReference Include="Lotus.Web.Common" Version="3.0.0" />
+    <PackageReference Include="Lotus.Account" Version="3.0.0" />
+    <PackageReference Include="Lotus.Account.Web" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' != 'Publish'">
     <ProjectReference Include="..\..\Lotus.Web\Lotus.Web.Common\Lotus.Web.Common.csproj" />
     <ProjectReference Include="..\Lotus.Account.Web\Lotus.Account.Web.csproj" />
     <ProjectReference Include="..\Lotus.Account\Lotus.Account.csproj" />

@@ -41,7 +41,7 @@
 
   <ItemGroup Condition="'$(Configuration)' == 'Publish'">
     <PackageReference Include="Lotus.Web.Common" Version="3.0.0" />
-    <PackageReference Include="Lotus.Account" Version="2.4.2" />
+    <PackageReference Include="Lotus.Account" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' != 'Publish'">
